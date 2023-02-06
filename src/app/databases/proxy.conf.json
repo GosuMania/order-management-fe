@@ -1,0 +1,11 @@
+{
+    "/malia/*": {
+        "target": "https://malia-be.gosumania.it/api/",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/malia": ""
+        }
+    }
+}
