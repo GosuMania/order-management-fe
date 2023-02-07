@@ -3,33 +3,83 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatButton, MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { DefaultComponent } from './admin/default/default.component';
 import { SidebarComponent } from './admin/shard/sidebar/sidebar.component';
-import {MatCardModule} from '@angular/material/card';
-import {MatInputModule} from '@angular/material/input';
 import {AuthInterceptor} from "./shared/auth.interceptor";
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
-import {SignInComponent} from "./pages/sign-in/sign-in.component";
-import {UserProfileComponent} from "./pages/user-profile/user-profile.component";
-import {SignUpComponent} from "./pages/sign-up/sign-up.component";
+import {SignInComponent} from "./pages/authentication/sign-in/sign-in.component";
+import {UserProfileComponent} from "./pages/authentication/user-profile/user-profile.component";
+import {SignUpComponent} from "./pages/authentication/sign-up/sign-up.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { HomeComponent } from './pages/home/home.component';
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
+import {MatButtonModule} from "@angular/material/button";
+import { CalendarComponent } from './pages/calendar/calendar.component';
+import {MatInputModule} from "@angular/material/input";
+import {CustomersComponent} from "./pages/customers/customers.component";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatTableModule} from "@angular/material/table";
+import {MatSortModule} from "@angular/material/sort";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {MatCardModule} from "@angular/material/card";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatListModule} from "@angular/material/list";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatNativeDateModule, MatRippleModule} from "@angular/material/core";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatSelectModule} from "@angular/material/select";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatStepperModule} from "@angular/material/stepper";
+import {MatTableResponsiveModule} from "./components/mat-table-responsive/mat-table-responsive.module";
 
 
 const Ux_Modules = [
+  MatAutocompleteModule,
   MatButtonModule,
-  MatSidenavModule,
+  MatButtonToggleModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatDialogModule,
+  MatExpansionModule,
+  MatGridListModule,
   MatIconModule,
-  MatToolbarModule,
-  MatCardModule,
   MatInputModule,
-  MatCardModule,
-  MatBottomSheetModule
+  MatListModule,
+  MatMenuModule,
+  MatNativeDateModule,
+  MatPaginatorModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule,
+  MatRadioModule,
+  MatRippleModule,
+  MatSelectModule,
+  MatSidenavModule,
+  MatSliderModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
+  MatSortModule,
+  MatTableModule,
+  MatTabsModule,
+  MatToolbarModule,
+  MatTooltipModule,
+  MatStepperModule
 ]
 
 @NgModule({
@@ -41,6 +91,8 @@ const Ux_Modules = [
     SignUpComponent,
     UserProfileComponent,
     HomeComponent,
+    CalendarComponent,
+    CustomersComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +101,11 @@ const Ux_Modules = [
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    Ux_Modules
+    Ux_Modules,
+    MatTableResponsiveModule
+  ],
+  exports: [
+    MatTableResponsiveModule
   ],
   providers: [
     {

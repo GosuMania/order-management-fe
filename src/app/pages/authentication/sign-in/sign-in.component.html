@@ -1,0 +1,25 @@
+<div class="auth-wrapper">
+  <form class="example-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <!-- Errors -->
+    <div *ngIf="errors?.email" class="alert-danger">
+      {{ errors?.email }}
+    </div>
+    <div *ngIf="errors?.password" class="alert-danger">
+      {{ errors?.password }}
+    </div>
+    <div *ngIf="errors?.error" class="alert-danger">
+      {{ errors?.error }}
+    </div>
+    <!-- Login -->
+    <mat-form-field  class="example-full-width">
+      <mat-label>Email address</mat-label>
+      <input matInput  type="email" class="form-control" formControlName="email">
+    </mat-form-field>
+    <mat-form-field mat-form-field class="example-full-width">
+      <mat-label>Password</mat-label>
+      <input matInput  type="password" class="form-control" formControlName="password">
+    </mat-form-field>
+    <br>
+    <button mat-raised-button color="accent" type="submit" [disabled]="!loginForm.valid" style="width: 80%">Log in</button>
+  </form>
+</div>

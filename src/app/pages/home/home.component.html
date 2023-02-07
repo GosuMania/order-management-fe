@@ -1,22 +1,60 @@
-<div class="example-button-row">
-  <button mat-fab extended routerLink=".">
-    <mat-icon>store</mat-icon>
-    <span>Clienti</span>
-  </button>
-  <button mat-fab extended routerLink=".">
-    <mat-icon>style</mat-icon>
-    <span>Articoli</span>
-  </button>
-  <button mat-fab extended routerLink=".">
-    <mat-icon>list</mat-icon>
-    <span>Ordini</span>
-  </button>
-  <button mat-fab extended routerLink=".">
-    <mat-icon>poll</mat-icon>
-    <span>Statistiche</span>
-  </button>
-  <a mat-fab extended routerLink=".">
-    <mat-icon>cached</mat-icon>
-    <span>Cambio merce</span>
-  </a>
+<div class="myContain grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid:cols-4">
+  <div class="button-col">
+    <button mat-fab extended routerLink="/customers">
+      <div>
+        <mat-icon  class="customIconSize">store</mat-icon>
+      </div>
+      <div>Clienti</div>
+    </button>
+  </div>
+  <div class="button-col">
+    <button mat-fab extended routerLink="/products">
+      <div>
+        <mat-icon class="customIconSize">style</mat-icon>
+      </div>
+      <div>
+        Articoli
+      </div>
+    </button>
+  </div>
+  <div class="button-col">
+    <button mat-fab extended routerLink="/orders">
+      <div>
+        <mat-icon class="customIconSize">list</mat-icon>
+      </div>
+      <div>
+        Ordini
+      </div>
+    </button>
+  </div>
+  <div class="button-col">
+    <button mat-fab extended routerLink="/statistics">
+      <div>
+        <mat-icon class="customIconSize">poll</mat-icon>
+      </div>
+      <div>
+        Statistiche
+      </div>
+    </button>
+  </div>
+  <div class="button-col">
+    <button mat-fab extended routerLink="/merchandise-exchange">
+      <div>
+        <mat-icon class="customIconSize">cached</mat-icon>
+      </div>
+      <div>
+        Cambio merce
+      </div>
+    </button>
+  </div>
+  <div class="button-col">
+    <button mat-fab extended routerLink="/calendar">
+      <div>
+        <mat-icon class="customIconSize">calendar_today</mat-icon>
+      </div>
+      <div>
+        Calendario
+      </div>
+    </button>
+  </div>
 </div>

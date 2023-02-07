@@ -22,7 +22,7 @@ export class AuthService {
   signin(user: User): Observable<any> {
     return this.http.post<any>(environment.urlApi + 'auth/login', user);
   }
-  // Access user profile
+  // Access authentication profile
   profileUser(): Observable<any> {
     return this.http.get(environment.urlApi + 'auth/user-profile');
   }

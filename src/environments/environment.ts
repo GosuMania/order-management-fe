@@ -8,7 +8,7 @@ export const environment = {
   urlApi: 'https://malia-be.gosumania.it/api/',
   REGISTER: 'auth/register',
   LOGIN: 'auth/login',
-  USER_PROFILE: 'auth/user-profile',
+  USER_PROFILE: 'auth/authentication-profile',
   REFRESH: 'auth/refresh',
   LOGOUT: 'auth/logout'
 };

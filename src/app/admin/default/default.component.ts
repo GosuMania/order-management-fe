@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver} from '@angular/cdk/layout'
 import {MatSidenav} from '@angular/material/sidenav';
 import {Router} from "@angular/router";
@@ -10,7 +10,7 @@ import {AuthStateService} from "../../shared/auth-state.service";
   templateUrl: './default.component.html',
   styleUrls: ['./default.component.scss']
 })
-export class DefaultComponent implements AfterViewInit, OnInit {
+export class DefaultComponent implements AfterContentInit, OnInit {
   @ViewChild(MatSidenav)
   sidenav!: MatSidenav;
   isSignedIn!: boolean;
@@ -26,15 +26,18 @@ export class DefaultComponent implements AfterViewInit, OnInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit (): void {
     this.observer.observe(['(max-width: 800px)']).subscribe((res) => {
-      if (res.matches) {
-        this.sidenav.mode = 'over';
-        this.sidenav.close()
-      } else {
-        this.sidenav.mode = 'side';
-        this.sidenav.open()
+      if(this.sidenav) {
+        if (res.matches) {
+          this.sidenav.mode = 'over';
+          this.sidenav.close()
+        } else {
+          this.sidenav.mode = 'side';
+          this.sidenav.open()
+        }
       }
+
     })
   }
 

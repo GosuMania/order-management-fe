@@ -1,37 +1,42 @@
 <div class="navbar">
-    <div class="top">
-       <!-- <mat-icon [inline]='true'>notifications_none</mat-icon>-->
+  <div class="top">
+    <!-- <mat-icon [inline]='true'>notifications_none</mat-icon>-->
+  </div>
+  <div class="user">
+    <img src="/assets/img/Logo_Order_Management.png" alt="">
+    <br>
+    <h4 class="name" *ngIf="userProfile">{{userProfile.name}}</h4>
+    <p class="mail" *ngIf="userProfile">{{userProfile.email}}</p>
+  </div>
+  <div class="menu">
+    <div class="menu-head">
+      <span>menu</span>
     </div>
-    <div class="user">
-        <img src="https://theartistgsm.com/wp-content/uploads/2020/08/admin-settings-male.png" alt="">
-        <h4 class="name">admin</h4>
-        <p class="mail">admin@gmail.com</p>
+    <div class="menu-item">
+      <button mat-button class="menu-button" routerLink="/customers">
+        <mat-icon>store</mat-icon>
+        <span>Clienti</span>
+      </button>
+      <button mat-button class="menu-button" routerLink="/products">
+        <mat-icon>style</mat-icon>
+        <span>Articoli</span>
+      </button>
+      <button mat-button class="menu-button" routerLink="/orders">
+        <mat-icon>list</mat-icon>
+        <span>Ordini</span>
+      </button>
+      <button mat-button class="menu-button" routerLink="/statistics">
+        <mat-icon>poll</mat-icon>
+        <span>Statistiche</span>
+      </button>
+      <button mat-button class="menu-button" routerLink="/merchandise-exchange">
+        <mat-icon>cached</mat-icon>
+        <span>Cambio merce</span>
+      </button>
+      <button mat-button class="menu-button" routerLink="/calendar">
+        <mat-icon>calendar_today</mat-icon>
+        <span>Calendario</span>
+      </button>
     </div>
-    <div class="menu">
-        <div class="menu-head">
-            <span>dashboard</span>
-        </div>
-        <div class="menu-item">
-            <button mat-button class="menu-button" [routerLink]="['/dashboard']">
-                <mat-icon>store</mat-icon>
-                <span>Clienti</span>
-            </button>
-            <button mat-button class="menu-button" [routerLink]="['/posts']">
-                <mat-icon>style</mat-icon>
-                <span>Articoli</span>
-            </button>
-            <button mat-button class="menu-button">
-                <mat-icon>list</mat-icon>
-                <span>Ordini</span>
-            </button>
-            <button mat-button class="menu-button">
-                <mat-icon>poll</mat-icon>
-                <span>Statistiche</span>
-            </button>
-            <button mat-button class="menu-button">
-                <mat-icon>cached</mat-icon>
-                <span>Cambio merce</span>
-            </button>
-        </div>
-    </div>
+  </div>
 </div>

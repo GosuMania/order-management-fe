@@ -9,7 +9,9 @@ export interface ICliente {
   cap: string;
   localita: string;
   provincia: string;
+  paese: string;
   telefono: string;
   email: string;
   destionazioneMerce: string;
+  agenteRiferimento: string;
 }
