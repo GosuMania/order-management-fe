@@ -1,6 +1,25 @@
-@media (max-width: 768px) {
-  .mat-header-cell { display: none}
+.logo {
+  max-height: 150px !important;
+}
 
+.filters {
+  margin-top: 3rem;
+}
+
+@media (min-width: 769px) {
+  .mat-header-cell {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+}
+
+@media (max-width: 768px) {
   .mat-table[matTableResponsive] {
     .mat-header-row {
       display: flex;
@@ -47,6 +66,8 @@
           content: attr(data-column-name);
           text-align: left;
           font-weight: bold;
+          text-transform: uppercase;
+
         }
       }
 

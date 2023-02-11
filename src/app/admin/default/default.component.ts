@@ -23,22 +23,25 @@ export class DefaultComponent implements AfterContentInit, OnInit {
   ngOnInit() {
     this.auth.userAuthState.subscribe((val) => {
       this.isSignedIn = val;
+      setTimeout(() => {
+        this.observer.observe(['(max-width: 800px)']).subscribe((res) => {
+          console.log('ok');
+          if(this.sidenav) {
+            if (res.matches) {
+              this.sidenav.mode = 'over';
+              this.sidenav.close()
+            } else {
+              this.sidenav.mode = 'side';
+              this.sidenav.open()
+            }
+          }
+
+        })
+      }, 500);
     });
   }
 
   ngAfterContentInit (): void {
-    this.observer.observe(['(max-width: 800px)']).subscribe((res) => {
-      if(this.sidenav) {
-        if (res.matches) {
-          this.sidenav.mode = 'over';
-          this.sidenav.close()
-        } else {
-          this.sidenav.mode = 'side';
-          this.sidenav.open()
-        }
-      }
-
-    })
   }
 
   // Signout

@@ -1,7 +1,30 @@
+.logo {
+  max-height: 150px !important;
+}
+
+.filters {
+  margin-top: 1rem;
+}
+
+.container-table {
+  margin-top: 1rem;
+}
+
+.add-button {
+  background-color: #8b3c7f;
+}
+
+
+
 @media (min-width: 769px) {
   .mat-header-cell {
     font-weight: bold;
     text-transform: uppercase;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
 }

@@ -3,6 +3,13 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {ICliente} from "../../interfaces/ICliente";
 import {MatSort} from "@angular/material/sort";
+import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
+import {UTILITY} from "../../constants/utility.constant";
+import * as moment from 'moment';
+import {MatDialog} from "@angular/material/dialog";
+import {
+  CreaModificaClienteDialogComponent
+} from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
 
 @Component({
   selector: 'app-customers',
@@ -10,7 +17,13 @@ import {MatSort} from "@angular/material/sort";
   styleUrls: ['./customers.component.scss']
 })
 export class CustomersComponent implements AfterViewInit {
+
+  campaignOne: UntypedFormGroup;
+  startDate: any;
+  endDate: any;
+
   displayedColumns: string[] = [
+    // 'logo',
     'ragioneSociale',
     'indirizzo',
     'localita',
@@ -31,8 +44,35 @@ export class CustomersComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
     this.dataSource = new MatTableDataSource<ICliente>(ELEMENT_DATA);
+    const today = new Date();
+    const month = today.getMonth();
+    const year = today.getFullYear();
+    const day = today.getDate();
+    this.campaignOne = new UntypedFormGroup({
+      start: new UntypedFormControl(null),
+      end: new UntypedFormControl(null),
+    });
+
+    if (UTILITY.checkObj(this.campaignOne)) {
+      this.campaignOne.get('start')?.valueChanges.subscribe(value => {
+        if (UTILITY.checkText(value) && this.startDate !== moment(value).format('YYYY-MM-DD')) {
+          this.startDate = moment(value).format('YYYY-MM-DD');
+        }
+      });
+
+      this.campaignOne.get('end')?.valueChanges.subscribe(value => {
+        if (UTILITY.checkText(value) && this.endDate !== moment(value).format('YYYY-MM-DD')) {
+          this.endDate = moment(value).format('YYYY-MM-DD');
+          if (UTILITY.checkText(this.startDate) && UTILITY.checkText(this.endDate)) {
+            console.log('Date:', this.startDate, ' - ', this.endDate)
+            // TODO far ripartire la chiamata
+          }
+        }
+      });
+    }
+
   }
 
   ngAfterViewInit() {
@@ -41,6 +81,24 @@ export class CustomersComponent implements AfterViewInit {
       this.dataSource.sort = this.sort;
 
     }
+  }
+
+  applyFilter(target: any) {
+    let filterValue = target.value;
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    // TODO: far ripartire la chiamata
+    this.dataSource.filter = filterValue;
+  }
+
+  openDialogAddClient(cliente?: ICliente) {
+    const dialogRef = this.dialog.open(CreaModificaClienteDialogComponent, {
+      data: {cliente: cliente},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 }
 
@@ -61,6 +119,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 2,
@@ -78,6 +137,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 3,
@@ -95,6 +155,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 4,
@@ -112,6 +173,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 5,
@@ -129,6 +191,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 6,
@@ -146,6 +209,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 7,
@@ -163,6 +227,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 8,
@@ -180,6 +245,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 9,
@@ -197,6 +263,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 10,
@@ -214,6 +281,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 11,
@@ -231,6 +299,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 12,
@@ -248,6 +317,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 13,
@@ -265,6 +335,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 14,
@@ -282,6 +353,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 15,
@@ -299,6 +371,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 16,
@@ -316,6 +389,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 17,
@@ -333,6 +407,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 18,
@@ -350,6 +425,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 19,
@@ -367,6 +443,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
     id: 20,
@@ -384,6 +461,7 @@ const ELEMENT_DATA: ICliente[] = [
     email: 'string',
     destionazioneMerce: 'string',
     agenteRiferimento: 'string',
+    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
 ];
 

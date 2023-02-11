@@ -8,4 +8,6 @@ export interface IArticolo {
   prezzo: number;
   taglia: string;
   colore: IColore;
+  fornitoreArticolo: string;
+  immagine: string;
 }

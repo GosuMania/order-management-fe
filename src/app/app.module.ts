@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -34,7 +34,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatListModule} from "@angular/material/list";
 import {MatMenuModule} from "@angular/material/menu";
-import {MatNativeDateModule, MatRippleModule} from "@angular/material/core";
+import {MAT_DATE_LOCALE, MatNativeDateModule, MatRippleModule} from "@angular/material/core";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatRadioModule} from "@angular/material/radio";
@@ -46,6 +46,14 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatTableResponsiveModule} from "./components/mat-table-responsive/mat-table-responsive.module";
+import {ProductsComponent} from "./pages/products/products.component";
+import {OrdersComponent} from "./pages/orders/orders.component";
+import {MomentPipe} from "./pipes/moment.pipe";
+import localeIt from '@angular/common/locales/it';
+import {registerLocaleData} from "@angular/common";
+import { CreaModificaClienteDialogComponent } from './dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component';
+
+registerLocaleData(localeIt, 'it');
 
 
 const Ux_Modules = [
@@ -92,7 +100,11 @@ const Ux_Modules = [
     UserProfileComponent,
     HomeComponent,
     CalendarComponent,
-    CustomersComponent
+    CustomersComponent,
+    ProductsComponent,
+    OrdersComponent,
+    MomentPipe,
+    CreaModificaClienteDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -102,12 +114,23 @@ const Ux_Modules = [
     ReactiveFormsModule,
     FormsModule,
     Ux_Modules,
-    MatTableResponsiveModule
+    MatTableResponsiveModule,
+    ReactiveFormsModule,
+    FormsModule,
   ],
   exports: [
-    MatTableResponsiveModule
+    MatTableResponsiveModule,
+    MomentPipe
   ],
   providers: [
+    {
+      provide: LOCALE_ID,
+      useValue: 'it'
+    },
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'it-IT'
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

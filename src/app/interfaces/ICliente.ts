@@ -1,5 +1,6 @@
 export interface ICliente {
   id?: number;
+  logo?: string;
   ragioneSociale: string;
   piva: string;
   codiceFiscale: string;
