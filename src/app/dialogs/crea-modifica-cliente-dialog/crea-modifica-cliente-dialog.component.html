@@ -1,6 +1,19 @@
 <h2 mat-dialog-title>CLIENTE</h2>
 <mat-dialog-content class="mat-typography">
-  CIAO
+  <ng-container class="add-lessons-form" [formGroup]="clienteForm">
+    <div class="row">
+      <div class="col">
+        <strong>Ragione sociale</strong> <br>
+        <input class="custom-input" type="text" formControlName="facebook">
+      </div>
+      <div class="col">
+        <strong>E-MAIL</strong> <br>
+        <input class="custom-input" type="text" formControlName="email">
+      </div>
+
+    </div>
+  </ng-container>
+
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>CLOSE</button>

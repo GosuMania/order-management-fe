@@ -36,85 +36,89 @@
       </ng-container>
       -->
 
-      <!-- Ragione sociale Column -->
       <ng-container matColumnDef="ragioneSociale">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Ragione sociale</th>
         <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.ragioneSociale}} </td>
       </ng-container>
 
-      <!-- Indirizzo Column -->
+      <!--
       <ng-container matColumnDef="indirizzo">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Indirizzo</th>
         <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.indirizzo}} </td>
       </ng-container>
+      -->
 
-      <!-- Località Column -->
-      <ng-container matColumnDef="localita">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Località</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.localita}} </td>
-      </ng-container>
+      <!--
+     <ng-container matColumnDef="localita">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Località</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.localita}} </td>
+     </ng-container>
+      -->
 
-      <!-- CAP Column -->
-      <ng-container matColumnDef="cap">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> CAP</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.cap}} </td>
-      </ng-container>
+      <!--
+     <ng-container matColumnDef="cap">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> CAP</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.cap}} </td>
+     </ng-container>
+      -->
 
-      <!-- Provincia Column -->
-      <ng-container matColumnDef="provincia">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Provincia</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.provincia}} </td>
-      </ng-container>
 
-      <!-- Symbol Column -->
-      <ng-container matColumnDef="paese">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Paese</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.paese}} </td>
-      </ng-container>
+     <ng-container matColumnDef="provincia">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Provincia</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.provincia}} </td>
+     </ng-container>
 
-      <!-- Symbol Column -->
-      <ng-container matColumnDef="piva">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Partita iva</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.piva}} </td>
-      </ng-container>
+      <!--
+     <ng-container matColumnDef="paese">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Paese</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.paese}} </td>
+     </ng-container>
+     -->
 
-      <!-- Symbol Column -->
-      <ng-container matColumnDef="codiceFiscale">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Codice Fiscale</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.codiceFiscale}} </td>
-      </ng-container>
+      <!--
+     <ng-container matColumnDef="piva">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Partita iva</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.piva}} </td>
+     </ng-container>
+      -->
 
-      <!-- Symbol Column -->
-      <ng-container matColumnDef="codiceSdi">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Codice SDI</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.codiceSdi}} </td>
-      </ng-container>
+      <!--
+     <ng-container matColumnDef="codiceFiscale">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Codice Fiscale</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.codiceFiscale}} </td>
+     </ng-container>
+      -->
 
-      <!-- Symbol Column -->
+      <!--
+     <ng-container matColumnDef="codiceSdi">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Codice SDI</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.codiceSdi}} </td>
+     </ng-container>
+      -->
+
+      <!--
       <ng-container matColumnDef="destionazioneMerce">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Destinazione Merce</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.destionazioneMerce}} </td>
-      </ng-container>
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Destinazione Merce</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.destionazioneMerce}} </td>
+     </ng-container>
+     -->
 
-      <!-- Symbol Column -->
-      <ng-container matColumnDef="agenteRiferimento">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Agente di Riferimento</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.agenteRiferimento}} </td>
-      </ng-container>
+     <ng-container matColumnDef="agenteRiferimento">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Agente di Riferimento</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.agenteRiferimento}} </td>
+     </ng-container>
 
-      <!-- Symbol Column -->
-      <ng-container matColumnDef="telefono">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Telefono</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.telefono}} </td>
-      </ng-container>
+     <ng-container matColumnDef="telefono">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Telefono</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.telefono}} </td>
+     </ng-container>
 
-      <!-- Symbol Column -->
-      <ng-container matColumnDef="email">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
-      </ng-container>
+     <ng-container matColumnDef="email">
+       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
+     </ng-container>
 
-      <!-- Symbol Column -->
+     <!-- Symbol Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef>

@@ -25,15 +25,15 @@ export class CustomersComponent implements AfterViewInit {
   displayedColumns: string[] = [
     // 'logo',
     'ragioneSociale',
-    'indirizzo',
-    'localita',
-    'cap',
+    // 'indirizzo',
+    // 'localita',
+    // 'cap',
     'provincia',
-    'paese',
-    'piva',
-    'codiceFiscale',
-    'codiceSdi',
-    'destionazioneMerce',
+    // 'paese',
+    // 'piva',
+    // 'codiceFiscale',
+    // 'codiceSdi',
+    // 'destionazioneMerce',
     'agenteRiferimento',
     'telefono',
     'email',
@@ -118,7 +118,7 @@ const ELEMENT_DATA: ICliente[] = [
     telefono: 'string',
     email: 'string',
     destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    agenteRiferimento: 'Veronica',
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -136,7 +136,7 @@ const ELEMENT_DATA: ICliente[] = [
     telefono: 'string',
     email: 'string',
     destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    agenteRiferimento: 'Luigi',
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
