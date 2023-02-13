@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
-import {ICliente} from "../../interfaces/ICliente";
+import {ICliente, IDestinazioneMerce} from "../../interfaces/ICliente";
 import {MatSort} from "@angular/material/sort";
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
@@ -93,6 +93,8 @@ export class CustomersComponent implements AfterViewInit {
 
   openDialogAddClient(cliente?: ICliente) {
     const dialogRef = this.dialog.open(CreaModificaClienteDialogComponent, {
+      height: '90%',
+      width: '90%',
       data: {cliente: cliente},
     });
 
@@ -101,6 +103,14 @@ export class CustomersComponent implements AfterViewInit {
     });
   }
 }
+
+const DEST_MERCE: IDestinazioneMerce = {
+  indirizzo: 'string',
+  cap: 'string',
+  localita: 'string',
+  provincia: 'string',
+  paese: 'IT'
+};
 
 const ELEMENT_DATA: ICliente[] = [
   {
@@ -117,8 +127,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'Veronica',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 2,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -135,8 +151,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'Luigi',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -153,8 +175,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -171,8 +199,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -189,8 +223,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -207,8 +247,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -225,8 +271,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -243,8 +295,14 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -261,8 +319,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -279,8 +344,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -297,8 +369,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -315,8 +394,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -333,8 +419,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -351,8 +444,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -369,8 +469,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -387,8 +494,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -405,8 +519,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -423,8 +544,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -441,8 +569,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
   {
@@ -459,8 +594,15 @@ const ELEMENT_DATA: ICliente[] = [
     paese: 'IT',
     telefono: 'string',
     email: 'string',
-    destionazioneMerce: 'string',
-    agenteRiferimento: 'string',
+    destinazioneMerce: {
+      indirizzo: 'string',
+      cap: 'string',
+      localita: 'string',
+      provincia: 'string',
+      paese: 'IT'
+    },
+
+    idAgenteRiferimento: 1,
     logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
   },
 ];

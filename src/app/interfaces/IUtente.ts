@@ -5,7 +5,7 @@ export interface IUtente {
   uid: string;
   email: string;
   username: string;
-  password: string;
+  password?: string;
   typeAccount: string;
   agency: IAgenzia;
 }

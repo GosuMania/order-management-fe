@@ -13,6 +13,14 @@ export interface ICliente {
   paese: string;
   telefono: string;
   email: string;
-  destionazioneMerce: string;
-  agenteRiferimento: string;
+  destinazioneMerce: IDestinazioneMerce;
+  idAgenteRiferimento: number;
+}
+
+export interface IDestinazioneMerce {
+  indirizzo: string;
+  cap: string;
+  localita: string;
+  provincia: string;
+  paese: string;
 }
