@@ -1,9 +1,13 @@
 <div class="example-container">
   <div class="filters row">
     <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-      <input matInput (keyup)="applyFilter($event.target)" placeholder="Cerca">
+      <input matInput [(ngModel)]="cercaValue" (ngModelChange)="applyFilter(cercaValue)" placeholder="Cerca">
+      <button *ngIf="cercaValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
+        <mat-icon>close</mat-icon>
+      </button>
     </mat-form-field>
 
+    <!--
     <mat-form-field appearance="fill" class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
       <mat-label>Filtra per range date</mat-label>
       <mat-date-range-input
@@ -15,8 +19,9 @@
       <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
       <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
     </mat-form-field>
+    -->
 
-    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4" style="text-align: end">
+    <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8" style="text-align: end">
       <button class="add-button"mat-fab extended (click)="openDialogAddClient()">
         <mat-icon>add</mat-icon> Aggiungi cliente
       </button>
@@ -105,7 +110,7 @@
 
      <ng-container matColumnDef="agenteRiferimento">
        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Agente di Riferimento</th>
-       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.agenteRiferimento}} </td>
+       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.usernameAgenteRiferimento}} </td>
      </ng-container>
 
      <ng-container matColumnDef="telefono">

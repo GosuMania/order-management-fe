@@ -6,11 +6,20 @@ export const environment = {
   production: false,
   // urlApi: 'http://127.0.0.1:5000/',
   urlApi: 'https://malia-be.gosumania.it/api/',
+
   REGISTER: 'auth/register',
   LOGIN: 'auth/login',
   USER_PROFILE: 'auth/authentication-profile',
   REFRESH: 'auth/refresh',
-  LOGOUT: 'auth/logout'
+  LOGOUT: 'auth/logout',
+  GET_ALL: 'auth/get-all',
+
+  CUSTOMER_GET_ALL: 'customer/get-all',
+  CUSTOMER_CREATE_OR_UPDATE: 'customer/create-or-update',
+  CUSTOMER_GET_BY_ID: 'customer/get-by-id',
+  CUSTOMER_DELETE: 'customer/delete',
+  CUSTOMER_GET_ALL_WITH_PAGINATION: 'customer/get-all-with-pagination',
+
 };
 
 /*

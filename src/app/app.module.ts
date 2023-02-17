@@ -1,23 +1,23 @@
 import {LOCALE_ID, NgModule} from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {BrowserModule} from '@angular/platform-browser';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import { DefaultComponent } from './admin/default/default.component';
-import { SidebarComponent } from './admin/shard/sidebar/sidebar.component';
-import {AuthInterceptor} from "./shared/auth.interceptor";
+import {DefaultComponent} from './admin/default/default.component';
+import {SidebarComponent} from './admin/shard/sidebar/sidebar.component';
+import {AuthInterceptor} from "./services/auth.interceptor";
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import {SignInComponent} from "./pages/authentication/sign-in/sign-in.component";
 import {UserProfileComponent} from "./pages/authentication/user-profile/user-profile.component";
 import {SignUpComponent} from "./pages/authentication/sign-up/sign-up.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import { HomeComponent } from './pages/home/home.component';
+import {HomeComponent} from './pages/home/home.component';
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
 import {MatButtonModule} from "@angular/material/button";
-import { CalendarComponent } from './pages/calendar/calendar.component';
+import {CalendarComponent} from './pages/calendar/calendar.component';
 import {MatInputModule} from "@angular/material/input";
 import {CustomersComponent} from "./pages/customers/customers.component";
 import {MatPaginatorModule} from "@angular/material/paginator";
@@ -51,7 +51,10 @@ import {OrdersComponent} from "./pages/orders/orders.component";
 import {MomentPipe} from "./pipes/moment.pipe";
 import localeIt from '@angular/common/locales/it';
 import {registerLocaleData} from "@angular/common";
-import { CreaModificaClienteDialogComponent } from './dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component';
+import {
+  CreaModificaClienteDialogComponent
+} from './dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component';
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 
 registerLocaleData(localeIt, 'it');
 
@@ -124,6 +127,10 @@ const Ux_Modules = [
   ],
   providers: [
     {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    },
+    {
       provide: LOCALE_ID,
       useValue: 'it'
     },
@@ -139,4 +146,5 @@ const Ux_Modules = [
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

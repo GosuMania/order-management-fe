@@ -4,7 +4,7 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Ragione sociale</mat-label>
-        <input matInput type="text" formControlName="ragioneSociale" placeholder="Ex: Nome Negozio srl">
+        <input matInput type="text" formControlName="ragioneSociale" placeholder="Ex: Nome Negozio srl" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.ragioneSociale">
           <mat-error *ngIf="clienteForm.get('ragioneSociale')!.hasError(validation.type) && clienteForm.get('ragioneSociale')!.dirty">
             {{validation.message}}
@@ -13,7 +13,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Partita IVA</mat-label>
-        <input matInput type="text" formControlName="piva" placeholder="Ex: 01234567891">
+        <input matInput type="text" formControlName="piva" placeholder="Ex: 01234567891" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.piva">
           <mat-error *ngIf="clienteForm.get('piva')!.hasError(validation.type) && clienteForm.get('piva')!.dirty">
             {{validation.message}}
@@ -24,7 +24,7 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Codice Fiscale</mat-label>
-        <input matInput type="text" formControlName="codiceFiscale" placeholder="Ex: RSSMRA70H25A940U">
+        <input matInput type="text" formControlName="codiceFiscale" placeholder="Ex: RSSMRA70H25A940U" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.codiceFiscale">
           <mat-error *ngIf="clienteForm.get('codiceFiscale')!.hasError(validation.type) && clienteForm.get('codiceFiscale')!.dirty">
             {{validation.message}}
@@ -33,7 +33,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Codice SDI</mat-label>
-        <input matInput type="text" formControlName="codiceSdi" placeholder="Ex: 123">
+        <input matInput type="text" formControlName="codiceSdi" placeholder="Ex: 123" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.codiceSdi">
           <mat-error *ngIf="clienteForm.get('codiceSdi')!.hasError(validation.type) && clienteForm.get('codiceSdi')!.dirty">
             {{validation.message}}
@@ -42,7 +42,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>PEC</mat-label>
-        <input matInput type="text" formControlName="pec" placeholder="nome.cognome@pec.it">
+        <input matInput type="text" formControlName="pec" placeholder="nome.cognome@pec.it" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.pec">
           <mat-error *ngIf="clienteForm.get('pec')!.hasError(validation.type) && clienteForm.get('pec')!.dirty">
             {{validation.message}}
@@ -53,7 +53,7 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Indirizzo</mat-label>
-        <input matInput type="text" formControlName="indirizzo" placeholder="Via Roma, 100">
+        <input matInput type="text" formControlName="indirizzo" placeholder="Via Roma, 100" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.indirizzo">
           <mat-error *ngIf="clienteForm.get('indirizzo')!.hasError(validation.type) && clienteForm.get('indirizzo')!.dirty">
             {{validation.message}}
@@ -62,7 +62,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>CAP</mat-label>
-        <input matInput type="text" formControlName="cap" placeholder="00042">
+        <input matInput type="text" formControlName="cap" placeholder="00042" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.cap">
           <mat-error *ngIf="clienteForm.get('cap')!.hasError(validation.type) && clienteForm.get('cap')!.dirty">
             {{validation.message}}
@@ -71,7 +71,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Località</mat-label>
-        <input matInput type="text" formControlName="localita" placeholder="Bracciano">
+        <input matInput type="text" formControlName="localita" placeholder="Bracciano" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.localita">
           <mat-error *ngIf="clienteForm.get('localita')!.hasError(validation.type) && clienteForm.get('localita')!.dirty">
             {{validation.message}}
@@ -82,7 +82,7 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Provincia</mat-label>
-        <input matInput type="text" formControlName="provincia" placeholder="Roma">
+        <input matInput type="text" formControlName="provincia" placeholder="Roma" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.provincia">
           <mat-error *ngIf="clienteForm.get('provincia')!.hasError(validation.type) && clienteForm.get('provincia')!.dirty">
             {{validation.message}}
@@ -106,7 +106,7 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Telefono</mat-label>
-        <input matInput type="text" formControlName="telefono" placeholder="3381234567 / 0811234567">
+        <input matInput type="text" formControlName="telefono" placeholder="3381234567 / 0811234567" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.telefono">
           <mat-error *ngIf="clienteForm.get('telefono')!.hasError(validation.type) && clienteForm.get('telefono')!.dirty">
             {{validation.message}}
@@ -115,7 +115,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>E-mail</mat-label>
-        <input matInput type="text" formControlName="email" placeholder="username@gmail.com">
+        <input matInput type="text" formControlName="email" placeholder="username@gmail.com" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.email">
           <mat-error *ngIf="clienteForm.get('email')!.hasError(validation.type) && clienteForm.get('email')!.dirty">
             {{validation.message}}
@@ -152,7 +152,7 @@
     <div class="row" *ngIf="showDestMerce">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Indirizzo Dest. Merce</mat-label>
-        <input matInput type="text" formControlName="indirizzoDM" placeholder="Via Roma, 100">
+        <input matInput type="text" formControlName="indirizzoDM" placeholder="Via Roma, 100" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.indirizzoDM">
           <mat-error *ngIf="clienteForm.get('indirizzoDM')!.hasError(validation.type) && clienteForm.get('indirizzoDM')!.dirty">
             {{validation.message}}
@@ -161,7 +161,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>CAP Dest. Merce</mat-label>
-        <input matInput type="text" formControlName="capDM" placeholder="00042">
+        <input matInput type="text" formControlName="capDM" placeholder="00042" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.capDM">
           <mat-error *ngIf="clienteForm.get('capDM')!.hasError(validation.type) && clienteForm.get('capDM')!.dirty">
             {{validation.message}}
@@ -170,7 +170,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Località Dest. Merce</mat-label>
-        <input matInput type="text" formControlName="localitaDM" placeholder="Bracciano">
+        <input matInput type="text" formControlName="localitaDM" placeholder="Bracciano" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.localitaDM">
           <mat-error *ngIf="clienteForm.get('localitaDM')!.hasError(validation.type) && clienteForm.get('localitaDM')!.dirty">
             {{validation.message}}
@@ -182,7 +182,7 @@
     <div class="row"  *ngIf="showDestMerce">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Provincia Dest. Merce</mat-label>
-        <input matInput type="text" formControlName="provinciaDM" placeholder="Roma">
+        <input matInput type="text" formControlName="provinciaDM" placeholder="Roma" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.provinciaDM">
           <mat-error *ngIf="clienteForm.get('provinciaDM')!.hasError(validation.type) && clienteForm.get('provinciaDM')!.dirty">
             {{validation.message}}
@@ -191,7 +191,7 @@
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Paese Dest. Merce</mat-label>
-        <mat-select [(value)]="cliente.destinazioneMerce.paese" formControlName="paeseDM">
+        <mat-select [(value)]="cliente.destinazioneMerce!.paese" formControlName="paeseDM">
           <mat-option *ngFor="let paese of paesi" [value]="paese.code">
             {{paese.name}}
           </mat-option>
@@ -207,5 +207,6 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>CLOSE</button>
+  <button mat-button (click)="save()">SALVA</button>
+  <button mat-button mat-dialog-close>CHIUDI</button>
 </mat-dialog-actions>

@@ -1,6 +1,5 @@
-export interface ICliente {
-  id?: number;
-  logo?: string;
+export interface ICustomer {
+  id?: number | null;
   ragioneSociale: string;
   piva: string;
   codiceFiscale: string;
@@ -14,7 +13,8 @@ export interface ICliente {
   telefono: string;
   email: string;
   destinazioneMerce: IDestinazioneMerce;
-  idAgenteRiferimento: number;
+  idAgenteRiferimento: number | null;
+  usernameAgenteRiferimento: string | null;
 }
 
 export interface IDestinazioneMerce {

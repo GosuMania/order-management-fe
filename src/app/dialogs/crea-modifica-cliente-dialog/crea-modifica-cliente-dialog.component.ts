@@ -1,11 +1,14 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from "@angular/forms";
-import {ICliente} from "../../interfaces/ICliente";
+import {ICustomer} from "../../interfaces/ICustomer";
 import {UTILITY} from "../../constants/utility.constant";
 import {IUtente} from "../../interfaces/IUtente";
 import {PaesiConstant} from "../../constants/paesi.constant";
 import {IPaese} from "../../interfaces/IPaese";
+import {CustomerService} from "../../services/customer.service";
+import {AuthService} from "../../services/auth.service";
+import {CommonService} from "../../services/common.service";
 
 @Component({
   selector: 'app-crea-modifica-cliente-dialog',
@@ -15,10 +18,12 @@ import {IPaese} from "../../interfaces/IPaese";
 export class CreaModificaClienteDialogComponent implements OnInit {
   title = 'Nuovo Cliente';
   clienteForm: UntypedFormGroup;
-  cliente: ICliente;
+  cliente: ICustomer;
   agenti: IUtente[];
   showDestMerce = false;
   paesi = PaesiConstant.paesi as IPaese[];
+  refreshList = new EventEmitter();
+
 
 
   validationCliente = {
@@ -93,34 +98,20 @@ export class CreaModificaClienteDialogComponent implements OnInit {
     ],
   };
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private customerService: CustomerService,
+              private authService: AuthService, private commonService: CommonService) {
     this.agenti = [];
-    const agenteUno: IUtente = {
-      id: 1,
-      uid: '',
-      username: 'Uno',
-      email: '',
-      agency: {
-        name: '',
-        id: 1
-      },
-      typeAccount: '',
-    };
-    const agenteDue: IUtente = {
-      id: 2,
-      uid: '',
-      username: 'Due',
-      email: '',
-      agency: {
-        name: '',
-        id: 1
-      },
-      typeAccount: '',
-    };
-    this.agenti.push(agenteUno);
-    this.agenti.push(agenteDue);
+    this.commonService.utenti.subscribe((utenti: IUtente[]) => {
+      if(utenti.length === 0) {
+        this.authService.getUsersList().subscribe(users => {
+          this.commonService.utenti.next(users);
+        })
+      } else {
+        this.agenti = utenti as IUtente[];
+      }
+    });
 
-    const newCliente: ICliente = {
+    const newCliente: ICustomer = {
       ragioneSociale: '',
       piva: '',
       codiceFiscale: '',
@@ -140,10 +131,11 @@ export class CreaModificaClienteDialogComponent implements OnInit {
         provincia: '',
         paese: ''
       },
-      idAgenteRiferimento: 0
+      idAgenteRiferimento: null,
+      usernameAgenteRiferimento: null
     };
     this.cliente = UTILITY.checkObj(data) && UTILITY.checkObj(data.cliente) && UTILITY.checkText(data.cliente.id) ? data.cliente : newCliente;
-    this.title = UTILITY.checkObj(data) && UTILITY.checkObj(data.cliente) && UTILITY.checkText(data.cliente.id) ? 'Modifica Cliente' : 'Nuovo Cliente';
+    this.title = UTILITY.checkText(this.cliente.id) ? 'Modifica Cliente' : 'Nuovo Cliente';
 
     this.clienteForm = this.fb.group({
       ragioneSociale: new UntypedFormControl(this.cliente.ragioneSociale, Validators.compose([
@@ -237,5 +229,43 @@ export class CreaModificaClienteDialogComponent implements OnInit {
     });
   }
 
+  save() {
+    const customer: ICustomer = {
+      id: UTILITY.checkText(this.cliente!.id) ? this.cliente!.id : null,
+      ragioneSociale: this.clienteForm.get('ragioneSociale')?.value,
+      piva: this.clienteForm.get('piva')?.value,
+      codiceFiscale: this.clienteForm.get('codiceFiscale')?.value,
+      codiceSdi: this.clienteForm.get('codiceSdi')?.value,
+      pec: this.clienteForm.get('pec')?.value,
+      indirizzo: this.clienteForm.get('indirizzo')?.value,
+      cap: this.clienteForm.get('cap')?.value,
+      localita: this.clienteForm.get('localita')?.value,
+      provincia: this.clienteForm.get('provincia')?.value,
+      paese: this.clienteForm.get('paese')?.value,
+      telefono: this.clienteForm.get('telefono')?.value,
+      email: this.clienteForm.get('email')?.value,
+      destinazioneMerce: {
+        indirizzo: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('indirizzoDM')?.value : null,
+        cap: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('capDM')?.value : null,
+        localita: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('localitaDM')?.value : null,
+        provincia: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('provinciaDM')?.value : null,
+        paese: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('paeseDM')?.value : null,
+      },
+      idAgenteRiferimento: this.clienteForm.get('agenteRiferimento')?.value,
+      usernameAgenteRiferimento: this.nomeAgente(this.clienteForm.get('agenteRiferimento')?.value)
+    };
+    this.customerService.createOrUpdateCustomer(customer).subscribe(res => {
+      console.log('Risultato', res);
+      this.refreshList.emit();
+    })
+  }
+
+  nomeAgente(id: number): string {
+    const agente = this.agenti.find(x => x.id === id);
+    if (UTILITY.checkObj(agente)) {
+      return agente!.username;
+    }
+    return '';
+  }
 
 }

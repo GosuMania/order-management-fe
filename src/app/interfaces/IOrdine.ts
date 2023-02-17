@@ -1,11 +1,11 @@
 import {IUtente} from "./IUtente";
-import {ICliente} from "./ICliente";
+import {ICustomer} from "./ICustomer";
 import {IArticolo} from "./IArticolo";
 import {IStagione} from "./IStagione";
 
 export interface IOrdine {
   utente: IUtente;
-  cliente: ICliente;
+  cliente: ICustomer;
   listaArticoli: IArticolo[];
   modalitaPagamento: string;
   numeroOrdine: number;

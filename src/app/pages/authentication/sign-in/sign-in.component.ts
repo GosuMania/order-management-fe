@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../shared/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { TokenService } from '../../../shared/token.service';
-import { AuthStateService } from '../../../shared/auth-state.service';
+import { TokenService } from '../../../services/token.service';
+import { AuthStateService } from '../../../services/auth-state.service';
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',

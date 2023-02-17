@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {environment} from "../../environments/environment";
+import {map} from "rxjs/operators";
 // User interface
 export class User {
   name!: String;
@@ -25,5 +26,11 @@ export class AuthService {
   // Access authentication profile
   profileUser(): Observable<any> {
     return this.http.get(environment.urlApi + 'auth/user-profile');
+  }
+
+  getUsersList(): Observable<any> {
+    return this.http.get<any>(environment.urlApi + environment.GET_ALL).pipe(
+      map(res => res.data)
+    );
   }
 }

@@ -2,8 +2,8 @@ import {AfterContentInit, AfterViewInit, Component, OnInit, ViewChild} from '@an
 import {BreakpointObserver} from '@angular/cdk/layout'
 import {MatSidenav} from '@angular/material/sidenav';
 import {Router} from "@angular/router";
-import {TokenService} from "../../shared/token.service";
-import {AuthStateService} from "../../shared/auth-state.service";
+import {TokenService} from "../../services/token.service";
+import {AuthStateService} from "../../services/auth-state.service";
 
 @Component({
   selector: 'app-default',

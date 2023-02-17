@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
-import {ICliente, IDestinazioneMerce} from "../../interfaces/ICliente";
+import {ICustomer, IDestinazioneMerce} from "../../interfaces/ICustomer";
 import {MatSort} from "@angular/material/sort";
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
@@ -10,6 +10,10 @@ import {MatDialog} from "@angular/material/dialog";
 import {
   CreaModificaClienteDialogComponent
 } from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
+import {CustomerService} from "../../services/customer.service";
+import {CommonService} from "../../services/common.service";
+import {IUtente} from "../../interfaces/IUtente";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-customers',
@@ -21,6 +25,9 @@ export class CustomersComponent implements AfterViewInit {
   campaignOne: UntypedFormGroup;
   startDate: any;
   endDate: any;
+  cercaValue: string = '';
+
+  agenti: IUtente[] = [];
 
   displayedColumns: string[] = [
     // 'logo',
@@ -39,13 +46,25 @@ export class CustomersComponent implements AfterViewInit {
     'email',
     'actions'
   ];
-  dataSource = new MatTableDataSource<ICliente>(ELEMENT_DATA);
+  dataSource = new MatTableDataSource<ICustomer>([]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
 
-  constructor(public dialog: MatDialog) {
-    this.dataSource = new MatTableDataSource<ICliente>(ELEMENT_DATA);
+  constructor(public dialog: MatDialog, private customerService: CustomerService, public commonService: CommonService,
+              private authService: AuthService) {
+    this.agenti = [];
+    this.commonService.utenti.subscribe((utenti: IUtente[]) => {
+      if (utenti.length === 0) {
+        this.authService.getUsersList().subscribe(users => {
+          this.commonService.utenti.next(users);
+        })
+      } else {
+        this.agenti = utenti as IUtente[];
+        this.refreshList();
+      }
+    });
+    // this.dataSource = new MatTableDataSource<ICliente>(ELEMENT_DATA);
     const today = new Date();
     const month = today.getMonth();
     const year = today.getFullYear();
@@ -83,527 +102,52 @@ export class CustomersComponent implements AfterViewInit {
     }
   }
 
-  applyFilter(target: any) {
-    let filterValue = target.value;
+  applyFilter(value: string) {
+    if(value === '') {
+      this.cercaValue = '';
+    }
+    let filterValue = value;
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     // TODO: far ripartire la chiamata
     this.dataSource.filter = filterValue;
   }
 
-  openDialogAddClient(cliente?: ICliente) {
+  openDialogAddClient(cliente?: ICustomer) {
     const dialogRef = this.dialog.open(CreaModificaClienteDialogComponent, {
       height: '90%',
       width: '90%',
       data: {cliente: cliente},
     });
 
+    dialogRef.componentInstance.refreshList.subscribe(() => {
+      this.refreshList();
+    });
+
     dialogRef.afterClosed().subscribe(result => {
+      dialogRef.componentInstance.refreshList.unsubscribe();
       console.log('The dialog was closed');
     });
   }
+
+  refreshList() {
+    this.customerService.getCustomerWithPaginationList().subscribe((customers: ICustomer[]) => {
+      customers.forEach(customer => {
+        customer.usernameAgenteRiferimento = this.nomeAgente(customer!.idAgenteRiferimento!);
+      });
+      this.dataSource = new MatTableDataSource<ICustomer>(customers);
+
+    });
+  }
+
+  nomeAgente(id: number): string {
+    const agente = this.agenti.find(x => x.id === id);
+    if (UTILITY.checkObj(agente)) {
+      return agente!.username;
+    }
+    return '';
+  }
 }
 
-const DEST_MERCE: IDestinazioneMerce = {
-  indirizzo: 'string',
-  cap: 'string',
-  localita: 'string',
-  provincia: 'string',
-  paese: 'IT'
-};
 
-const ELEMENT_DATA: ICliente[] = [
-  {
-    id: 1,
-    ragioneSociale: 'AAAAA',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 2,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 2,
-    ragioneSociale: 'BBBBBBB',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 3,
-    ragioneSociale: 'CCCC',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 4,
-    ragioneSociale: 'DDDDD',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 5,
-    ragioneSociale: 'EEEEE',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 6,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 7,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 8,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 9,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 10,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 11,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 12,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 13,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 14,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 15,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 16,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 17,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 18,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 19,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-  {
-    id: 20,
-    ragioneSociale: 'Hydrogen',
-    piva: 'string',
-    codiceFiscale: 'string',
-    codiceSdi: 'string',
-    pec: 'string',
-    indirizzo: 'string',
-    cap: 'string',
-    localita: 'string',
-    provincia: 'string',
-    paese: 'IT',
-    telefono: 'string',
-    email: 'string',
-    destinazioneMerce: {
-      indirizzo: 'string',
-      cap: 'string',
-      localita: 'string',
-      provincia: 'string',
-      paese: 'IT'
-    },
-
-    idAgenteRiferimento: 1,
-    logo: 'https://play-lh.googleusercontent.com/TdcvdWjFnm7oCXlpL9EZNpv-PYcs7v_ny87qncJ1tIWoZbQKzIvPFFAdoeyEpF2O2Kc'
-  },
-];
 

@@ -2,10 +2,11 @@ import {IAgenzia} from "./IAgenzia";
 
 export interface IUtente {
   id?: number;
-  uid: string;
+  uid?: string;
   email: string;
   username: string;
   password?: string;
   typeAccount: string;
-  agency: IAgenzia;
+  agency: string;
+  agencyObj?: IAgenzia; // poi vediamo se serve
 }
