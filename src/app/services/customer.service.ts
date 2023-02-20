@@ -21,7 +21,7 @@ export class CustomerService {
   getCustomerWithPaginationList() {
     const myLink = environment.urlApi + environment.CUSTOMER_GET_ALL_WITH_PAGINATION + '/' + 1;
     return this.http.get<any>(myLink).pipe(
-      map(res => res.customers)
+      map(res => res.data)
     );
   }
 

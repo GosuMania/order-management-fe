@@ -24,3 +24,11 @@ export interface IDestinazioneMerce {
   provincia: string;
   paese: string;
 }
+
+export interface ICustomerPagination {
+  currentPage: number,
+  perPage: number,
+  total: number,
+  lastPage: number,
+  customers: ICustomer[]
+}

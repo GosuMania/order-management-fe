@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<mat-dialog-content class="mat-typography">
+  <form class="add-lessons-form" [formGroup]="articoloForm">
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Fornitore</mat-label>
+        <input matInput type="text" formControlName="fornitore" placeholder="Ex: Nome fornitore" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.fornitore">
+          <mat-error *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Codice Articolo</mat-label>
+        <input matInput type="text" formControlName="piva" placeholder="Ex: 01234567891" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.codiceArticolo">
+          <mat-error *ngIf="articoloForm.get('codiceArticolo')!.hasError(validation.type) && articoloForm.get('codiceArticolo')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Codice Fiscale</mat-label>
+        <input matInput type="text" formControlName="descrizioneArticolo" placeholder="Ex: RSSMRA70H25A940U" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.descrizioneArticolo">
+          <mat-error *ngIf="articoloForm.get('descrizioneArticolo')!.hasError(validation.type) && articoloForm.get('descrizioneArticolo')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Codice SDI</mat-label>
+        <input matInput type="text" formControlName="taglia" placeholder="Ex: 123" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.taglia">
+          <mat-error *ngIf="articoloForm.get('taglia')!.hasError(validation.type) && articoloForm.get('taglia')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>colore</mat-label>
+        <input matInput type="text" formControlName="colore" placeholder="Ex: bianco" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.colore">
+          <mat-error *ngIf="articoloForm.get('colore')!.hasError(validation.type) && articoloForm.get('colore')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>prezzo</mat-label>
+        <input matInput type="text" formControlName="prezzo" placeholder="Via Roma, 100" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.prezzo">
+          <mat-error *ngIf="articoloForm.get('prezzo')!.hasError(validation.type) && articoloForm.get('prezzo')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>quantitaMagazzino</mat-label>
+        <input matInput type="text" formControlName="quantitaMagazzino" placeholder="00042" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.quantitaMagazzino">
+          <mat-error *ngIf="articoloForm.get('quantitaMagazzino')!.hasError(validation.type) && articoloForm.get('quantitaMagazzino')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <!--
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Località</mat-label>
+        <input matInput type="text" formControlName="quantitaDisponibile" placeholder="Bracciano" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.quantitaDisponibile">
+          <mat-error *ngIf="articoloForm.get('quantitaDisponibile')!.hasError(validation.type) && articoloForm.get('quantitaDisponibile')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      -->
+    </div>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="save()">SALVA</button>
+  <button mat-button mat-dialog-close>CHIUDI</button>
+</mat-dialog-actions>

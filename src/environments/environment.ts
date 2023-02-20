@@ -20,6 +20,12 @@ export const environment = {
   CUSTOMER_DELETE: 'customer/delete',
   CUSTOMER_GET_ALL_WITH_PAGINATION: 'customer/get-all-with-pagination',
 
+  PRODUCT_GET_ALL: 'product/get-all',
+  PRODUCT_CREATE_OR_UPDATE: 'product/create-or-update',
+  PRODUCT_GET_BY_ID: 'product/get-by-id',
+  PRODUCT_DELETE: 'product/delete',
+  PRODUCT_GET_ALL_WITH_PAGINATION: 'product/get-all-with-pagination',
+
 };
 
 /*

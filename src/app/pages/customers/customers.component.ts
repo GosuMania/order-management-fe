@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
-import {ICustomer, IDestinazioneMerce} from "../../interfaces/ICustomer";
+import {ICustomer, ICustomerPagination, IDestinazioneMerce} from "../../interfaces/ICustomer";
 import {MatSort} from "@angular/material/sort";
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
@@ -131,11 +131,11 @@ export class CustomersComponent implements AfterViewInit {
   }
 
   refreshList() {
-    this.customerService.getCustomerWithPaginationList().subscribe((customers: ICustomer[]) => {
-      customers.forEach(customer => {
+    this.customerService.getCustomerWithPaginationList().subscribe((data: ICustomerPagination) => {
+      data.customers.forEach(customer => {
         customer.usernameAgenteRiferimento = this.nomeAgente(customer!.idAgenteRiferimento!);
       });
-      this.dataSource = new MatTableDataSource<ICustomer>(customers);
+      this.dataSource = new MatTableDataSource<ICustomer>(data.customers);
 
     });
   }

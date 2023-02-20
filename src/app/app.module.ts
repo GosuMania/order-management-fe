@@ -55,6 +55,9 @@ import {
   CreaModificaClienteDialogComponent
 } from './dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {
+  CreaModificaArticoloDialogComponent
+} from "./dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";
 
 registerLocaleData(localeIt, 'it');
 
@@ -107,7 +110,8 @@ const Ux_Modules = [
     ProductsComponent,
     OrdersComponent,
     MomentPipe,
-    CreaModificaClienteDialogComponent
+    CreaModificaClienteDialogComponent,
+    CreaModificaArticoloDialogComponent
   ],
   imports: [
     BrowserModule,
