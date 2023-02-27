@@ -1,16 +1,31 @@
-import {IColore} from "./IColore";
+import {IMeta} from "./ICustomer";
 
 export interface IProduct {
   id?: number | null;
   immagine: string;
-  fornitore: string;
-  // marchio: string;
+  idFornitore: number;
+  descFornitore?: string;
   codiceArticolo: string;
   descrizioneArticolo: string;
-  taglia: string;
-  idColore: number;
-  colore?: IColore;
   prezzo: number;
-  quantitaMagazzino: number;
-  quantitaDisponibile?: number;
+  idType: number;
+  descType?: string;
+  colorVariants: IColorVariant[] | null;
+}
+
+export interface IColorVariant {
+  id: number | null;
+  descColor?: string;
+  sizeVariant?: ISizeVariant[] | null;
+}
+
+export interface ISizeVariant {
+  id: number | null;
+  descSize?: string;
+  stock: number;
+}
+
+export interface IProductPagination {
+  meta: IMeta,
+  data: IProduct[]
 }

@@ -86,4 +86,8 @@ export const UTILITY = {
     return Math.floor(inputPrice);
   },
 
+  camelcaseToSnakeCase(word: string) {
+    return word.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+  }
+
 };

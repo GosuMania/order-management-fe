@@ -27,7 +27,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatCardModule} from "@angular/material/card";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {MatChipsModule} from "@angular/material/chips";
+import {MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule} from "@angular/material/chips";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatExpansionModule} from "@angular/material/expansion";
@@ -58,6 +58,7 @@ import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {
   CreaModificaArticoloDialogComponent
 } from "./dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";
+import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 
 registerLocaleData(localeIt, 'it');
 
@@ -113,18 +114,18 @@ const Ux_Modules = [
     CreaModificaClienteDialogComponent,
     CreaModificaArticoloDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    FormsModule,
-    Ux_Modules,
-    MatTableResponsiveModule,
-    ReactiveFormsModule,
-    FormsModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        FormsModule,
+        Ux_Modules,
+        MatTableResponsiveModule,
+        ReactiveFormsModule,
+        FormsModule,
+    ],
   exports: [
     MatTableResponsiveModule,
     MomentPipe
@@ -147,6 +148,12 @@ const Ux_Modules = [
       useClass: AuthInterceptor,
       multi: true,
     },
+    {
+      provide: MAT_CHIPS_DEFAULT_OPTIONS,
+      useValue: {
+        separatorKeyCodes: [COMMA, ENTER]
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })

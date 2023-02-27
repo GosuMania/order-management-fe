@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {ICustomer, ICustomerPagination, IDestinazioneMerce} from "../../interfaces/ICustomer";
-import {MatSort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
 import * as moment from 'moment';
@@ -26,6 +26,12 @@ export class CustomersComponent implements AfterViewInit {
   startDate: any;
   endDate: any;
   cercaValue: string = '';
+  perPage = 5;
+  lastPage = 0;
+  orderBy = 'id';
+  ascDesc = 'ASC';
+  currentPage = 0;
+  total = 0;
 
   agenti: IUtente[] = [];
 
@@ -54,13 +60,13 @@ export class CustomersComponent implements AfterViewInit {
   constructor(public dialog: MatDialog, private customerService: CustomerService, public commonService: CommonService,
               private authService: AuthService) {
     this.agenti = [];
-    this.commonService.utenti.subscribe((utenti: IUtente[]) => {
-      if (utenti.length === 0) {
+    this.commonService.utenti.subscribe((usersApi: IUtente[]) => {
+      if (usersApi.length === 0) {
         this.authService.getUsersList().subscribe(users => {
           this.commonService.utenti.next(users);
         })
       } else {
-        this.agenti = utenti as IUtente[];
+        this.agenti = usersApi as IUtente[];
         this.refreshList();
       }
     });
@@ -103,7 +109,7 @@ export class CustomersComponent implements AfterViewInit {
   }
 
   applyFilter(value: string) {
-    if(value === '') {
+    if (value === '') {
       this.cercaValue = '';
     }
     let filterValue = value;
@@ -131,13 +137,17 @@ export class CustomersComponent implements AfterViewInit {
   }
 
   refreshList() {
-    this.customerService.getCustomerWithPaginationList().subscribe((data: ICustomerPagination) => {
-      data.customers.forEach(customer => {
-        customer.usernameAgenteRiferimento = this.nomeAgente(customer!.idAgenteRiferimento!);
+    this.customerService.getCustomerWithPaginationList(this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
+      .subscribe((data: ICustomerPagination) => {
+        console.log('Result:', data.meta.total);
+        data.data.forEach(customer => {
+          customer.usernameAgenteRiferimento = this.nomeAgente(customer!.idAgenteRiferimento!);
+        });
+        // this.currentPage = data.meta.current_page;
+        this.total = data.meta.total;
+        this.lastPage = data.meta.last_page;
+        this.dataSource = new MatTableDataSource<ICustomer>(data.data);
       });
-      this.dataSource = new MatTableDataSource<ICustomer>(data.customers);
-
-    });
   }
 
   nomeAgente(id: number): string {
@@ -146,6 +156,24 @@ export class CustomersComponent implements AfterViewInit {
       return agente!.username;
     }
     return '';
+  }
+
+  paginatorChange(event: any) {
+    console.log('Event: ', event)
+    this.perPage = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.refreshList();
+  }
+
+  sortChange(event: Sort) {
+    console.log('Stort: ', event);
+    this.ascDesc = event.direction.toUpperCase();
+    this.orderBy = UTILITY.camelcaseToSnakeCase(event.active);
+    if(!UTILITY.checkText(this.ascDesc) || !UTILITY.checkText(this.orderBy)) {
+      this.ascDesc = 'ASC';
+      this.orderBy = 'id';
+    }
+    this.refreshList();
   }
 }
 

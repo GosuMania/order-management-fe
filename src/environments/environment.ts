@@ -26,6 +26,16 @@ export const environment = {
   PRODUCT_DELETE: 'product/delete',
   PRODUCT_GET_ALL_WITH_PAGINATION: 'product/get-all-with-pagination',
 
+  COLOR_GET_ALL: 'color/get-all',
+  CLOTHING_SIZE_GET_ALL: 'clothing-size/get-all',
+  PRODUCT_TYPE_GET_ALL: 'product-type/get-all',
+
+  PROVIDER_GET_ALL: 'provider/get-all',
+  PROVIDER_CREATE_OR_UPDATE: 'provider/create-or-update',
+  PROVIDER_GET_BY_ID: 'provider/get-by-id',
+  PROVIDER_DELETE: 'provider/delete',
+  PROVIDER_GET_ALL_WITH_PAGINATION: 'provider/get-all-with-pagination',
+
 };
 
 /*

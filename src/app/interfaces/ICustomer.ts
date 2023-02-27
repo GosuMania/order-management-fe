@@ -26,9 +26,15 @@ export interface IDestinazioneMerce {
 }
 
 export interface ICustomerPagination {
-  currentPage: number,
-  perPage: number,
-  total: number,
-  lastPage: number,
-  customers: ICustomer[]
+  meta: IMeta,
+  data: ICustomer[]
+}
+
+export interface IMeta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  per_page: number;
+  to: number;
+  total: number;
 }

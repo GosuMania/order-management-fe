@@ -1,50 +1,37 @@
 <h2 mat-dialog-title>{{title}}</h2>
-<mat-dialog-content class="mat-typography">
+<mat-dialog-content  *ngIf="articoloForm" class="mat-typography">
   <form class="add-lessons-form" [formGroup]="articoloForm">
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Fornitore</mat-label>
-        <input matInput type="text" formControlName="fornitore" placeholder="Ex: Nome fornitore" maxlength="255">
+        <mat-select [(value)]="articolo.idFornitore" formControlName="fornitore">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore.id">
+            {{fornitore.ragioneSociale}}
+          </mat-option>
+        </mat-select>
         <ng-container *ngFor="let validation of validationCliente.fornitore">
-          <mat-error *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+          <mat-error
+            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Codice Articolo</mat-label>
-        <input matInput type="text" formControlName="piva" placeholder="Ex: 01234567891" maxlength="255">
+        <input matInput type="text" formControlName="codiceArticolo" placeholder="Ex: 01234567891" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.codiceArticolo">
-          <mat-error *ngIf="articoloForm.get('codiceArticolo')!.hasError(validation.type) && articoloForm.get('codiceArticolo')!.dirty">
+          <mat-error
+            *ngIf="articoloForm.get('codiceArticolo')!.hasError(validation.type) && articoloForm.get('codiceArticolo')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
       </mat-form-field>
-    </div>
-    <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Codice Fiscale</mat-label>
-        <input matInput type="text" formControlName="descrizioneArticolo" placeholder="Ex: RSSMRA70H25A940U" maxlength="255">
+        <mat-label>Descrizione Articolo</mat-label>
+        <input matInput type="text" formControlName="descrizioneArticolo" placeholder="Ex: Maglione" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.descrizioneArticolo">
-          <mat-error *ngIf="articoloForm.get('descrizioneArticolo')!.hasError(validation.type) && articoloForm.get('descrizioneArticolo')!.dirty">
-            {{validation.message}}
-          </mat-error>
-        </ng-container>
-      </mat-form-field>
-      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Codice SDI</mat-label>
-        <input matInput type="text" formControlName="taglia" placeholder="Ex: 123" maxlength="255">
-        <ng-container *ngFor="let validation of validationCliente.taglia">
-          <mat-error *ngIf="articoloForm.get('taglia')!.hasError(validation.type) && articoloForm.get('taglia')!.dirty">
-            {{validation.message}}
-          </mat-error>
-        </ng-container>
-      </mat-form-field>
-      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>colore</mat-label>
-        <input matInput type="text" formControlName="colore" placeholder="Ex: bianco" maxlength="255">
-        <ng-container *ngFor="let validation of validationCliente.colore">
-          <mat-error *ngIf="articoloForm.get('colore')!.hasError(validation.type) && articoloForm.get('colore')!.dirty">
+          <mat-error
+            *ngIf="articoloForm.get('descrizioneArticolo')!.hasError(validation.type) && articoloForm.get('descrizioneArticolo')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
@@ -52,8 +39,8 @@
     </div>
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>prezzo</mat-label>
-        <input matInput type="text" formControlName="prezzo" placeholder="Via Roma, 100" maxlength="255">
+        <mat-label>Prezzo</mat-label>
+        <input matInput type="text" formControlName="prezzo" placeholder="0,00" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.prezzo">
           <mat-error *ngIf="articoloForm.get('prezzo')!.hasError(validation.type) && articoloForm.get('prezzo')!.dirty">
             {{validation.message}}
@@ -61,28 +48,109 @@
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>quantitaMagazzino</mat-label>
-        <input matInput type="text" formControlName="quantitaMagazzino" placeholder="00042" maxlength="255">
-        <ng-container *ngFor="let validation of validationCliente.quantitaMagazzino">
-          <mat-error *ngIf="articoloForm.get('quantitaMagazzino')!.hasError(validation.type) && articoloForm.get('quantitaMagazzino')!.dirty">
+        <mat-label>Tipologia Prodotto</mat-label>
+        <mat-select [(value)]="articolo.idType" formControlName="tipologiaProdotto">
+          <mat-option *ngFor="let tipologia of tipologiaProdotti" [value]="tipologia.id">
+            {{tipologia.type}}
+          </mat-option>
+        </mat-select>
+        <ng-container *ngFor="let validation of validationCliente.tipologiaProdotto">
+          <mat-error
+            *ngIf="articoloForm.get('tipologiaProdotto')!.hasError(validation.type) && articoloForm.get('tipologiaProdotto')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
       </mat-form-field>
-      <!--
-      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Località</mat-label>
-        <input matInput type="text" formControlName="quantitaDisponibile" placeholder="Bracciano" maxlength="255">
-        <ng-container *ngFor="let validation of validationCliente.quantitaDisponibile">
-          <mat-error *ngIf="articoloForm.get('quantitaDisponibile')!.hasError(validation.type) && articoloForm.get('quantitaDisponibile')!.dirty">
-            {{validation.message}}
-          </mat-error>
-        </ng-container>
-      </mat-form-field>
-      -->
     </div>
+
+    <div class="row">
+      <mat-form-field class="example-chip-list" appearance="fill">
+        <mat-label>Colori</mat-label>
+        <mat-chip-grid #chipGridColore aria-label="Seleziona colori">
+          <mat-chip-row *ngFor="let colore of coloriSelected" (removed)="removeColore(colore.id)">
+            {{colore.colore | titlecase}}
+            <button matChipRemove [attr.aria-label]="'remove ' + colore">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input placeholder="Nuovo colore..." #coloreInput [formControl]="coloriCtrl"
+               [matChipInputFor]="chipGridColore" [matAutocomplete]="autoColore"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               (matChipInputTokenEnd)="addColore($event)"/>
+        <mat-autocomplete #autoColore="matAutocomplete" (optionSelected)="selectedColore($event)">
+          <mat-option *ngFor="let colore of filterColori | async" [value]="colore.colore">
+            {{colore.colore | titlecase}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="example-chip-list" appearance="fill">
+        <mat-label>Taglie</mat-label>
+        <mat-chip-grid #chipGridTaglia aria-label="Seleziona taglie">
+          <mat-chip-row *ngFor="let taglia of taglieSelected" (removed)="removeTaglia(taglia.id)">
+            {{taglia.size | uppercase}}
+            <button matChipRemove [attr.aria-label]="'remove ' + taglia">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input placeholder="Nuova taglia..." #tagliaInput [formControl]="taglieCtrl"
+               [matChipInputFor]="chipGridTaglia" [matAutocomplete]="autoTaglia"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               (matChipInputTokenEnd)="addTaglia($event)"/>
+        <mat-autocomplete #autoTaglia="matAutocomplete" (optionSelected)="selectedTaglia($event)">
+          <mat-option *ngFor="let taglia of filterTaglie | async" [value]="taglia.size">
+            {{taglia.size | uppercase}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <hr>
+    <div class="row">
+      <div class="col-2 select-colore">
+
+      </div>
+      <div class="col-1 select-talgia-numero" *ngFor="let taglia of taglieSelected">
+        <strong>{{taglia.size | uppercase}}</strong>
+      </div>
+    </div>
+    <br>
+    <div formArrayName="colorVariants">
+      <div class="section-container" *ngFor="let colorVariant of getColorVariantsForm(articoloForm); let i = index">
+        <div class="ui raised segments" [formGroupName]="i">
+          <div class="row row-colori">
+            <div class="col-2 select-colore">
+              {{colorVariant?.controls?.descColore?.value | titlecase}}
+            </div>
+            <ng-container class="question-container" formArrayName="sizeVariants"  class="col-1">
+              <ng-container [formGroupName]="j" *ngFor="let sizeVariant of getSizeVariantsForm(colorVariant); let j = index">
+                <mat-form-field class="select-talgia-numero" style="display: none">
+                  <mat-label>Taglia</mat-label>
+                  <mat-select formControlName="idSize">
+                    <mat-option *ngFor="let taglia of taglie" [value]="taglia.id">
+                      {{taglia.size}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field class="select-talgia-numero">
+                  <mat-label>Disponibilità</mat-label>
+                  <input matInput type="number" formControlName="stock">
+                </mat-form-field>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </form>
 
+</mat-dialog-content>
+<mat-dialog-content *ngIf="!articoloForm" style="text-align: -webkit-center;">
+  <mat-spinner></mat-spinner>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="save()">SALVA</button>

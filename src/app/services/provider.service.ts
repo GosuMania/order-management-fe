@@ -8,11 +8,11 @@ import {ICustomer} from "../interfaces/ICustomer";
 @Injectable({
   providedIn: 'root',
 })
-export class CustomerService {
+export class ProviderService {
   constructor(private http: HttpClient) {}
 
-  getCustomerList() {
-    const myLink = environment.urlApi + environment.CUSTOMER_GET_ALL;
+  getProviderList() {
+    const myLink = environment.urlApi + environment.PROVIDER_GET_ALL;
     return this.http.get<any>(myLink).pipe(
       map(res => res.data)
     );

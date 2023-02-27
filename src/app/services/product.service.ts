@@ -18,10 +18,12 @@ export class ProductService {
     );
   }
 
-  getProductWithPaginationList() {
-    const myLink = environment.urlApi + environment.PRODUCT_GET_ALL_WITH_PAGINATION + '/' + 1;
+  getProductWithPaginationList(orderBy: string, ascDesc: string, perPage: number, page: number) {
+    const myLink = environment.urlApi + environment.PRODUCT_GET_ALL_WITH_PAGINATION +
+      '/' + orderBy + '/' + ascDesc +
+      '/' + perPage + '/' + page;
     return this.http.get<any>(myLink).pipe(
-      map(res => res.customers)
+      map(res => res)
     );
   }
 

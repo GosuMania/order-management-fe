@@ -231,7 +231,7 @@ export class CreaModificaClienteDialogComponent implements OnInit {
 
   save() {
     const customer: ICustomer = {
-      id: UTILITY.checkText(this.cliente!.id) ? this.cliente!.id : null,
+      // id: UTILITY.checkText(this.cliente!.id) ? this.cliente!.id : null,
       ragioneSociale: this.clienteForm.get('ragioneSociale')?.value,
       piva: this.clienteForm.get('piva')?.value,
       codiceFiscale: this.clienteForm.get('codiceFiscale')?.value,

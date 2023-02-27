@@ -22,16 +22,17 @@
     -->
 
     <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8" style="text-align: end">
-      <button class="add-button"mat-fab extended (click)="openDialogAddClient()">
-        <mat-icon>add</mat-icon> Aggiungi cliente
+      <button class="add-button" mat-fab extended (click)="openDialogAddClient()">
+        <mat-icon>add</mat-icon>
+        Aggiungi cliente
       </button>
     </div>
 
   </div>
 
-  <div class="container-table">
+  <div class="container-table mat-elevation-z8">
 
-    <table class="mat-table" mat-table matTableResponsive [dataSource]="dataSource" matSort>
+    <table mat-table matTableResponsive [dataSource]="dataSource" matSort (matSortChange)="sortChange($event)">
 
       <!-- Immagine Column -->
       <!--
@@ -68,10 +69,10 @@
       -->
 
 
-     <ng-container matColumnDef="provincia">
-       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Provincia</th>
-       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.provincia}} </td>
-     </ng-container>
+      <ng-container matColumnDef="provincia">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Provincia</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.provincia}} </td>
+      </ng-container>
 
       <!--
      <ng-container matColumnDef="paese">
@@ -108,22 +109,22 @@
      </ng-container>
      -->
 
-     <ng-container matColumnDef="agenteRiferimento">
-       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Agente di Riferimento</th>
-       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.usernameAgenteRiferimento}} </td>
-     </ng-container>
+      <ng-container matColumnDef="agenteRiferimento">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Agente di Riferimento</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.usernameAgenteRiferimento}} </td>
+      </ng-container>
 
-     <ng-container matColumnDef="telefono">
-       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Telefono</th>
-       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.telefono}} </td>
-     </ng-container>
+      <ng-container matColumnDef="telefono">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Telefono</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.telefono}} </td>
+      </ng-container>
 
-     <ng-container matColumnDef="email">
-       <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
-       <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
-     </ng-container>
+      <ng-container matColumnDef="email">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
 
-     <!-- Symbol Column -->
+      <!-- Symbol Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
@@ -140,8 +141,14 @@
       <tr class="mat-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator class="mat-paginator" [pageSizeOptions]="[5, 10, 20]"
-                   showFirstLastButtons>
+    <mat-paginator class="mat-paginator"
+                   [length]="total"
+                   [pageIndex]="currentPage"
+                   [pageSize]="perPage"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons
+                   (page)="paginatorChange($event)"
+                    >
     </mat-paginator>
   </div>
 
