@@ -16,7 +16,7 @@ export class DefaultComponent implements AfterContentInit, OnInit {
   isSignedIn!: boolean;
 
 
-  constructor(private observer: BreakpointObserver, private auth: AuthStateService, public router: Router,
+  constructor(private breakpointObserver: BreakpointObserver, private auth: AuthStateService, public router: Router,
               public token: TokenService) {
   }
 
@@ -24,8 +24,8 @@ export class DefaultComponent implements AfterContentInit, OnInit {
     this.auth.userAuthState.subscribe((val) => {
       this.isSignedIn = val;
       setTimeout(() => {
-        this.observer.observe(['(max-width: 800px)']).subscribe((res) => {
-          console.log('ok');
+        this.breakpointObserver.observe(['(max-width: 800px)']).subscribe((res) => {
+          console.log(res.matches);
           if(this.sidenav) {
             if (res.matches) {
               this.sidenav.mode = 'over';

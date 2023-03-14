@@ -5,15 +5,9 @@ import {
   FormControl, FormGroup,
   UntypedFormBuilder,
   UntypedFormControl,
-  UntypedFormGroup,
   Validators
 } from "@angular/forms";
-import {ICustomer} from "../../interfaces/ICustomer";
 import {UTILITY} from "../../constants/utility.constant";
-import {IUtente} from "../../interfaces/IUtente";
-import {PaesiConstant} from "../../constants/paesi.constant";
-import {IPaese} from "../../interfaces/IPaese";
-import {CustomerService} from "../../services/customer.service";
 import {AuthService} from "../../services/auth.service";
 import {CommonService} from "../../services/common.service";
 import {IColorVariant, IProduct, ISizeVariant} from "../../interfaces/IProduct";
@@ -31,16 +25,27 @@ import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
 import {ProviderService} from "../../services/provider.service";
 
+class ImageSnippet {
+  pending = false;
+  status = 'init';
+
+  constructor(public src?: string, public file?: File) {
+  }
+}
+
 @Component({
   selector: 'app-crea-modifica-articolo-dialog',
   templateUrl: './crea-modifica-articolo-dialog.component.html',
   styleUrls: ['./crea-modifica-articolo-dialog.component.scss']
 })
 export class CreaModificaArticoloDialogComponent implements OnInit {
+  @ViewChild('imageInput') imageInput: ElementRef<HTMLInputElement> = {} as ElementRef;
+
+  utility = UTILITY;
   title = 'Nuovo Articolo';
   articoloForm!: FormGroup;
   articolo!: IProduct;
-  refreshList = new EventEmitter();
+  public refreshList = new EventEmitter();
 
   colori: IColore[] = [];
   coloriSelected: IColore[] = [];
@@ -49,6 +54,8 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   filterColori: Observable<IColore[]> | undefined;
   @ViewChild('coloreInput') coloreInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
+  tagliaAbbigliamento: ITaglia[] = [];
+  tagliaScarpe: ITaglia[] = [];
   taglie: ITaglia[] = [];
   taglieSelected: ITaglia[] = [];
   taglieCtrl = new FormControl();
@@ -58,6 +65,10 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   fornitori: IProvider[] = [];
   tipologiaProdotti: IProductType[] = [];
   sizeColumns: string[] = [];
+
+  selectedFileOnChange: any;
+
+  selectedFile: ImageSnippet = new ImageSnippet();
 
   validationCliente = {
     immagine: [
@@ -86,16 +97,28 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       {type: 'required', message: 'Campo obbligatorio mancante.'},
     ]
   };
+  alertChangeFormatPrice = false;
+  isSmall = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
               private authService: AuthService, private commonService: CommonService, private providerService: ProviderService) {
+
+    this.commonService.isSmall.subscribe(res => {
+      this.isSmall = res;
+    });
     this.commonService.colori.subscribe((colors: IColore[]) => {
       this.colori = colors as IColore[];
     });
+
     this.commonService.taglieAbbigliamento.subscribe((sizes: ITaglia[]) => {
-      this.taglie = sizes as ITaglia[];
+      this.tagliaAbbigliamento = sizes as ITaglia[];
     });
-      this.commonService.fornitori.subscribe((providers: IProvider[]) => {
+
+    this.commonService.tagliaScarpe.subscribe((sizes: ITaglia[]) => {
+      this.tagliaScarpe = sizes as ITaglia[];
+    });
+
+    this.commonService.fornitori.subscribe((providers: IProvider[]) => {
       this.fornitori = providers as IProvider[];
     });
 
@@ -114,42 +137,73 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   createForm(data: any) {
     const newProduct: IProduct = {
       id: null,
-      idType: 0,
-      immagine: '',
-      idFornitore: 0,
-      descFornitore: '',
-      codiceArticolo: '',
-      descrizioneArticolo: '',
+      idProductType: null,
+      image: null,
+      idProvider: null,
+      descProvider: '',
+      productCode: '',
+      productDesc: '',
       colorVariants: [],
-      prezzo: 0,
+      price: null,
     };
 
-    this.articolo = UTILITY.checkObj(data) && UTILITY.checkObj(data.product) && UTILITY.checkText(data.product.id) ? data.product : newProduct;
-
-    this.title = UTILITY.checkText(this.articolo.id) ? 'Modifica Articolo' : 'Nuovo Articolo';
-
+    let provider = null;
+    let productType = null;
+    if (UTILITY.checkObj(data) && UTILITY.checkObj(data.product) && UTILITY.checkText(data.product.id)) {
+      this.articolo = data.product;
+      this.title = 'Modifica Articolo';
+      provider = this.fornitori.find(fornitore => fornitore.id === this.articolo.idProvider);
+      productType = this.tipologiaProdotti.find(tipologiaProdotto => tipologiaProdotto.id === this.articolo.idProductType);
+    } else {
+      this.articolo = newProduct;
+    }
     this.articoloForm = this.fb.group({
-      fornitore: new UntypedFormControl(this.articolo.idFornitore, Validators.compose([
+      fornitore: new UntypedFormControl(provider, Validators.compose([
         Validators.required,
         Validators.minLength(3)
       ])),
-      codiceArticolo: new UntypedFormControl(this.articolo.codiceArticolo, Validators.compose([
-        Validators.required,
-        Validators.pattern('[0-9]{5}')
-      ])),
-      descrizioneArticolo: new UntypedFormControl(this.articolo.descrizioneArticolo, Validators.compose([
+      codiceArticolo: new UntypedFormControl(this.articolo.productCode, Validators.compose([
         Validators.required,
         Validators.minLength(3)
       ])),
-      prezzo: new UntypedFormControl(this.articolo.prezzo, Validators.compose([
-        Validators.required,
-      ])),
-      tipologiaProdotto: new UntypedFormControl(this.articolo.idType, Validators.compose([
+      descrizioneArticolo: new UntypedFormControl(this.articolo.productDesc, Validators.compose([
         Validators.required,
         Validators.minLength(3)
       ])),
-      colorVariants: this.fb.array([])
+      prezzo: new UntypedFormControl(this.articolo.price, Validators.compose([
+        Validators.required,
+      ])),
+      tipologiaProdotto: new UntypedFormControl(productType, Validators.compose([
+        Validators.required,
+      ])),
+      colorVariants: this.fb.array([]),
     });
+
+    if (UTILITY.checkText(this.articolo.id) && this.articolo.colorVariants && this.articolo.colorVariants?.length > 0) {
+      switch (this.articolo.idProductType) {
+        case this.tipologiaProdotti[0].id:
+          this.taglie = this.tagliaAbbigliamento;
+          break;
+        case this.tipologiaProdotti[2].id:
+          this.taglie = this.tagliaScarpe;
+          break;
+        default:
+          this.taglie = [];
+          break;
+      }
+      this.articolo.colorVariants.forEach(colorVariant => {
+        if (colorVariant) {
+          this.addColoreUpdate(colorVariant)
+        }
+      });
+      this.articolo.colorVariants.forEach((colorVariant, indexColor) => {
+        if (colorVariant && colorVariant.sizeVariants) {
+          colorVariant.sizeVariants.forEach((sizeVariant, i) => {
+            this.addTagliaUpdate(indexColor, sizeVariant);
+          })
+        }
+      });
+    }
   }
 
   onChanges() {
@@ -163,54 +217,72 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       map((taglia: string | null) => (taglia ? this._filterTaglia(taglia) : this._filterTaglia(null))),
     );
 
+    this.articoloForm.get('prezzo')?.valueChanges.subscribe(value => {
+      // this.alertChangeFormatPrice = false;
+    });
+
     this.articoloForm.get('tipologiaProdotto')?.valueChanges.subscribe(value => {
       console.log('Value Tipologia Prodotto:', value);
-      switch (value) {
+      this.coloriSelected = [];
+      this.taglieSelected = [];
+      this.colorVariants.controls = [];
+      switch (value.id) {
         case this.tipologiaProdotti[0].id:
-          break;
-        case this.tipologiaProdotti[1].id:
+          this.taglie = this.tagliaAbbigliamento;
           break;
         case this.tipologiaProdotti[2].id:
+          this.taglie = this.tagliaScarpe;
           break;
         default:
+          this.taglie = [];
           break;
       }
     });
   }
 
-  /*** SALVATAGGIO ***/
-  save() {
-    const idColoriSelected: number[] = [];
-    this.coloriSelected.forEach(colore => {
-      idColoriSelected.push(colore.id)
+  /*** UPDATE ***/
+  addColoreUpdate(colorVariant: IColorVariant): void {
+    const value = this.colori.find(colore => colore.id === colorVariant.id) || null;
+    colorVariant.descColor = value?.colore;
+    // Add our fruit
+    if (value) {
+      this.coloriSelected.push(value);
+      this.addColorVariantsUpdate(this.coloriSelected.length - 1, colorVariant)
+    }
+    this.coloriCtrl.setValue(null);
+  }
+
+  addColorVariantsUpdate(indexColor: number, colorVariant: IColorVariant) {
+    const variantForm = this.fb.group({
+      idColor: [colorVariant.id, Validators.required],
+      descColore: [colorVariant.descColor, Validators.required],
+      sizeVariants: this.fb.array([]),
+      stockColor: [colorVariant.stock]
     });
-    const idTaglieSelected: number[] = [];
-    this.taglieSelected.forEach(taglia => {
-      idTaglieSelected.push(taglia.id)
-    });
-    this.taglieSelected.sort((a, b) => {
-      if (a.id > b.id) {
-        return 1;
-      } else if (a.id < b.id) {
-        return -1;
-      } else {
-        return 0;
+    this.colorVariants.push(variantForm);
+  }
+
+  addTagliaUpdate(indexColor: number, sizeVariant: ISizeVariant): void {
+    const value = this.taglie.find(taglia => taglia.id === sizeVariant.id) || null;
+    if (value) {
+      const valueFind = this.taglieSelected.find(taglia => taglia.id === sizeVariant.id) || null;
+      if (!valueFind) {
+        this.taglieSelected.push(value);
+        this.taglieSelected.sort((a, b) => {
+          if (a.id > b.id) {
+            return 1;
+          } else if (a.id < b.id) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+        this.sizeColumns.push(value.size);
       }
-    });
-    const product: IProduct = {
-      id: UTILITY.checkText(this.articolo!.id) ? this.articolo!.id : null,
-      idType: 0,
-      immagine: this.articoloForm.get('immagine')?.value,
-      idFornitore: this.articoloForm.get('fornitore')?.value,
-      codiceArticolo: this.articoloForm.get('codiceArticolo')?.value,
-      descrizioneArticolo: this.articoloForm.get('descrizioneArticolo')?.value,
-      colorVariants: [],
-      prezzo: this.articoloForm.get('prezzo')?.value,
-    };
-    this.productService.createOrUpdateProduct(product).subscribe(res => {
-      console.log('Risultato', res);
-      this.refreshList.emit();
-    })
+      this.addSizeVariants(indexColor, null, sizeVariant)
+    }
+
+    this.taglieCtrl.setValue(null);
   }
 
   /*** COLORE ***/
@@ -259,7 +331,8 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       const newVariant: IColorVariant = {
         id: colore.id,
         descColor: colore.colore,
-        sizeVariant: sizeVariantArray
+        sizeVariants: sizeVariantArray,
+        stock: null
       }
       variant = newVariant;
     }
@@ -267,10 +340,11 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       idColor: [variant.id, Validators.required],
       descColore: [variant.descColor, Validators.required],
       sizeVariants: this.fb.array([]),
+      stockColor: [variant.stock]
     });
     this.colorVariants.push(variantForm);
-    if (variant.sizeVariant && variant.sizeVariant?.length > 0) {
-      variant.sizeVariant.forEach((sizeVariant, i) => {
+    if (variant.sizeVariants && variant.sizeVariants?.length > 0) {
+      variant.sizeVariants.forEach((sizeVariant, i) => {
         this.addSizeVariants(indexColor, null, sizeVariant);
       })
     }
@@ -303,8 +377,8 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
   /*** TAGLIA ***/
 
-  getSizeVariants(index: number): any {
-    return this.colorVariants.controls[index].get('sizeVariants') as any;
+  getSizeVariants(index: number): FormArray {
+    return this.colorVariants.controls[index].get('sizeVariants') as FormArray;
   }
 
   getSizeVariantsForm(form: any) {
@@ -380,6 +454,18 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       stock: [sizeVariant.stock, Validators.required]
     });
     this.getSizeVariants(indexColor).push(sizeVariantForm);
+
+    this.getSizeVariants(indexColor).controls.sort((a, b) => {
+      const first = a.get('idSize')?.value;
+      const second = b.get('idSize')?.value;
+      if (first > second) {
+        return 1;
+      } else if (first < second) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
   }
 
   private _filterTaglia(inputTaglia: string | null): ITaglia[] {
@@ -395,5 +481,117 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     }
   }
 
+  /*** Image Upload ***/
+  processFile(imageInput: any) {
+    const file: File = imageInput.nativeElement.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.addEventListener('load', (event: any) => {
+        this.selectedFile = new ImageSnippet(event.target.result, file);
+        this.selectedFile.pending = true;
+        if (this.selectedFile != null) {
+          this.commonService.uploadImage(this.selectedFile.file).subscribe(
+            (imageLink: string) => {
+              console.log(imageLink);
+              this.articolo.image = imageLink;
+              this.selectedFile.pending = false;
+              this.save();
+            },
+            () => {
+              this.onError();
+            });
+        }
 
+      });
+      reader.readAsDataURL(file);
+    } else {
+      this.save();
+    }
+
+  }
+
+  private onError() {
+    this.selectedFile.pending = false;
+    this.selectedFile.status = 'fail';
+    this.selectedFile.src = '';
+  }
+
+  /*** SALVATAGGIO ***/
+  save() {
+    const colorVariants = this.getColorVariantsToSave(this.articoloForm.get('tipologiaProdotto')?.value.id);
+    const product: IProduct = {
+      id: UTILITY.checkText(this.articolo!.id) ? this.articolo!.id : null,
+      image: this.articolo.image,
+      idProductType: this.articoloForm.get('tipologiaProdotto')?.value.id,
+      descProductType: this.articoloForm.get('tipologiaProdotto')?.value.type,
+      idProvider: this.articoloForm.get('fornitore')?.value.id,
+      descProvider: this.articoloForm.get('fornitore')?.value.ragioneSociale,
+      productCode: this.articoloForm.get('codiceArticolo')?.value,
+      productDesc: this.articoloForm.get('descrizioneArticolo')?.value,
+      colorVariants: colorVariants,
+      price: this.articoloForm.get('prezzo')?.value,
+    };
+    this.productService.createOrUpdateProduct(product).subscribe(res => {
+      console.log('Risultato', res);
+      this.refreshList.emit();
+    })
+  }
+
+  getColorVariantsToSave(idTipologiaProdotto: number): IColorVariant[] {
+    let colorVariants: IColorVariant[] = [];
+    let stock: number | null = null;
+    this.colorVariants.controls.forEach((color, indexColor) => {
+      const sizeVariants: ISizeVariant[] = [];
+      if (idTipologiaProdotto === 0 || idTipologiaProdotto === 2) {
+        this.taglieSelected.forEach((size, index) => {
+          const sizeVariant: ISizeVariant = {
+            id: this.getSizeVariants(indexColor).at(index).value.idSize,
+            stock: this.getSizeVariants(indexColor).at(index).value.stock
+          };
+          sizeVariants.push(sizeVariant);
+        });
+      } else {
+        stock = color.value.stockColor + 0;
+      }
+
+      const colorVariant: IColorVariant = {
+        id: color.value.idColor,
+        sizeVariants: sizeVariants,
+        stock: stock
+      };
+      colorVariants.push(colorVariant);
+    });
+    return colorVariants;
+  }
+
+
+  selectFileFromButton() {
+    this.imageInput.nativeElement.click();
+  }
+
+  onFileSelected(event: any): void {
+    if (event.target.files[0]) {
+      this.selectedFileOnChange = event.target.files[0]
+      this.articolo.image = null;
+    } else {
+      this.selectedFileOnChange = null;
+    }
+  }
+
+  clearImage() {
+    this.articolo.image = null;
+  }
+
+  onBlurPrice() {
+    const valueInput = this.articoloForm.get('prezzo')?.value;
+    const value = valueInput.toFixed(2)
+    this.articoloForm.get('prezzo')?.setValue(value);
+    if (value + '' != valueInput + '') {
+      this.alertChangeFormatPrice = true;
+    }
+  }
+
+  onFocusPrice() {
+    this.alertChangeFormatPrice = false;
+  }
 }

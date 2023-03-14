@@ -46,6 +46,20 @@ tr.main-tr {
   text-transform: uppercase;
 }
 
+.image-product {
+  border-radius: 15px !important;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background: white;
+  object-fit: cover;
+  width: 80px !important;
+  height: 80px !important;
+  padding: 5px;
+}
+
 /* END EXPAND STYLE TR */
 
 

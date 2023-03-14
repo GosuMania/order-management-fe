@@ -38,7 +38,7 @@ import {IProductType} from "../../interfaces/IProductType";
     ]),
   ],
 })
-export class ProductsComponent implements AfterViewInit{
+export class ProductsComponent implements AfterViewInit {
 
   campaignOne: UntypedFormGroup;
   startDate: any;
@@ -59,8 +59,8 @@ export class ProductsComponent implements AfterViewInit{
 
   displayedColumns: string[] = [
     'immagine',
-    'fornitore',
-    'type',
+    'descProvider',
+    'descProductType',
     'codiceArticolo',
     'descrizioneArticolo',
     'prezzo',
@@ -96,8 +96,8 @@ export class ProductsComponent implements AfterViewInit{
       this.tipologiaProdotti = productTypes as IProductType[];
     });
 
-    this.dataSource = new MatTableDataSource<IProduct>(ELEMENT_DATA);
-
+    // this.dataSource = new MatTableDataSource<IProduct>(ELEMENT_DATA);
+    this.refreshList();
 
     const today = new Date();
     const month = today.getMonth();
@@ -133,6 +133,12 @@ export class ProductsComponent implements AfterViewInit{
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     }
+  }
+
+  delete(id: number) {
+    this.productService.deleteProduct(id).subscribe(res => {
+      this.refreshList();
+    });
   }
 
   applyFilter(value: string) {
@@ -175,12 +181,12 @@ export class ProductsComponent implements AfterViewInit{
         this.total = data.meta.total;
         this.lastPage = data.meta.last_page;
         this.dataSource = new MatTableDataSource<IProduct>(data.data);
-    });
+      });
   }
 
   setProductColor(idColore: number): IColore | null {
     const colore = this.colori.find(x => x.id === idColore);
-    return  colore ? colore : null;
+    return colore ? colore : null;
   }
 
 
@@ -195,20 +201,28 @@ export class ProductsComponent implements AfterViewInit{
     console.log('Stort: ', event);
     this.ascDesc = event.direction.toUpperCase();
     this.orderBy = UTILITY.camelcaseToSnakeCase(event.active);
-    if(!UTILITY.checkText(this.ascDesc) || !UTILITY.checkText(this.orderBy)) {
+    if (!UTILITY.checkText(this.ascDesc) || !UTILITY.checkText(this.orderBy)) {
       this.ascDesc = 'ASC';
       this.orderBy = 'id';
     }
     this.refreshList();
   }
 
-  getTotalStocks(variants : IColorVariant[]) : number {
+  getTotalStocks(product: IProduct): number {
     let total = 0;
-    variants.forEach(element => {
-      element.sizeVariant?.forEach(element2 => {
-        total = element2.stock + total;
-      })
-    })
+    if (product && product.colorVariants && (product.idProductType == 0 || product.idProductType == 2)) {
+      product.colorVariants.forEach(element => {
+        element.sizeVariants?.forEach(element2 => {
+          total = element2.stock + total;
+        });
+      });
+    } else if (product && product.colorVariants) {
+      product.colorVariants.forEach(element => {
+        if (element.stock) {
+          total = element.stock + total;
+        }
+      });
+    }
     return total;
   }
 
@@ -221,137 +235,3 @@ export class ProductsComponent implements AfterViewInit{
 
   }
 }
-
-
-const ELEMENT_DATA: IProduct[] = [
-  {
-    id: 1,
-    immagine: 'https://maxmoda.madeinapp.net/content/webservices/get_article_image.php?guid=966CAD453451D93492000000000000000000000000000000&h=100&t=20190705185104&w=100',
-    idFornitore: 1,
-    descFornitore: 'Fornitore 1',
-    codiceArticolo: 'EFRM1311V322',
-    descrizioneArticolo: 'LIAM GIUBBINO UOMO FREEDOMDAY LIAM',
-    prezzo: 50.00,
-    idType: 1,
-    descType: 'abbigliamento',
-    colorVariants: [
-      {
-        id: 1,
-        descColor: 'bianco',
-        sizeVariant: [
-          {
-            id: 1,
-            descSize: 'xs',
-            stock: 10
-          },
-          {
-            id: 2,
-            descSize: 's',
-            stock: 0
-          },
-          {
-            id: 3,
-            descSize: 'm',
-            stock: 0
-          },
-          {
-            id: 4,
-            descSize: 'l',
-            stock: 0
-          }
-        ]
-      },
-      {
-        id: 2,
-        descColor: 'rosso',
-        sizeVariant: [
-          {
-            id: 1,
-            descSize: 'xs',
-            stock: 10
-          },
-          {
-            id: 2,
-            descSize: 's',
-            stock: 3
-          },
-          {
-            id: 3,
-            descSize: 'm',
-            stock: 10
-          },
-          {
-            id: 4,
-            descSize: 'l',
-            stock: 50
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 1,
-    immagine: 'https://maxmoda.madeinapp.net/content/webservices/get_article_image.php?guid=966CAD453452D92418000000000000000000000000000000&h=100&t=20190705185104&w=100',
-    idFornitore: 1,
-    descFornitore: 'Fornitore 1',
-    codiceArticolo: 'EFRM1312V208',
-    descrizioneArticolo: 'FEDERICO GIUBBINO UOMO FREEDOMDAY FEDERICO F.L.',
-    prezzo: 93.00,
-    idType: 1,
-    descType: 'abbigliamento',
-    colorVariants: [
-      {
-        id: 1,
-        descColor: 'bianco',
-        sizeVariant: [
-          {
-            id: 1,
-            descSize: 'xs',
-            stock: 10
-          },
-          {
-            id: 2,
-            descSize: 's',
-            stock: 0
-          },
-          {
-            id: 3,
-            descSize: 'm',
-            stock: 0
-          },
-          {
-            id: 4,
-            descSize: 'l',
-            stock: 0
-          }
-        ]
-      },
-      {
-        id: 2,
-        descColor: 'rosso',
-        sizeVariant: [
-          {
-            id: 1,
-            descSize: 'xs',
-            stock: 10
-          },
-          {
-            id: 2,
-            descSize: 's',
-            stock: 3
-          },
-          {
-            id: 3,
-            descSize: 'm',
-            stock: 10
-          },
-          {
-            id: 4,
-            descSize: 'l',
-            stock: 50
-          }
-        ]
-      }
-    ]
-  }
-]

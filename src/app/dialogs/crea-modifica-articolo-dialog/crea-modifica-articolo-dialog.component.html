@@ -1,11 +1,53 @@
 <h2 mat-dialog-title>{{title}}</h2>
-<mat-dialog-content  *ngIf="articoloForm" class="mat-typography">
+<mat-dialog-content *ngIf="articoloForm" class="mat-typography">
   <form class="add-lessons-form" [formGroup]="articoloForm">
     <div class="row">
+      <div class="col">
+        <button mat-raised-button (click)="imageInput.click()"> Seleziona immagine</button>
+        <input #imageInput (change)="onFileSelected($event)" type="file" accept="image/*" style="display: none">
+        <ng-container *ngIf="selectedFileOnChange">
+          <span class="file-name">{{selectedFileOnChange?.name}}</span>
+        </ng-container>
+        <mat-error *ngIf="selectedFile.status === 'fail'" class="alert alert-danger">
+          Caricamento immagine fallito!
+        </mat-error>
+        <br>
+        <br>
+        <div *ngIf="articolo?.image" class='image-product'>
+          <img [src]="articolo.image"/>
+          <button mat-button class="button-x" (click)="clearImage()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <br>
+        <br>
+        <!--
+        <div *ngIf="selectedFile" class="img-preview-container">
+          <div class="img-preview{{selectedFile.status === 'fail' ? '-error' : ''}}"
+               [ngStyle]="{'background-image': 'url('+ selectedFile.src + ')'}">
+          </div>
+
+          <div *ngIf="selectedFile.pending" class="img-loading-overlay">
+            <div class="img-spinning-circle"></div>
+          </div>
+          <mat-error *ngIf="selectedFile.status === 'fail'" class="alert alert-danger">
+            Caricamento immagine fallito!
+          </mat-error>
+        </div>
+        <div *ngIf="!selectedFile"
+             class="img-preview-container">
+          <div class="img-preview"
+               [ngStyle]="{'background-image': 'url('+ articolo.immagine + ')'}">
+          </div>
+        </div>
+        -->
+      </div>
+    </div>
+    <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Fornitore</mat-label>
-        <mat-select [(value)]="articolo.idFornitore" formControlName="fornitore">
-          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore.id">
+        <mat-label>Fornitore*</mat-label>
+        <mat-select formControlName="fornitore">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
             {{fornitore.ragioneSociale}}
           </mat-option>
         </mat-select>
@@ -17,7 +59,7 @@
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Codice Articolo</mat-label>
+        <mat-label>Codice Articolo*</mat-label>
         <input matInput type="text" formControlName="codiceArticolo" placeholder="Ex: 01234567891" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.codiceArticolo">
           <mat-error
@@ -27,7 +69,7 @@
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Descrizione Articolo</mat-label>
+        <mat-label>Descrizione Articolo*</mat-label>
         <input matInput type="text" formControlName="descrizioneArticolo" placeholder="Ex: Maglione" maxlength="255">
         <ng-container *ngFor="let validation of validationCliente.descrizioneArticolo">
           <mat-error
@@ -37,10 +79,16 @@
         </ng-container>
       </mat-form-field>
     </div>
+
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Prezzo</mat-label>
-        <input matInput type="text" formControlName="prezzo" placeholder="0,00" maxlength="255">
+        <mat-label>Prezzo*</mat-label>
+        <div class="input-wrapper">
+          <input matInput type="number" formControlName="prezzo" placeholder="0,00" maxlength="255" step="0.01"
+                 (blur)="onBlurPrice()" (focus)="onFocusPrice()">
+          <span *ngIf="utility.checkText(articoloForm.get('prezzo')!.value)" class="input-currency">€</span>
+        </div>
+        <div *ngIf="alertChangeFormatPrice" class="alert-price">Formato modificato!</div>
         <ng-container *ngFor="let validation of validationCliente.prezzo">
           <mat-error *ngIf="articoloForm.get('prezzo')!.hasError(validation.type) && articoloForm.get('prezzo')!.dirty">
             {{validation.message}}
@@ -48,10 +96,10 @@
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        <mat-label>Tipologia Prodotto</mat-label>
-        <mat-select [(value)]="articolo.idType" formControlName="tipologiaProdotto">
-          <mat-option *ngFor="let tipologia of tipologiaProdotti" [value]="tipologia.id">
-            {{tipologia.type}}
+        <mat-label>Tipologia Prodotto*</mat-label>
+        <mat-select formControlName="tipologiaProdotto">
+          <mat-option *ngFor="let tipologia of tipologiaProdotti" [value]="tipologia">
+            {{tipologia.type | titlecase}}
           </mat-option>
         </mat-select>
         <ng-container *ngFor="let validation of validationCliente.tipologiaProdotto">
@@ -65,7 +113,7 @@
 
     <div class="row">
       <mat-form-field class="example-chip-list" appearance="fill">
-        <mat-label>Colori</mat-label>
+        <mat-label>Colori*</mat-label>
         <mat-chip-grid #chipGridColore aria-label="Seleziona colori">
           <mat-chip-row *ngFor="let colore of coloriSelected" (removed)="removeColore(colore.id)">
             {{colore.colore | titlecase}}
@@ -85,9 +133,10 @@
         </mat-autocomplete>
       </mat-form-field>
     </div>
-    <div class="row">
+
+    <div class="row" *ngIf="taglie.length > 0">
       <mat-form-field class="example-chip-list" appearance="fill">
-        <mat-label>Taglie</mat-label>
+        <mat-label>Taglie*</mat-label>
         <mat-chip-grid #chipGridTaglia aria-label="Seleziona taglie">
           <mat-chip-row *ngFor="let taglia of taglieSelected" (removed)="removeTaglia(taglia.id)">
             {{taglia.size | uppercase}}
@@ -109,43 +158,67 @@
     </div>
 
     <hr>
-    <div class="row">
-      <div class="col-2 select-colore">
 
-      </div>
-      <div class="col-1 select-talgia-numero" *ngFor="let taglia of taglieSelected">
-        <strong>{{taglia.size | uppercase}}</strong>
-      </div>
-    </div>
-    <br>
-    <div formArrayName="colorVariants">
-      <div class="section-container" *ngFor="let colorVariant of getColorVariantsForm(articoloForm); let i = index">
-        <div class="ui raised segments" [formGroupName]="i">
-          <div class="row row-colori">
-            <div class="col-2 select-colore">
-              {{colorVariant?.controls?.descColore?.value | titlecase}}
+    <ng-container *ngIf="coloriSelected.length > 0 && taglie.length === 0">
+      <hr>
+      <div class="row">
+        <ng-container formArrayName="colorVariants">
+          <ng-container class="section-container-mobile " [formGroupName]="i"
+                        *ngFor="let colorVariant of getColorVariantsForm(articoloForm); let i = index">
+            <div class="col-sm-6 col-md-3 col-lg-1 col-xl-1" style="width: auto; text-align: center">
+              <strong>{{colorVariant?.controls?.descColore?.value | titlecase}}</strong>
+              <br>
+              <mat-form-field style="max-width: 7.5rem; text-align: center;">
+                <mat-label>Disponibilità</mat-label>
+                <input matInput type="number" formControlName="stockColor">
+              </mat-form-field>
             </div>
-            <ng-container class="question-container" formArrayName="sizeVariants"  class="col-1">
-              <ng-container [formGroupName]="j" *ngFor="let sizeVariant of getSizeVariantsForm(colorVariant); let j = index">
-                <mat-form-field class="select-talgia-numero" style="display: none">
-                  <mat-label>Taglia</mat-label>
-                  <mat-select formControlName="idSize">
-                    <mat-option *ngFor="let taglia of taglie" [value]="taglia.id">
-                      {{taglia.size}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <mat-form-field class="select-talgia-numero">
-                  <mat-label>Disponibilità</mat-label>
-                  <input matInput type="number" formControlName="stock">
-                </mat-form-field>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="coloriSelected.length > 0 && taglieSelected.length > 0">
+      <div formArrayName="colorVariants">
+        <div class="section-container-mobile"
+             *ngFor="let colorVariant of getColorVariantsForm(articoloForm); let i = index">
+          <div [formGroupName]="i">
+            <div class="row">
+              <div class="col">
+                <strong>{{colorVariant?.controls?.descColore?.value | titlecase}}</strong>
+              </div>
+            </div>
+            <div class="row">
+              <ng-container formArrayName="sizeVariants">
+                <ng-container
+                              *ngFor="let sizeVariant of getSizeVariantsForm(colorVariant); let j = index">
+                  <div class="col-sm-6 col-md-3 col-lg-1 col-xl-1" style="width: auto; text-align: center" [formGroupName]="j">
+                    <mat-form-field style="display: none">
+                      <mat-label>Taglia*</mat-label>
+                      <mat-select formControlName="idSize">
+                        <mat-option *ngFor="let taglia of taglie" [value]="taglia.id">
+                          {{taglia.size}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    {{taglieSelected[j].size | uppercase}}
+                    <br>
+                    <mat-form-field style="max-width: 7.5rem; text-align: center;">
+                      <mat-label>Disponibilità</mat-label>
+                      <input matInput type="number" formControlName="stock">
+                    </mat-form-field>
+                  </div>
+                </ng-container>
               </ng-container>
-            </ng-container>
+
+            </div>
           </div>
+          <br>
+          <hr>
+          <br>
         </div>
       </div>
-    </div>
-
+    </ng-container>
   </form>
 
 </mat-dialog-content>
@@ -153,6 +226,6 @@
   <mat-spinner></mat-spinner>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="save()">SALVA</button>
-  <button mat-button mat-dialog-close>CHIUDI</button>
+  <button mat-button (click)="processFile(imageInput)" [disabled]="!articoloForm.valid">SALVA</button>
+  <button mat-button (click)="refreshList.emit()" mat-dialog-close>CHIUDI</button>
 </mat-dialog-actions>

@@ -2,21 +2,22 @@ import {IMeta} from "./ICustomer";
 
 export interface IProduct {
   id?: number | null;
-  immagine: string;
-  idFornitore: number;
-  descFornitore?: string;
-  codiceArticolo: string;
-  descrizioneArticolo: string;
-  prezzo: number;
-  idType: number;
-  descType?: string;
+  image: string | null;
+  idProvider: number | null;
+  descProvider?: string;
+  productCode: string;
+  productDesc: string;
+  price: number | null;
+  idProductType: number | null;
+  descProductType?: string;
   colorVariants: IColorVariant[] | null;
 }
 
 export interface IColorVariant {
   id: number | null;
   descColor?: string;
-  sizeVariant?: ISizeVariant[] | null;
+  sizeVariants?: ISizeVariant[] | null;
+  stock: number | null;
 }
 
 export interface ISizeVariant {

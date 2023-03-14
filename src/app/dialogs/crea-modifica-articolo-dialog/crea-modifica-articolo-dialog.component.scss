@@ -4,7 +4,7 @@
 }
 
 .select-talgia-numero {
-  width: 9rem !important;
+  width: auto !important;
   text-align: center;
 }
 
@@ -13,4 +13,59 @@
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+}
+.not-display {
+  display: none;
+}
+
+.file-name {
+  margin-left: 1rem; /* or whatever margin you require */
+}
+
+.image-product {
+  border: 2px solid #c7c7c7;
+  border-radius: 15px !important;
+  padding: 5px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background: white;
+  object-fit: cover;
+  width: 150px !important;
+  height: 150px !important;
+  position: relative;
+}
+
+.button-x {
+  position: absolute;
+  z-index: 99;
+  top: 0px;
+  right: 0px;
+}
+
+.alert-price {
+  // color: #ffc107 !important;
+  color: #0b9ab6;
+}
+
+.input-wrapper {
+  position: relative;
+}
+.input-currency {
+  position: absolute;
+  right: 2rem;
+  top: calc(100% - 1.35em);
+  line-height: 1em;
+  font-size: 1em;
+}
+
+.input-wrapper > input {
+  padding-left: 16px;
+  font-size: 1em;
+}
+
+.section-container-mobile {
+  text-align: center;
 }
