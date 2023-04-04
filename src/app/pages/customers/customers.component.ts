@@ -12,7 +12,7 @@ import {
 } from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
 import {CustomerService} from "../../services/customer.service";
 import {CommonService} from "../../services/common.service";
-import {IUtente} from "../../interfaces/IUtente";
+import {IUser} from "../../interfaces/IUser";
 import {AuthService} from "../../services/auth.service";
 
 @Component({
@@ -33,7 +33,7 @@ export class CustomersComponent implements AfterViewInit {
   currentPage = 0;
   total = 0;
 
-  agenti: IUtente[] = [];
+  agenti: IUser[] = [];
 
   displayedColumns: string[] = [
     // 'logo',
@@ -60,13 +60,13 @@ export class CustomersComponent implements AfterViewInit {
   constructor(public dialog: MatDialog, private customerService: CustomerService, public commonService: CommonService,
               private authService: AuthService) {
     this.agenti = [];
-    this.commonService.utenti.subscribe((usersApi: IUtente[]) => {
+    this.commonService.utenti.subscribe((usersApi: IUser[]) => {
       if (usersApi.length === 0) {
         this.authService.getUsersList().subscribe(users => {
           this.commonService.utenti.next(users);
         })
       } else {
-        this.agenti = usersApi as IUtente[];
+        this.agenti = usersApi as IUser[];
         this.refreshList();
       }
     });
@@ -174,6 +174,12 @@ export class CustomersComponent implements AfterViewInit {
       this.orderBy = 'id';
     }
     this.refreshList();
+  }
+
+  delete(id: number) {
+    this.customerService.deleteCustomer(id).subscribe(res => {
+      this.refreshList();
+    });
   }
 }
 

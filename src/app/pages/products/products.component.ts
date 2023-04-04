@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
-import {IUtente} from "../../interfaces/IUtente";
+import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
 import {ICustomer, ICustomerPagination} from "../../interfaces/ICustomer";
 import {MatPaginator} from "@angular/material/paginator";
@@ -19,8 +19,8 @@ import {
 } from "../../dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";
 import {IColorVariant, IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
-import {IColore} from "../../interfaces/IColore";
-import {ITaglia} from "../../interfaces/ITaglia";
+import {IColor} from "../../interfaces/IColor";
+import {ISize} from "../../interfaces/ISize";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ProviderService} from "../../services/provider.service";
 import {IProvider} from "../../interfaces/IProvider";
@@ -50,9 +50,10 @@ export class ProductsComponent implements AfterViewInit {
   ascDesc = 'ASC';
   currentPage = 0;
   total = 0;
+  isSmall = false;
 
-  colori: IColore[] = [];
-  taglie: ITaglia[] = [];
+  colori: IColor[] = [];
+  taglie: ISize[] = [];
   fornitori: IProvider[] = [];
   tipologiaProdotti: IProductType[] = [];
 
@@ -82,11 +83,16 @@ export class ProductsComponent implements AfterViewInit {
 
   constructor(public dialog: MatDialog, private productService: ProductService, private commonService: CommonService,
               private providerService: ProviderService) {
-    this.commonService.colori.subscribe((colors: IColore[]) => {
-      this.colori = colors as IColore[];
+
+    this.commonService.isSmall.subscribe(res => {
+      this.isSmall = res;
     });
-    this.commonService.taglieAbbigliamento.subscribe((sizes: ITaglia[]) => {
-      this.taglie = sizes as ITaglia[];
+
+    this.commonService.colori.subscribe((colors: IColor[]) => {
+      this.colori = colors as IColor[];
+    });
+    this.commonService.taglieAbbigliamento.subscribe((sizes: ISize[]) => {
+      this.taglie = sizes as ISize[];
     });
     this.commonService.fornitori.subscribe((providers: IProvider[]) => {
       this.fornitori = providers as IProvider[];
@@ -184,7 +190,7 @@ export class ProductsComponent implements AfterViewInit {
       });
   }
 
-  setProductColor(idColore: number): IColore | null {
+  setProductColor(idColore: number): IColor | null {
     const colore = this.colori.find(x => x.id === idColore);
     return colore ? colore : null;
   }

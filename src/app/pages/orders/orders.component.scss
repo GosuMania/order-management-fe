@@ -3,8 +3,26 @@
 }
 
 .filters {
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
+
+.container-table {
+  margin-top: 1rem;
+}
+
+.add-button {
+  background-color: #8b3c7f;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-actions {
+  text-align: right;
+  min-width: 225px !important;
+}
+
 
 @media (max-width: 1050px) {
   .mat-table[matTableResponsive] {

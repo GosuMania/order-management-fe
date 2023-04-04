@@ -24,7 +24,7 @@ export class DefaultComponent implements AfterContentInit, OnInit {
     this.auth.userAuthState.subscribe((val) => {
       this.isSignedIn = val;
       setTimeout(() => {
-        this.breakpointObserver.observe(['(max-width: 800px)']).subscribe((res) => {
+        this.breakpointObserver.observe(['(max-width: 1050px)']).subscribe((res) => {
           console.log(res.matches);
           if(this.sidenav) {
             if (res.matches) {

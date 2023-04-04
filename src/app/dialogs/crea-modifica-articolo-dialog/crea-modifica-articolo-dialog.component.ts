@@ -12,13 +12,13 @@ import {AuthService} from "../../services/auth.service";
 import {CommonService} from "../../services/common.service";
 import {IColorVariant, IProduct, ISizeVariant} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
-import {IColore} from "../../interfaces/IColore";
+import {IColor} from "../../interfaces/IColor";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {BehaviorSubject, Observable, startWith} from "rxjs";
 import {map} from "rxjs/operators";
-import {ITaglia} from "../../interfaces/ITaglia";
+import {ISize} from "../../interfaces/ISize";
 import {LABEL} from "../../constants/label.constant";
 import {ShoeSizeConstant} from "../../constants/size.constant";
 import {IProvider} from "../../interfaces/IProvider";
@@ -40,6 +40,14 @@ class ImageSnippet {
 })
 export class CreaModificaArticoloDialogComponent implements OnInit {
   @ViewChild('imageInput') imageInput: ElementRef<HTMLInputElement> = {} as ElementRef;
+  @ViewChild('scrollContentDialog') private scrollContentDialog: ElementRef= {} as ElementRef;
+
+  alertOK = false;
+  alertKO = false;
+  alertUpdateOK = false;
+  alertUpdateKO = false;
+  alertChangeFormatPrice = false;
+  isSmall = false;
 
   utility = UTILITY;
   title = 'Nuovo Articolo';
@@ -47,19 +55,19 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   articolo!: IProduct;
   public refreshList = new EventEmitter();
 
-  colori: IColore[] = [];
-  coloriSelected: IColore[] = [];
+  colori: IColor[] = [];
+  coloriSelected: IColor[] = [];
   separatorKeysCodes: number[] = [ENTER, COMMA];
   coloriCtrl = new FormControl();
-  filterColori: Observable<IColore[]> | undefined;
+  filterColori: Observable<IColor[]> | undefined;
   @ViewChild('coloreInput') coloreInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
-  tagliaAbbigliamento: ITaglia[] = [];
-  tagliaScarpe: ITaglia[] = [];
-  taglie: ITaglia[] = [];
-  taglieSelected: ITaglia[] = [];
+  tagliaAbbigliamento: ISize[] = [];
+  tagliaScarpe: ISize[] = [];
+  taglie: ISize[] = [];
+  taglieSelected: ISize[] = [];
   taglieCtrl = new FormControl();
-  filterTaglie: Observable<ITaglia[]> | undefined;
+  filterTaglie: Observable<ISize[]> | undefined;
   @ViewChild('tagliaInput') tagliaInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
   fornitori: IProvider[] = [];
@@ -97,8 +105,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       {type: 'required', message: 'Campo obbligatorio mancante.'},
     ]
   };
-  alertChangeFormatPrice = false;
-  isSmall = false;
+
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
               private authService: AuthService, private commonService: CommonService, private providerService: ProviderService) {
@@ -106,16 +113,16 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     this.commonService.isSmall.subscribe(res => {
       this.isSmall = res;
     });
-    this.commonService.colori.subscribe((colors: IColore[]) => {
-      this.colori = colors as IColore[];
+    this.commonService.colori.subscribe((colors: IColor[]) => {
+      this.colori = colors as IColor[];
     });
 
-    this.commonService.taglieAbbigliamento.subscribe((sizes: ITaglia[]) => {
-      this.tagliaAbbigliamento = sizes as ITaglia[];
+    this.commonService.taglieAbbigliamento.subscribe((sizes: ISize[]) => {
+      this.tagliaAbbigliamento = sizes as ISize[];
     });
 
-    this.commonService.tagliaScarpe.subscribe((sizes: ITaglia[]) => {
-      this.tagliaScarpe = sizes as ITaglia[];
+    this.commonService.tagliaScarpe.subscribe((sizes: ISize[]) => {
+      this.tagliaScarpe = sizes as ISize[];
     });
 
     this.commonService.fornitori.subscribe((providers: IProvider[]) => {
@@ -315,7 +322,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     this.coloriCtrl.setValue(null);
   }
 
-  addColorVariants(indexColor: number, colore: IColore, variant?: IColorVariant) {
+  addColorVariants(indexColor: number, colore: IColor, variant?: IColorVariant) {
     if (!variant) {
       let sizeVariantArray: ISizeVariant[] = [];
       if (this.taglieSelected.length > 0) {
@@ -362,11 +369,11 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     this.coloriCtrl.setValue(null);
   }
 
-  private _filterColore(inputColore: string | null): IColore[] {
+  private _filterColore(inputColore: string | null): IColor[] {
     const coloriAviable = this.colori.filter(colore => {
       const check = !UTILITY.checkObj(this.coloriSelected.find(coloreSelected => coloreSelected.colore === colore.colore));
       return check;
-    }) as IColore[];
+    }) as IColor[];
     if (UTILITY.checkText(inputColore)) {
       const valueFilter = inputColore!.toLowerCase();
       return coloriAviable.filter(colore => colore.colore.toLowerCase().includes(valueFilter));
@@ -468,11 +475,11 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     });
   }
 
-  private _filterTaglia(inputTaglia: string | null): ITaglia[] {
+  private _filterTaglia(inputTaglia: string | null): ISize[] {
     const tagliaAviable = this.taglie.filter(taglia => {
       const check = !UTILITY.checkObj(this.taglieSelected.find(tagliaSelected => tagliaSelected.size === taglia.size));
       return check;
-    }) as ITaglia[];
+    }) as ISize[];
     if (UTILITY.checkText(inputTaglia)) {
       const valueFilter = inputTaglia!.toLowerCase();
       return tagliaAviable.filter(taglia => taglia.size.toLowerCase().includes(valueFilter));
@@ -483,6 +490,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
   /*** Image Upload ***/
   processFile(imageInput: any) {
+    this.closeAlert();
     const file: File = imageInput.nativeElement.files[0];
     if (file) {
       const reader = new FileReader();
@@ -523,7 +531,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       id: UTILITY.checkText(this.articolo!.id) ? this.articolo!.id : null,
       image: this.articolo.image,
       idProductType: this.articoloForm.get('tipologiaProdotto')?.value.id,
-      descProductType: this.articoloForm.get('tipologiaProdotto')?.value.type,
+      descProductType: this.articoloForm.get('tipologiaProdotto')?.value.desc,
       idProvider: this.articoloForm.get('fornitore')?.value.id,
       descProvider: this.articoloForm.get('fornitore')?.value.ragioneSociale,
       productCode: this.articoloForm.get('codiceArticolo')?.value,
@@ -533,7 +541,24 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     };
     this.productService.createOrUpdateProduct(product).subscribe(res => {
       console.log('Risultato', res);
+      if(UTILITY.checkText(this.articolo!.id)) {
+        this.alertUpdateOK = true;
+      } else {
+        this.alertOK = true;
+        this.articolo.id = res.id;
+      }
+      this.alertChangeFormatPrice = false;
+      this.scrollToBottom();
       this.refreshList.emit();
+    } ,error => {
+      if(UTILITY.checkText(this.articolo!.id)) {
+        this.alertUpdateKO = true;
+      } else {
+        this.alertKO = true;
+      }
+      this.alertChangeFormatPrice = false;
+      this.scrollToBottom();
+      console.log('# error salvataggio: ', error);
     })
   }
 
@@ -593,5 +618,25 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
   onFocusPrice() {
     this.alertChangeFormatPrice = false;
+  }
+
+  /*** ALERT ***/
+  closeAlert() {
+    this.alertChangeFormatPrice = false;
+    this.alertOK = false;
+    this.alertKO = false;
+    this.alertUpdateOK = false;
+    this.alertUpdateKO = false;
+  }
+
+  scrollToBottom(): void {
+    try {
+      setTimeout(() => {
+        this.scrollContentDialog.nativeElement.scrollTop = this.scrollContentDialog.nativeElement.scrollHeight;
+
+      },100)
+    } catch(err) {
+      console.log(err);
+    }
   }
 }

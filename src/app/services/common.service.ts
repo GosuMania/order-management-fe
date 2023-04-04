@@ -1,14 +1,15 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {IUtente} from "../interfaces/IUtente";
-import {IColore} from "../interfaces/IColore";
+import {IUser} from "../interfaces/IUser";
+import {IColor} from "../interfaces/IColor";
 import {environment} from "../../environments/environment";
 import {map} from "rxjs/operators";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ITaglia} from "../interfaces/ITaglia";
+import {ISize} from "../interfaces/ISize";
 import {IProvider} from "../interfaces/IProvider";
 import {IProductType} from "../interfaces/IProductType";
 import {BreakpointObserver} from "@angular/cdk/layout";
+import {ISimplePickList} from "../interfaces/ISimplePickList";
 
 @Injectable({
   providedIn: 'root',
@@ -16,17 +17,26 @@ import {BreakpointObserver} from "@angular/cdk/layout";
 export class CommonService {
 
 
-  public utenti: BehaviorSubject<IUtente[]> = new BehaviorSubject<IUtente[]>([]);
+  public utenti: BehaviorSubject<IUser[]> = new BehaviorSubject<IUser[]>([]);
 
-  public colori: BehaviorSubject<IColore[]> = new BehaviorSubject<IColore[]>([]);
+  public colori: BehaviorSubject<IColor[]> = new BehaviorSubject<IColor[]>([]);
 
-  public taglieAbbigliamento: BehaviorSubject<ITaglia[]> = new BehaviorSubject<ITaglia[]>([]);
+  public taglieAbbigliamento: BehaviorSubject<ISize[]> = new BehaviorSubject<ISize[]>([]);
 
-  public tagliaScarpe: BehaviorSubject<ITaglia[]> = new BehaviorSubject<ITaglia[]>([]);
+  public tagliaScarpe: BehaviorSubject<ISize[]> = new BehaviorSubject<ISize[]>([]);
 
   public fornitori: BehaviorSubject<IProvider[]> = new BehaviorSubject<IProvider[]>([]);
 
   public tipologiaProdotti: BehaviorSubject<IProductType[]> = new BehaviorSubject<IProductType[]>([]);
+
+  public deliveryList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
+  public orderTypeList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
+  public paymentMethodsList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
+  public seasonTypeList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
 
   public isSmall: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -50,6 +60,22 @@ export class CommonService {
 
     this.getProviderList().subscribe(providers => {
       this.fornitori.next(providers);
+    });
+
+    this.getDeliveryList().subscribe(deliveryList => {
+      this.deliveryList.next(deliveryList);
+    });
+
+    this.getOrderTypeList().subscribe(orderTypeList => {
+      this.orderTypeList.next(orderTypeList);
+    });
+
+    this.getPaymentMethodsList().subscribe(paymentMethodsList => {
+      this.paymentMethodsList.next(paymentMethodsList);
+    });
+
+    this.getSeasonTypeList().subscribe(seasonTypeList => {
+      this.seasonTypeList.next(seasonTypeList);
     });
 
     this.breakpointObserver.observe(['(max-width: 900px)']).subscribe((res) => {
@@ -107,6 +133,35 @@ export class CommonService {
       formData.append('image', image);
 
     return this.http.post(myLink, formData, {responseType: 'json'});
+  }
+
+
+  getDeliveryList() {
+    const myLink = environment.urlApi + environment.DELIVERY_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getOrderTypeList() {
+    const myLink = environment.urlApi + environment.ORDER_TYPE_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getPaymentMethodsList() {
+    const myLink = environment.urlApi + environment.PAYMENT_METHODS_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getSeasonTypeList() {
+    const myLink = environment.urlApi + environment.SEASON_TYPE_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
   }
 
 }

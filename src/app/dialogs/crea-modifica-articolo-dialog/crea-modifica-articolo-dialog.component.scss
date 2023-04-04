@@ -38,6 +38,12 @@
   position: relative;
 }
 
+.image-product-item {
+  object-fit: cover;
+  max-width: 148px !important;
+  max-height: 148px !important;
+}
+
 .button-x {
   position: absolute;
   z-index: 99;

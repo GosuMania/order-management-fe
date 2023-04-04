@@ -1,6 +1,6 @@
-import {IAgenzia} from "./IAgenzia";
+import {IAgency} from "./IAgency";
 
-export interface IUtente {
+export interface IUser {
   id?: number;
   uid?: string;
   email: string;
@@ -8,5 +8,5 @@ export interface IUtente {
   password?: string;
   typeAccount: string;
   agency: string;
-  agencyObj?: IAgenzia; // poi vediamo se serve
+  agencyObj?: IAgency; // poi vediamo se serve
 }

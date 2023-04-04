@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>{{title}}</h2>
-<mat-dialog-content *ngIf="articoloForm" class="mat-typography">
+<mat-dialog-content #scrollContentDialog *ngIf="articoloForm" class="mat-typography" style="overflow: scroll;">
   <form class="add-lessons-form" [formGroup]="articoloForm">
     <div class="row">
       <div class="col">
@@ -14,7 +14,7 @@
         <br>
         <br>
         <div *ngIf="articolo?.image" class='image-product'>
-          <img [src]="articolo.image"/>
+          <img class="image-product-item" [src]="articolo.image"/>
           <button mat-button class="button-x" (click)="clearImage()">
             <mat-icon>close</mat-icon>
           </button>
@@ -99,7 +99,7 @@
         <mat-label>Tipologia Prodotto*</mat-label>
         <mat-select formControlName="tipologiaProdotto">
           <mat-option *ngFor="let tipologia of tipologiaProdotti" [value]="tipologia">
-            {{tipologia.type | titlecase}}
+            {{tipologia.desc | titlecase}}
           </mat-option>
         </mat-select>
         <ng-container *ngFor="let validation of validationCliente.tipologiaProdotto">
@@ -220,6 +220,40 @@
       </div>
     </ng-container>
   </form>
+
+
+  <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Perfetto!</strong> Articolo caricato.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="alertUpdateOK" class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Perfetto!</strong> Articolo aggiornato.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+
+  <div *ngIf="alertKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Errore!</strong> Non è possibile caricare l'articolo, riprova più tardi .
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="alertUpdateKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Errore!</strong> Non è possibile aggiornare l'articolo, riprova più tardi.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
 
 </mat-dialog-content>
 <mat-dialog-content *ngIf="!articoloForm" style="text-align: -webkit-center;">

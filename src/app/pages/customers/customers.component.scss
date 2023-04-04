@@ -14,29 +14,17 @@
   background-color: #8b3c7f;
 }
 
-
-@media (min-width: 769px) {
-  td {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    max-height: 4rem;
-    max-width: 20rem;
-  }
-
-  .mat-header-cell {
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-  table {
-    // display: block;
-    overflow-x: visible;
-    white-space: nowrap;
-  }
-
+table {
+  width: 100%;
 }
 
-@media (max-width: 768px) {
+.mat-column-actions {
+  text-align: right;
+  min-width: 150px !important;
+}
+
+
+@media (max-width: 1050px) {
   .mat-table[matTableResponsive] {
     .mat-header-row {
       display: flex;
@@ -47,7 +35,7 @@
       z-index: 2;
 
       th.mat-header-cell {
-        display: none;
+        display: flex;
         flex: 1;
         align-items: center;
         padding: 1rem 0.5rem;
@@ -82,9 +70,6 @@
         &:before {
           content: attr(data-column-name);
           text-align: left;
-          font-weight: bold;
-          text-transform: uppercase;
-
         }
       }
 

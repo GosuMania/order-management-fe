@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from "@angular/forms";
 import {ICustomer} from "../../interfaces/ICustomer";
 import {UTILITY} from "../../constants/utility.constant";
-import {IUtente} from "../../interfaces/IUtente";
+import {IUser} from "../../interfaces/IUser";
 import {PaesiConstant} from "../../constants/paesi.constant";
-import {IPaese} from "../../interfaces/IPaese";
+import {ICountry} from "../../interfaces/ICountry";
 import {CustomerService} from "../../services/customer.service";
 import {AuthService} from "../../services/auth.service";
 import {CommonService} from "../../services/common.service";
@@ -16,15 +16,20 @@ import {CommonService} from "../../services/common.service";
   styleUrls: ['./crea-modifica-cliente-dialog.component.scss']
 })
 export class CreaModificaClienteDialogComponent implements OnInit {
+  @ViewChild('scrollContentDialog') private scrollContentDialog: ElementRef = {} as ElementRef;
+
   title = 'Nuovo Cliente';
   clienteForm: UntypedFormGroup;
   cliente: ICustomer;
-  agenti: IUtente[];
+  agenti: IUser[];
   showDestMerce = false;
-  paesi = PaesiConstant.paesi as IPaese[];
+  paesi = PaesiConstant.paesi as ICountry[];
   refreshList = new EventEmitter();
 
-
+  alertOK = false;
+  alertKO = false;
+  alertUpdateOK = false;
+  alertUpdateKO = false;
 
   validationCliente = {
     ragioneSociale: [
@@ -101,13 +106,13 @@ export class CreaModificaClienteDialogComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private customerService: CustomerService,
               private authService: AuthService, private commonService: CommonService) {
     this.agenti = [];
-    this.commonService.utenti.subscribe((utenti: IUtente[]) => {
-      if(utenti.length === 0) {
+    this.commonService.utenti.subscribe((utenti: IUser[]) => {
+      if (utenti.length === 0) {
         this.authService.getUsersList().subscribe(users => {
           this.commonService.utenti.next(users);
         })
       } else {
-        this.agenti = utenti as IUtente[];
+        this.agenti = utenti as IUser[];
       }
     });
 
@@ -230,8 +235,10 @@ export class CreaModificaClienteDialogComponent implements OnInit {
   }
 
   save() {
+    this.closeAlert();
+
     const customer: ICustomer = {
-      // id: UTILITY.checkText(this.cliente!.id) ? this.cliente!.id : null,
+      id: UTILITY.checkText(this.cliente!.id) ? this.cliente!.id : null,
       ragioneSociale: this.clienteForm.get('ragioneSociale')?.value,
       piva: this.clienteForm.get('piva')?.value,
       codiceFiscale: this.clienteForm.get('codiceFiscale')?.value,
@@ -254,9 +261,26 @@ export class CreaModificaClienteDialogComponent implements OnInit {
       idAgenteRiferimento: this.clienteForm.get('agenteRiferimento')?.value,
       usernameAgenteRiferimento: this.nomeAgente(this.clienteForm.get('agenteRiferimento')?.value)
     };
-    this.customerService.createOrUpdateCustomer(customer).subscribe(res => {
-      console.log('Risultato', res);
-      this.refreshList.emit();
+    this.customerService.createOrUpdateCustomer(customer).subscribe({
+      next: (res) => {
+        console.log('Risultato', res);
+        if (UTILITY.checkText(this.cliente!.id)) {
+          this.alertUpdateOK = true;
+        } else {
+          this.alertOK = true;
+          this.cliente.id = res.id;
+        }
+        this.scrollToBottom();
+        this.refreshList.emit();
+      }, error: (error) => {
+        if (UTILITY.checkText(this.cliente!.id)) {
+          this.alertUpdateKO = true;
+        } else {
+          this.alertKO = true;
+        }
+        this.scrollToBottom();
+        console.log('# error salvataggio: ', error);
+      }
     })
   }
 
@@ -266,6 +290,25 @@ export class CreaModificaClienteDialogComponent implements OnInit {
       return agente!.username;
     }
     return '';
+  }
+
+  /*** ALERT ***/
+  closeAlert() {
+    this.alertOK = false;
+    this.alertKO = false;
+    this.alertUpdateOK = false;
+    this.alertUpdateKO = false;
+  }
+
+  scrollToBottom(): void {
+    try {
+      setTimeout(() => {
+        this.scrollContentDialog.nativeElement.scrollTop = this.scrollContentDialog.nativeElement.scrollHeight;
+
+      }, 100)
+    } catch (err) {
+      console.log(err);
+    }
   }
 
 }

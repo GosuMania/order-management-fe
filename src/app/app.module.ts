@@ -59,6 +59,8 @@ import {
   CreaModificaArticoloDialogComponent
 } from "./dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import {ApiInterceptor} from "./interceptors/api.interceptor";
 
 registerLocaleData(localeIt, 'it');
 
@@ -94,7 +96,7 @@ const Ux_Modules = [
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatStepperModule
+  MatStepperModule,
 ]
 
 @NgModule({
@@ -112,7 +114,8 @@ const Ux_Modules = [
     OrdersComponent,
     MomentPipe,
     CreaModificaClienteDialogComponent,
-    CreaModificaArticoloDialogComponent
+    CreaModificaArticoloDialogComponent,
+    SpinnerComponent
   ],
     imports: [
         BrowserModule,
@@ -146,6 +149,11 @@ const Ux_Modules = [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiInterceptor,
       multi: true,
     },
     {

@@ -1,4 +1,4 @@
-export interface IPaese {
+export interface ICountry {
   name: string;
   code: string;
 }

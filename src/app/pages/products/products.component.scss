@@ -14,77 +14,61 @@
   background-color: #8b3c7f;
 }
 
-.immagine-tabella {
-  height: 80px;
-  width: auto;
-}
+
 /* START EXPAND STYLE TR */
-
-tr.expand-detail-row {
-  height: 0;
-}
-
-tr.main-tr {
-  border: solid 5px;
-}
-
-.content-detail-row {
-  min-height: 5rem;
-  padding: 1rem;
-}
-
-.example-element-row td {
-  border-bottom-width: 0;
-}
-
-.mat-mdc-table-sticky {
-  border-top: 1px solid #e0e0e0;
-}
-
-.header-child-table {
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.image-product {
-  border-radius: 15px !important;
-  display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1;
-  background: white;
-  object-fit: cover;
-  width: 80px !important;
-  height: 80px !important;
-  padding: 5px;
-}
-
-/* END EXPAND STYLE TR */
-
-
-@media (min-width: 769px) {
-  td {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    max-height: 4rem;
-    max-width: 20rem;
+@media (min-width: 901px) {
+  .immagine-tabella {
+    height: 80px;
+    width: auto;
+  }
+  tr.expand-detail-row {
+    height: 0;
   }
 
-  .mat-header-cell {
+  tr.main-tr {
+    border: solid 5px;
+  }
+
+  .content-detail-row {
+    min-height: 5rem;
+    padding: 1rem;
+  }
+
+  .example-element-row td {
+    border-bottom-width: 0;
+  }
+
+  .mat-mdc-table-sticky {
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .header-child-table {
     font-weight: bold;
     text-transform: uppercase;
   }
-  table {
-    // display: block;
-    overflow-x: visible;
-    white-space: nowrap;
+
+  .image-product {
+    border-radius: 15px !important;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    background: white;
+    object-fit: cover;
+    width: 80px !important;
+    height: 80px !important;
+    padding: 5px;
   }
-
 }
+/* END EXPAND STYLE TR */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .image-product {
+    height: 20px !important;
+    width: auto;
+    justify-self: right;
+  }
   .mat-table[matTableResponsive] {
     .mat-header-row {
       display: flex;
@@ -95,7 +79,7 @@ tr.main-tr {
       z-index: 2;
 
       th.mat-header-cell {
-        display: none;
+        display: flex;
         flex: 1;
         align-items: center;
         padding: 1rem 0.5rem;
@@ -130,9 +114,6 @@ tr.main-tr {
         &:before {
           content: attr(data-column-name);
           text-align: left;
-          font-weight: bold;
-          text-transform: uppercase;
-
         }
       }
 
