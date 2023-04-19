@@ -14,6 +14,11 @@ import * as moment from "moment/moment";
 import {
   CreaModificaClienteDialogComponent
 } from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
+import {OrderService} from "../../services/order.service";
+import {IOrder, IOrderPagination} from "../../interfaces/IOrder";
+import {
+  CreaModificaOrdineDialogComponent
+} from "../../dialogs/crea-modifica-ordine-dialog/crea-modifica-ordine-dialog.component";
 
 @Component({
   selector: 'app-orders',
@@ -32,7 +37,9 @@ export class OrdersComponent implements AfterViewInit  {
   ascDesc = 'ASC';
   currentPage = 0;
   total = 0;
-
+  totalAmount = 0;
+  totalPieces = 0;
+  totalOrders = 0;
   agenti: IUser[] = [];
 
   displayedColumns: string[] = [
@@ -42,16 +49,17 @@ export class OrdersComponent implements AfterViewInit  {
     'dataOrdine',
     'consegna',
     'stagione',
-    'tipologiaOrdine',
+    'totalePezzi',
+    'totaleImporto',
     'actions'
   ];
-  dataSource = new MatTableDataSource<ICustomer>([]);
+  dataSource = new MatTableDataSource<IOrder>([]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
 
   constructor(public dialog: MatDialog, private customerService: CustomerService, public commonService: CommonService,
-              private authService: AuthService) {
+              private authService: AuthService, private orderService: OrderService) {
     this.agenti = [];
     this.commonService.utenti.subscribe((usersApi: IUser[]) => {
       if (usersApi.length === 0) {
@@ -108,15 +116,24 @@ export class OrdersComponent implements AfterViewInit  {
     let filterValue = value;
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    // TODO: far ripartire la chiamata
     this.dataSource.filter = filterValue;
+    if(UTILITY.checkText(filterValue)) {
+      this.orderService.getOrderWithPaginationListSearch(filterValue, this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
+        .subscribe((data: IOrderPagination) => {
+          this.total = data.meta.total;
+          this.lastPage = data.meta.last_page;
+          this.dataSource = new MatTableDataSource<IOrder>(data.data);
+        });
+    } else {
+      this.refreshList();
+    }
   }
 
-  openDialogAddClient(cliente?: ICustomer) {
-    const dialogRef = this.dialog.open(CreaModificaClienteDialogComponent, {
+  openDialogNewOrder(order?: IOrder) {
+    const dialogRef = this.dialog.open(CreaModificaOrdineDialogComponent, {
       height: '90%',
       width: '90%',
-      data: {cliente: cliente},
+      data: {order: order},
     });
 
     dialogRef.componentInstance.refreshList.subscribe(() => {
@@ -130,17 +147,19 @@ export class OrdersComponent implements AfterViewInit  {
   }
 
   refreshList() {
-    this.customerService.getCustomerWithPaginationList(this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
-      .subscribe((data: ICustomerPagination) => {
+    this.orderService.getOrderWithPaginationList(this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
+      .subscribe((data: IOrderPagination) => {
         console.log('Result:', data.meta.total);
-        data.data.forEach(customer => {
-          customer.usernameAgenteRiferimento = this.nomeAgente(customer!.idAgenteRiferimento!);
-        });
-        // this.currentPage = data.meta.current_page;
         this.total = data.meta.total;
         this.lastPage = data.meta.last_page;
-        this.dataSource = new MatTableDataSource<ICustomer>(data.data);
+        this.dataSource = new MatTableDataSource<IOrder>(data.data);
       });
+    this.orderService.getTotalPiecesAndAmounts()
+      .subscribe(data => {
+        console.log(data);
+        this.totalAmount = data.totalAmount;
+        this.totalPieces = data.totalPieces;
+      })
   }
 
   nomeAgente(id: number): string {
@@ -170,7 +189,7 @@ export class OrdersComponent implements AfterViewInit  {
   }
 
   delete(id: number) {
-    this.customerService.deleteCustomer(id).subscribe(res => {
+    this.orderService.deleteOrder(id).subscribe(res => {
       this.refreshList();
     });
   }

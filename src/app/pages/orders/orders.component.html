@@ -1,16 +1,34 @@
 <div class="example-container">
   <div class="filters row">
-    <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-      <input matInput [(ngModel)]="cercaValue" (ngModelChange)="applyFilter(cercaValue)" placeholder="Cerca">
-      <button *ngIf="cercaValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+      <strong>Totale Ordini</strong> {{total}}
+
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+     <strong>Totale Articoli</strong> {{totalPieces}}
+
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+      <strong>Totale Importo</strong>
+      {{totalAmount | currency: 'EUR'}}
+    </div>
+  </div>
+  <hr>
+  <div class="filters row">
+    <mat-form-field class="col-sm-12 col-md-6 col-lg-5 col-xl-4">
+      <input matInput [(ngModel)]="cercaValue" placeholder="Cerca">
+      <button matTooltip="Pulisci"  *ngIf="cercaValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
         <mat-icon>close</mat-icon>
+      </button>
+      <button matTooltip="Cerca" *ngIf="cercaValue" matSuffix mat-icon-button (click)="applyFilter(cercaValue)">
+        <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
 
-    <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8" style="text-align: end">
-      <button class="add-button" mat-fab extended (click)="openDialogAddClient()">
+    <div class="col-sm-12 col-md-6 col-lg-7 col-xl-8" style="text-align: end">
+      <button class="add-button" mat-fab extended (click)="openDialogNewOrder()">
         <mat-icon>add</mat-icon>
-        Aggiungi cliente
+        Nuovo ordine
       </button>
     </div>
 
@@ -21,50 +39,67 @@
 
       <ng-container matColumnDef="numeroOrdine">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> N° ordine</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.ragioneSociale}} </td>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.id}} </td>
       </ng-container>
 
       <ng-container matColumnDef="utente">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Agente</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.provincia}} </td>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descUser}} </td>
       </ng-container>
 
       <ng-container matColumnDef="cliente">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Cliente</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.usernameAgenteRiferimento}} </td>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descCustomer}} </td>
       </ng-container>
 
       <ng-container matColumnDef="dataOrdine">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Data Ordine</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.telefono}} </td>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.date | date: 'dd/MM/YYYY'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="consegna">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Consegna</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descDelivery}} </td>
       </ng-container>
 
       <ng-container matColumnDef="stagione">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Stagione</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descSeason}} </td>
       </ng-container>
 
 
       <ng-container matColumnDef="tipologiaOrdine">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tipologia Ordine</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Pezzi e Prezzo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalPieces}} - {{element.totalAmount | currency: 'EUR'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalePezzi">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Articoli</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalPieces}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totaleImporto">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Importo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalAmount | currency: 'EUR'}}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions" >
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef></th>
         <td class="mat-cell" mat-cell *matCellDef="let element">
-          <button mat-icon-button style="z-index: 99" (click)="openDialogAddClient(element)">
+          <button mat-icon-button style="z-index: 99" (click)="openDialogNewOrder(element)"
+                  matTooltip="Duplica ordine">
+            <mat-icon>file_copy</mat-icon>
+          </button>
+          <button mat-icon-button style="z-index: 99" (click)="openDialogNewOrder(element)"
+                  matTooltip="Stampa ordine">
             <mat-icon>print</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="openDialogAddClient(element)">
+          <button mat-icon-button style="z-index: 99" (click)="openDialogNewOrder(element)"
+                  matTooltip="Modifica ordine">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)">
+          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)"
+                  matTooltip="Elimina ordine">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

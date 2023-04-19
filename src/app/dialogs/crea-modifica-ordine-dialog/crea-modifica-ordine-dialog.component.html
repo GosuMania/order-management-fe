@@ -1,0 +1,123 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<mat-dialog-content #scrollContentDialog *ngIf="articoloForm" class="mat-typography" style="overflow: scroll;">
+  <form class="add-lessons-form" [formGroup]="articoloForm">
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Cliente*</mat-label>
+        <mat-select formControlName="fornitore">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
+            {{fornitore.ragioneSociale}}
+          </mat-option>
+        </mat-select>
+        <ng-container *ngFor="let validation of validationCliente.fornitore">
+          <mat-error
+            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Tipologia Ordine*</mat-label>
+        <mat-select formControlName="fornitore">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
+            {{fornitore.ragioneSociale}}
+          </mat-option>
+        </mat-select>
+        <ng-container *ngFor="let validation of validationCliente.fornitore">
+          <mat-error
+            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Modalità Pagamento*</mat-label>
+        <mat-select formControlName="fornitore">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
+            {{fornitore.ragioneSociale}}
+          </mat-option>
+        </mat-select>
+        <ng-container *ngFor="let validation of validationCliente.fornitore">
+          <mat-error
+            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Consegna*</mat-label>
+        <mat-select formControlName="fornitore">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
+            {{fornitore.ragioneSociale}}
+          </mat-option>
+        </mat-select>
+        <ng-container *ngFor="let validation of validationCliente.fornitore">
+          <mat-error
+            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Stagione*</mat-label>
+        <mat-select formControlName="fornitore">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
+            {{fornitore.ragioneSociale}}
+          </mat-option>
+        </mat-select>
+        <ng-container *ngFor="let validation of validationCliente.fornitore">
+          <mat-error
+            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+  </form>
+  <app-products></app-products>
+
+
+  <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Perfetto!</strong> Ordine salvato.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="alertUpdateOK" class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Perfetto!</strong> Ordine aggiornato.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+
+  <div *ngIf="alertKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Errore!</strong> Non è possibile creare l'ordine, riprova più tardi .
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="alertUpdateKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Errore!</strong> Non è possibile aggiornare l'ordine, riprova più tardi.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+</mat-dialog-content>
+<mat-dialog-content *ngIf="!articoloForm" style="text-align: -webkit-center;">
+  <mat-spinner></mat-spinner>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="processFile(imageInput)" [disabled]="!articoloForm.valid">SALVA</button>
+  <button mat-button (click)="refreshList.emit()" mat-dialog-close>CHIUDI</button>
+</mat-dialog-actions>

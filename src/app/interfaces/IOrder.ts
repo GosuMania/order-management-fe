@@ -1,14 +1,18 @@
 import {IUser} from "./IUser";
-import {ICustomer} from "./ICustomer";
+import {ICustomer, IMeta} from "./ICustomer";
 import {IProduct} from "./IProduct";
 import {ISeason, ISeasonType} from "./ISeason";
 import {ISimplePickList} from "./ISimplePickList";
 
 export interface IOrder {
-  numeroOrdine: number;
-  utente: IUser;
-  cliente: ICustomer;
-  listaArticoli: IProduct[];
+  id: number;
+  user?: IUser;
+  cliente?: ICustomer;
+  productList: IProduct[];
+  idUser: number;
+  descUser?: string;
+  idCustomer: number;
+  descCustomer?: string;
   idOrderType: string;
   descOrderType?: string;
   idPaymentMethods: number;
@@ -17,8 +21,12 @@ export interface IOrder {
   descSeason?: string;
   idDelivery: number;
   descDelivery?: string;
-
   totalPieces: number;
   totalAmount: number;
-  orderDate: string;
+  date: string;
+}
+
+export interface IOrderPagination {
+  meta: IMeta,
+  data: IOrder[]
 }

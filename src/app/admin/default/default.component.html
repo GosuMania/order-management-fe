@@ -6,7 +6,9 @@
     <div class="content">
       <div class="toolbar">
         <mat-toolbar>
-          <mat-icon (click)="sidebar.toggle()">menu</mat-icon>
+          <mat-icon *ngIf="sidebar && !sidebar.opened" (click)="sidebar.toggle()">menu</mat-icon>
+          <mat-icon *ngIf="sidebar && sidebar.opened" (click)="sidebar.toggle()">chevron_left</mat-icon>
+
           <div class="box" *ngIf="isSignedIn">
             <!--<mat-icon routerLink="profile">account_circle</mat-icon>-->
             <mat-icon (click)="signOut()">exit_to_app</mat-icon>

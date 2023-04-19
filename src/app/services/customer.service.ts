@@ -27,6 +27,16 @@ export class CustomerService {
     );
   }
 
+  getCustomerWithPaginationListSearch(word: string, orderBy: string, ascDesc: string, perPage: number, page: number) {
+    const myLink = environment.urlApi + environment.CUSTOMER_GET_ALL_WITH_PAGINATION_SEARCH +
+      '/' + word +
+      '/' + orderBy + '/' + ascDesc +
+      '/' + perPage + '/' + page;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res)
+    );
+  }
+
   createOrUpdateCustomer(cliente: ICustomer): Observable<any> {
     return this.http.post<any>(environment.urlApi + environment.CUSTOMER_CREATE_OR_UPDATE, cliente).pipe(
       map(res => res.data)

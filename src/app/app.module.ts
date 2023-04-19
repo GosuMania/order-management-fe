@@ -61,6 +61,9 @@ import {
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import {ApiInterceptor} from "./interceptors/api.interceptor";
+import {
+  CreaModificaOrdineDialogComponent
+} from "./dialogs/crea-modifica-ordine-dialog/crea-modifica-ordine-dialog.component";
 
 registerLocaleData(localeIt, 'it');
 
@@ -115,6 +118,7 @@ const Ux_Modules = [
     MomentPipe,
     CreaModificaClienteDialogComponent,
     CreaModificaArticoloDialogComponent,
+    CreaModificaOrdineDialogComponent,
     SpinnerComponent
   ],
     imports: [

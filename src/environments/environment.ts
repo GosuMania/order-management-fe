@@ -19,12 +19,16 @@ export const environment = {
   CUSTOMER_GET_BY_ID: 'customer/get-by-id',
   CUSTOMER_DELETE: 'customer/delete',
   CUSTOMER_GET_ALL_WITH_PAGINATION: 'customer/get-all-with-pagination',
+  CUSTOMER_GET_ALL_WITH_PAGINATION_SEARCH: 'customer/get-all-with-pagination-search',
+
 
   PRODUCT_GET_ALL: 'product/get-all',
   PRODUCT_CREATE_OR_UPDATE: 'product/create-or-update',
   PRODUCT_GET_BY_ID: 'product/get-by-id',
   PRODUCT_DELETE: 'product/delete',
   PRODUCT_GET_ALL_WITH_PAGINATION: 'product/get-all-with-pagination',
+  PRODUCT_GET_ALL_WITH_PAGINATION_SEARCH: 'product/get-all-with-pagination-search',
+
 
   COLOR_GET_ALL: 'color/get-all',
   CLOTHING_SIZE_GET_ALL: 'clothing-size/get-all',
@@ -40,7 +44,15 @@ export const environment = {
   DELIVERY_GET_ALL: 'delivery/get-all',
   ORDER_TYPE_GET_ALL: 'order-type/get-all',
   PAYMENT_METHODS_GET_ALL: 'payment-method/get-all',
-  SEASON_TYPE_GET_ALL: 'season-type/get-all'
+  SEASON_TYPE_GET_ALL: 'season-type/get-all',
+
+  ORDER_GET_ALL: 'order/get-all',
+  ORDER_CREATE_OR_UPDATE: 'order/create-or-update',
+  ORDER_GET_BY_ID: 'order/get-by-id',
+  ORDER_DELETE: 'order/delete',
+  ORDER_GET_ALL_WITH_PAGINATION: 'order/get-all-with-pagination',
+  ORDER_GET_ALL_WITH_PAGINATION_SEARCH: 'order/get-all-with-pagination-search',
+  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS: 'order/get-total-pieces-and-amounts'
 };
 
 /*

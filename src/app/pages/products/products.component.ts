@@ -154,8 +154,22 @@ export class ProductsComponent implements AfterViewInit {
     let filterValue = value;
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    // TODO: far ripartire la chiamata
-    this.dataSource.filter = filterValue;
+    if (UTILITY.checkText(filterValue)) {
+      this.productService.getProductWithPaginationListSearch(filterValue, this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
+        .subscribe((data: IProductPagination) => {
+          /*
+          if(data.data.length > 0) {
+            data.data.forEach(product => product.colore = this.setProductColor(product.idColore));
+          }
+           */
+          this.total = data.meta.total;
+          this.lastPage = data.meta.last_page;
+          this.dataSource = new MatTableDataSource<IProduct>(data.data);
+        });
+    } else {
+      this.refreshList();
+    }
+    // this.dataSource.filter = filterValue;
   }
 
   openDialogAddProduct(product?: IProduct) {

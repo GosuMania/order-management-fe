@@ -115,8 +115,23 @@ export class CustomersComponent implements AfterViewInit {
     let filterValue = value;
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    // TODO: far ripartire la chiamata
-    this.dataSource.filter = filterValue;
+    if(UTILITY.checkText(filterValue)) {
+      this.customerService.getCustomerWithPaginationListSearch(filterValue, this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
+        .subscribe((data: ICustomerPagination) => {
+          console.log('Result:', data.meta.total);
+          data.data.forEach(customer => {
+            customer.usernameAgenteRiferimento = this.nomeAgente(customer!.idAgenteRiferimento!);
+          });
+          // this.currentPage = data.meta.current_page;
+          this.total = data.meta.total;
+          this.lastPage = data.meta.last_page;
+          this.dataSource = new MatTableDataSource<ICustomer>(data.data);
+        });
+    } else {
+      this.refreshList();
+    }
+
+    // this.dataSource.filter = filterValue;
   }
 
   openDialogAddClient(cliente?: ICustomer) {

@@ -1,13 +1,16 @@
 <div class="example-container">
   <div class="filters row">
-    <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-      <input matInput [(ngModel)]="cercaValue" (ngModelChange)="applyFilter(cercaValue)" placeholder="Cerca">
-      <button *ngIf="cercaValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
+    <mat-form-field class="col-sm-12 col-md-6 col-lg-5 col-xl-4">
+      <input matInput [(ngModel)]="cercaValue" placeholder="Cerca">
+      <button matTooltip="Pulisci"  *ngIf="cercaValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
         <mat-icon>close</mat-icon>
+      </button>
+      <button matTooltip="Cerca" *ngIf="cercaValue" matSuffix mat-icon-button (click)="applyFilter(cercaValue)">
+        <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
 
-    <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8" style="text-align: end">
+    <div class="col-sm-12 col-md-6 col-lg-7 col-xl-8" style="text-align: end">
       <button class="add-button" mat-fab extended (click)="openDialogAddClient()">
         <mat-icon>add</mat-icon>
         Aggiungi cliente
@@ -47,10 +50,12 @@
       <ng-container matColumnDef="actions" >
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef></th>
         <td class="mat-cell" mat-cell *matCellDef="let element">
-          <button mat-icon-button style="z-index: 99" (click)="openDialogAddClient(element)">
+          <button mat-icon-button style="z-index: 99" (click)="openDialogAddClient(element)"
+                  matTooltip="Modifica cliente">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)">
+          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)"
+                  matTooltip="Elimina cliente">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
