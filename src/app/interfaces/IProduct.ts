@@ -11,6 +11,7 @@ export interface IProduct {
   idProductType: number | null;
   descProductType?: string;
   colorVariants: IColorVariant[] | null;
+  isAdded?: boolean;
 }
 
 export interface IColorVariant {

@@ -5,25 +5,25 @@ import {ISeason, ISeasonType} from "./ISeason";
 import {ISimplePickList} from "./ISimplePickList";
 
 export interface IOrder {
-  id: number;
-  user?: IUser;
-  cliente?: ICustomer;
+  id: number | null;
+  user?: IUser | null;
+  cliente?: ICustomer | null;
   productList: IProduct[];
-  idUser: number;
+  idUser: number | undefined;
   descUser?: string;
-  idCustomer: number;
+  idCustomer: number | null;
   descCustomer?: string;
-  idOrderType: string;
+  idOrderType: string | null;
   descOrderType?: string;
-  idPaymentMethods: number;
+  idPaymentMethods: number | null;
   descPaymentMethods?: string;
-  idSeason: number;
+  idSeason: number | null;
   descSeason?: string;
-  idDelivery: number;
+  idDelivery: number | null;
   descDelivery?: string;
   totalPieces: number;
   totalAmount: number;
-  date: string;
+  date?: string;
 }
 
 export interface IOrderPagination {

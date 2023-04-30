@@ -5,7 +5,6 @@ import {IColor} from "../interfaces/IColor";
 import {environment} from "../../environments/environment";
 import {map} from "rxjs/operators";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ISize} from "../interfaces/ISize";
 import {IProvider} from "../interfaces/IProvider";
 import {IProductType} from "../interfaces/IProductType";
 import {BreakpointObserver} from "@angular/cdk/layout";
@@ -16,14 +15,17 @@ import {ISimplePickList} from "../interfaces/ISimplePickList";
 })
 export class CommonService {
 
-
   public utenti: BehaviorSubject<IUser[]> = new BehaviorSubject<IUser[]>([]);
 
   public colori: BehaviorSubject<IColor[]> = new BehaviorSubject<IColor[]>([]);
 
-  public taglieAbbigliamento: BehaviorSubject<ISize[]> = new BehaviorSubject<ISize[]>([]);
+  public clothingSizeTypeList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
 
-  public tagliaScarpe: BehaviorSubject<ISize[]> = new BehaviorSubject<ISize[]>([]);
+  public clothingSizes: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
+  public clothingNumberSizes: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
+  public shoeSizes: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
 
   public fornitori: BehaviorSubject<IProvider[]> = new BehaviorSubject<IProvider[]>([]);
 
@@ -47,11 +49,15 @@ export class CommonService {
     });
 
     this.getClothingSizeList().subscribe(clothingSizes => {
-      this.taglieAbbigliamento.next(clothingSizes);
+      this.clothingSizes.next(clothingSizes);
+    });
+
+    this.getClothingNumberSizeList().subscribe(clothingNumberSizes => {
+      this.clothingNumberSizes.next(clothingNumberSizes);
     });
 
     this.getShoesSizeList().subscribe(shoeSizes => {
-      this.tagliaScarpe.next(shoeSizes);
+      this.shoeSizes.next(shoeSizes);
     });
 
     this.getProductTypeList().subscribe(productTypes => {
@@ -78,6 +84,12 @@ export class CommonService {
       this.seasonTypeList.next(seasonTypeList);
     });
 
+    this.getClothingSizeTypeList().subscribe(clothingSizeTypeList => {
+      this.clothingSizeTypeList.next(clothingSizeTypeList);
+    });
+
+
+
     this.breakpointObserver.observe(['(max-width: 900px)']).subscribe((res) => {
       setTimeout(() => {
         this.isSmall.next(res.matches);
@@ -99,7 +111,20 @@ export class CommonService {
     );
   }
 
-  // TODO GET SHOES SIZE LIST
+  getClothingSizeTypeList() {
+    const myLink = environment.urlApi + environment.CLOTHING_SIZE_TYPE_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getClothingNumberSizeList() {
+    const myLink = environment.urlApi + environment.CLOTHING_NUMBER_SIZE_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
   getShoesSizeList() {
     const myLink = environment.urlApi + environment.SHOE_SIZE_GET_ALL;
     return this.http.get<any>(myLink).pipe(
@@ -121,7 +146,6 @@ export class CommonService {
     );
   }
 
-
   uploadImage(image: File | undefined): Observable<any> {
     const formData = new FormData();
     const myLink = environment.urlApi + environment.UTILITY_UPLOAD_IMAGE;
@@ -134,7 +158,6 @@ export class CommonService {
 
     return this.http.post(myLink, formData, {responseType: 'json'});
   }
-
 
   getDeliveryList() {
     const myLink = environment.urlApi + environment.DELIVERY_GET_ALL;

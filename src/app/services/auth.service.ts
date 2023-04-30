@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {environment} from "../../environments/environment";
 import {map} from "rxjs/operators";
+import {IUser} from "../interfaces/IUser";
 // User interface
 export class User {
   name!: String;
@@ -14,7 +15,13 @@ export class User {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  public userProfile: BehaviorSubject<IUser | null> = new BehaviorSubject<IUser | null>( null);
+
+  constructor(private http: HttpClient) {
+    this.profileUser().subscribe((data: any) => {
+      this.userProfile.next(data);
+    });
+  }
   // User registration
   register(user: User): Observable<any> {
     return this.http.post(environment.urlApi + 'auth/register', user);

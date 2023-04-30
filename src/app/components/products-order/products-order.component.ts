@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
@@ -24,12 +24,14 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ProviderService} from "../../services/provider.service";
 import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
+import {ProductsComponent} from "../../pages/products/products.component";
+import {ProductsCartComponent} from "../products-cart/products-cart.component";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss'],
+  selector: 'app-products-order',
+  templateUrl: './products-order.component.html',
+  styleUrls: ['./products-order.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
@@ -38,7 +40,9 @@ import {ISimplePickList} from "../../interfaces/ISimplePickList";
     ]),
   ],
 })
-export class ProductsComponent implements AfterViewInit {
+export class ProductsOrderComponent implements AfterViewInit {
+
+  @Input() orderProductList: IProduct[] = [];
 
   campaignOne: UntypedFormGroup;
   startDate: any;
@@ -172,12 +176,12 @@ export class ProductsComponent implements AfterViewInit {
     // this.dataSource.filter = filterValue;
   }
 
-  openDialogAddProduct(product?: IProduct) {
-    const dialogRef = this.dialog.open(CreaModificaArticoloDialogComponent, {
+  openDialogAddProduct() {
+    const dialogRef = this.dialog.open(ProductsCartComponent, {
       height: '90%',
       width: '90%',
-      data: {product: product},
     });
+    /*
 
     dialogRef.componentInstance.refreshList.subscribe(() => {
       this.refreshList();
@@ -187,21 +191,11 @@ export class ProductsComponent implements AfterViewInit {
       dialogRef.componentInstance.refreshList.unsubscribe();
       console.log('The dialog was closed');
     });
+     */
   }
 
   refreshList() {
-
-    this.productService.getProductWithPaginationList(this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
-      .subscribe((data: IProductPagination) => {
-        /*
-        if(data.data.length > 0) {
-          data.data.forEach(product => product.colore = this.setProductColor(product.idColore));
-        }
-         */
-        this.total = data.meta.total;
-        this.lastPage = data.meta.last_page;
-        this.dataSource = new MatTableDataSource<IProduct>(data.data);
-      });
+    this.dataSource = new MatTableDataSource<IProduct>(this.orderProductList);
   }
 
   setProductColor(idColore: number): IColor | null {

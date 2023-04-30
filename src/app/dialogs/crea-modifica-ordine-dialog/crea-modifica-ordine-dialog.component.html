@@ -1,45 +1,46 @@
 <h2 mat-dialog-title>{{title}}</h2>
-<mat-dialog-content #scrollContentDialog *ngIf="articoloForm" class="mat-typography" style="overflow: scroll;">
-  <form class="add-lessons-form" [formGroup]="articoloForm">
+<mat-dialog-content #scrollContentDialog *ngIf="orderForm" class="mat-typography" style="overflow: scroll;">
+  <form class="add-lessons-form" [formGroup]="orderForm">
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Cliente*</mat-label>
-        <mat-select formControlName="fornitore">
-          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
-            {{fornitore.ragioneSociale}}
+        <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let customer of filteredOptionsCustomers | async" [value]="customer">
+            {{customer.ragioneSociale}}
           </mat-option>
-        </mat-select>
-        <ng-container *ngFor="let validation of validationCliente.fornitore">
+        </mat-autocomplete>
+        <ng-container *ngFor="let validation of validationOrder.customer">
           <mat-error
-            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            *ngIf="orderForm.get('customer')!.hasError(validation.type) && orderForm.get('customer')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Tipologia Ordine*</mat-label>
-        <mat-select formControlName="fornitore">
-          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
-            {{fornitore.ragioneSociale}}
+        <mat-select formControlName="orderType">
+          <mat-option *ngFor="let orderType of orderTypes" [value]="orderType">
+            {{orderType.desc}}
           </mat-option>
         </mat-select>
-        <ng-container *ngFor="let validation of validationCliente.fornitore">
+        <ng-container *ngFor="let validation of validationOrder.orderType">
           <mat-error
-            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            *ngIf="orderForm.get('orderType')!.hasError(validation.type) && orderForm.get('orderType')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Modalità Pagamento*</mat-label>
-        <mat-select formControlName="fornitore">
-          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
-            {{fornitore.ragioneSociale}}
+        <mat-select formControlName="paymentMethod">
+          <mat-option *ngFor="let paymentMethod of paymentMethods" [value]="paymentMethod">
+            {{paymentMethod.desc}}
           </mat-option>
         </mat-select>
-        <ng-container *ngFor="let validation of validationCliente.fornitore">
+        <ng-container *ngFor="let validation of validationOrder.paymentMethod">
           <mat-error
-            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            *ngIf="orderForm.get('paymentMethod')!.hasError(validation.type) && orderForm.get('paymentMethod')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
@@ -49,35 +50,48 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Consegna*</mat-label>
-        <mat-select formControlName="fornitore">
-          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
-            {{fornitore.ragioneSociale}}
+        <mat-select formControlName="delivery">
+          <mat-option *ngFor="let delivery of deliveries" [value]="delivery">
+            {{delivery.desc}}
           </mat-option>
         </mat-select>
-        <ng-container *ngFor="let validation of validationCliente.fornitore">
+        <ng-container *ngFor="let validation of validationOrder.delivery">
           <mat-error
-            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            *ngIf="orderForm.get('delivery')!.hasError(validation.type) && orderForm.get('delivery')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Stagione*</mat-label>
-        <mat-select formControlName="fornitore">
-          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
-            {{fornitore.ragioneSociale}}
+        <mat-select formControlName="seasonType">
+          <mat-option *ngFor="let seasonType of seasonTypes" [value]="seasonType">
+            {{seasonType.desc}}
           </mat-option>
         </mat-select>
-        <ng-container *ngFor="let validation of validationCliente.fornitore">
+        <ng-container *ngFor="let validation of validationOrder.seasonType">
           <mat-error
-            *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
+            *ngIf="orderForm.get('seasonType')!.hasError(validation.type) && orderForm.get('seasonType')!.dirty">
             {{validation.message}}
           </mat-error>
         </ng-container>
       </mat-form-field>
     </div>
   </form>
-  <app-products></app-products>
+
+  <div class="filters row">
+    <div class="col-sm-12 col-md-6 col-lg-5 col-xl-4">
+      <h3>Lista Prodotti</h3>
+    </div>
+
+    <div class="col-sm-12 col-md-6 col-lg-7 col-xl-8" style="text-align: end">
+      <button class="add-button" mat-fab extended (click)="openDialogAddProduct()">
+        <mat-icon>add</mat-icon>
+        Aggiungi Articolo
+      </button>
+    </div>
+  </div>
+  <app-products-order #productsOrderComponent [orderProductList]="order.productList"></app-products-order>
 
 
   <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -114,10 +128,10 @@
   </div>
 
 </mat-dialog-content>
-<mat-dialog-content *ngIf="!articoloForm" style="text-align: -webkit-center;">
+<mat-dialog-content *ngIf="!orderForm" style="text-align: -webkit-center;">
   <mat-spinner></mat-spinner>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="processFile(imageInput)" [disabled]="!articoloForm.valid">SALVA</button>
+  <button mat-button (click)="save()" [disabled]="!orderForm.valid">SALVA</button>
   <button mat-button (click)="refreshList.emit()" mat-dialog-close>CHIUDI</button>
 </mat-dialog-actions>

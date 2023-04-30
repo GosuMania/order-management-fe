@@ -1,0 +1,63 @@
+<form class="add-lessons-form" *ngIf="productForm && product" [formGroup]="productForm">
+  <ng-container *ngIf="coloriSelected.length > 0 && taglie.length === 0">
+    <div class="row">
+      <ng-container formArrayName="colorVariants">
+        <ng-container class="section-container-mobile " [formGroupName]="i"
+                      *ngFor="let colorVariant of getColorVariantsForm(productForm); let i = index">
+          <div class="col-sm-6 col-md-3 col-lg-1 col-xl-1" style="width: auto; text-align: center">
+            <strong>{{colorVariant?.controls?.descColore?.value | titlecase}}</strong>
+            <br>
+            <mat-form-field style="max-width: 6rem; text-align: center;">
+              <input matInput type="number" formControlName="stockColor" min="0" [max]="productStock!.colorVariants![i]!.stock">
+            </mat-form-field>
+            ({{productStock!.colorVariants![i]!.stock}})
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="coloriSelected.length > 0 && taglieSelected.length > 0">
+    <div formArrayName="colorVariants">
+      <div class="section-container-mobile"
+           *ngFor="let colorVariant of getColorVariantsForm(productForm); let i = index">
+        <div [formGroupName]="i">
+          <div class="row">
+            <div class="col">
+              <strong>{{colorVariant?.controls?.descColore?.value | titlecase}}</strong>
+            </div>
+          </div>
+          <div class="row" style="display: flex; justify-content: center;">
+            <ng-container formArrayName="sizeVariants">
+              <ng-container
+                *ngFor="let sizeVariant of getSizeVariantsForm(colorVariant); let j = index">
+                <div class="col-sm-6 col-md-3 col-lg-1 col-xl-1" style="width: auto; text-align: center"
+                     [formGroupName]="j">
+                  <mat-form-field style="display: none">
+                    <mat-label>Taglia*</mat-label>
+                    <mat-select formControlName="idSize">
+                      <mat-option *ngFor="let taglia of taglie" [value]="taglia.id">
+                        {{taglia.desc}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  {{taglieSelected[j].desc | uppercase}}
+                  <br>
+                  <mat-form-field style="max-width: 6rem; text-align: center;">
+                    <input matInput type="number" formControlName="stock"
+                           min="0" [max]="productStock!.colorVariants![i]!.sizeVariants![j]!.stock">
+                  </mat-form-field>
+                  ({{productStock!.colorVariants![i]!.sizeVariants![j]!.stock}})
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <br>
+        <hr>
+        <br>
+      </div>
+    </div>
+  </ng-container>
+</form>
+

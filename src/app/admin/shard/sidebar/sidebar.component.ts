@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../pages/authentication/user-profile/user-profile.component";
+import {IUser} from "../../../interfaces/IUser";
 
 @Component({
   selector: 'app-sidebar',
@@ -8,9 +9,9 @@ import {User} from "../../../pages/authentication/user-profile/user-profile.comp
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  userProfile!: User;
+  userProfile: IUser | null = null;
   constructor(public authService: AuthService) {
-    this.authService.profileUser().subscribe((data: any) => {
+    this.authService.userProfile.subscribe((data: IUser | null) => {
       this.userProfile = data;
     });
   }

@@ -1,11 +1,18 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
-import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
+import {AfterViewInit, Component, Inject, Input, ViewChild} from '@angular/core';
+import {
+  FormArray,
+  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators
+} from "@angular/forms";
 import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
 import {ICustomer, ICustomerPagination} from "../../interfaces/ICustomer";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
-import {MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {CustomerService} from "../../services/customer.service";
 import {CommonService} from "../../services/common.service";
 import {AuthService} from "../../services/auth.service";
@@ -24,12 +31,15 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ProviderService} from "../../services/provider.service";
 import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
+import {MatChipInputEvent} from "@angular/material/chips";
+import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
+import {VariantsProductOrderComponent} from "../variants-product-order/variants-product-order.component";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss'],
+  selector: 'app-products-cart',
+  templateUrl: './products-cart.component.html',
+  styleUrls: ['./products-cart.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
@@ -38,7 +48,9 @@ import {ISimplePickList} from "../../interfaces/ISimplePickList";
     ]),
   ],
 })
-export class ProductsComponent implements AfterViewInit {
+export class ProductsCartComponent implements AfterViewInit {
+  @ViewChild('variantsProductOrderComponent') variantsProductOrderComponent!: VariantsProductOrderComponent;
+  utility = UTILITY;
 
   campaignOne: UntypedFormGroup;
   startDate: any;
@@ -56,6 +68,8 @@ export class ProductsComponent implements AfterViewInit {
   taglie: ISimplePickList[] = [];
   fornitori: IProvider[] = [];
   tipologiaProdotti: IProductType[] = [];
+
+  articoloForm!: FormGroup;
 
 
   displayedColumns: string[] = [
@@ -78,11 +92,14 @@ export class ProductsComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<IProduct>([]);
   expandedElement: IProduct[] | null | undefined;
 
+
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
 
-  constructor(public dialog: MatDialog, private productService: ProductService, private commonService: CommonService,
-              private providerService: ProviderService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public orderProductList: IProduct[], public dialog: MatDialog,
+              private productService: ProductService, private commonService: CommonService,
+              private fb: UntypedFormBuilder) {
+
 
     this.commonService.isSmall.subscribe(res => {
       this.isSmall = res;
@@ -141,10 +158,9 @@ export class ProductsComponent implements AfterViewInit {
     }
   }
 
-  delete(id: number) {
-    this.productService.deleteProduct(id).subscribe(res => {
-      this.refreshList();
-    });
+  delete(productInput: IProduct) {
+    this.orderProductList.filter(product => product.id !== productInput.id);
+    productInput.isAdded = false;
   }
 
   applyFilter(value: string) {
@@ -172,25 +188,14 @@ export class ProductsComponent implements AfterViewInit {
     // this.dataSource.filter = filterValue;
   }
 
-  openDialogAddProduct(product?: IProduct) {
-    const dialogRef = this.dialog.open(CreaModificaArticoloDialogComponent, {
-      height: '90%',
-      width: '90%',
-      data: {product: product},
-    });
-
-    dialogRef.componentInstance.refreshList.subscribe(() => {
-      this.refreshList();
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      dialogRef.componentInstance.refreshList.unsubscribe();
-      console.log('The dialog was closed');
-    });
+  addProduct(product: IProduct) {
+    let newProduct = JSON.parse(JSON.stringify(product)) as IProduct;
+    newProduct.colorVariants = this.variantsProductOrderComponent.getColorVariantsToSave(product.idProductType);
+    this.orderProductList.push(newProduct);
+    product.isAdded = true;
   }
 
   refreshList() {
-
     this.productService.getProductWithPaginationList(this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
       .subscribe((data: IProductPagination) => {
         /*
@@ -254,4 +259,43 @@ export class ProductsComponent implements AfterViewInit {
     return total;
 
   }
+
+
+  /*** COLORE ***/
+  get colorVariants(): FormArray {
+    return this.articoloForm.controls["colorVariants"] as FormArray;
+  }
+
+  getColorVariantsForm(form: any) {
+    return form.controls.colorVariants.controls;
+  }
+
+  getSizeVariants(index: number): FormArray {
+    return this.colorVariants.controls[index].get('sizeVariants') as FormArray;
+  }
+
+  getSizeVariantsForm(form: any) {
+    return form.controls.sizeVariants.controls;
+  }
+
+  addColors(product: IProduct) {
+    product.colorVariants?.forEach(color => {
+      let sizeFormArray: FormArray = this.fb.array([]);
+      color.sizeVariants!.forEach((sizeVariant, i) => {
+        const sizeVariantForm = this.fb.group({
+          idSize: [sizeVariant.id, Validators.required],
+          stock: [sizeVariant.stock, Validators.required]
+        });
+        sizeFormArray.push(sizeVariantForm)
+      })
+      const variantForm = this.fb.group({
+        idColor: [color.id, Validators.required],
+        descColore: [color.descColor, Validators.required],
+        sizeVariants: sizeFormArray as FormArray,
+        stockColor: [color.stock]
+      });
+      this.colorVariants.push(variantForm);
+    });
+  }
+
 }

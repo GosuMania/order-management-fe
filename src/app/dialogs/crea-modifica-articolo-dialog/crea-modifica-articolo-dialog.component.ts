@@ -16,14 +16,12 @@ import {IColor} from "../../interfaces/IColor";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
-import {BehaviorSubject, Observable, startWith} from "rxjs";
+import {Observable, startWith} from "rxjs";
 import {map} from "rxjs/operators";
-import {ISize} from "../../interfaces/ISize";
-import {LABEL} from "../../constants/label.constant";
-import {ShoeSizeConstant} from "../../constants/size.constant";
 import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
 import {ProviderService} from "../../services/provider.service";
+import {ISimplePickList} from "../../interfaces/ISimplePickList";
 
 class ImageSnippet {
   pending = false;
@@ -62,12 +60,13 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   filterColori: Observable<IColor[]> | undefined;
   @ViewChild('coloreInput') coloreInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
-  tagliaAbbigliamento: ISize[] = [];
-  tagliaScarpe: ISize[] = [];
-  taglie: ISize[] = [];
-  taglieSelected: ISize[] = [];
+  tagliaAbbigliamento: ISimplePickList[] = [];
+  tagliaScarpe: ISimplePickList[] = [];
+  taglie: ISimplePickList[] = [];
+  taglieSelected: ISimplePickList[] = [];
+  clothingSizeTypes: ISimplePickList[] = [];
   taglieCtrl = new FormControl();
-  filterTaglie: Observable<ISize[]> | undefined;
+  filterTaglie: Observable<ISimplePickList[]> | undefined;
   @ViewChild('tagliaInput') tagliaInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
   fornitori: IProvider[] = [];
@@ -98,6 +97,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     tipologiaProdotto: [
       {type: 'required', message: 'Campo obbligatorio mancante.'},
     ],
+    clothingSizeType: [
+      {type: 'required', message: 'Campo obbligatorio mancante.'},
+    ],
     taglia: [
       {type: 'required', message: 'Campo obbligatorio mancante.'},
     ],
@@ -117,12 +119,12 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       this.colori = colors as IColor[];
     });
 
-    this.commonService.taglieAbbigliamento.subscribe((sizes: ISize[]) => {
-      this.tagliaAbbigliamento = sizes as ISize[];
+    this.commonService.clothingSizes.subscribe((sizes: ISimplePickList[]) => {
+      this.tagliaAbbigliamento = sizes as ISimplePickList[];
     });
 
-    this.commonService.tagliaScarpe.subscribe((sizes: ISize[]) => {
-      this.tagliaScarpe = sizes as ISize[];
+    this.commonService.shoeSizes.subscribe((sizes: ISimplePickList[]) => {
+      this.tagliaScarpe = sizes as ISimplePickList[];
     });
 
     this.commonService.fornitori.subscribe((providers: IProvider[]) => {
@@ -131,6 +133,10 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
     this.commonService.tipologiaProdotti.subscribe((productTypes: IProductType[]) => {
       this.tipologiaProdotti = productTypes as IProductType[];
+    });
+
+    this.commonService.getClothingSizeTypeList().subscribe((clothingSizeTypes: ISimplePickList[]) => {
+      this.clothingSizeTypes = clothingSizeTypes as ISimplePickList[];
     });
 
 
@@ -181,6 +187,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
         Validators.required,
       ])),
       tipologiaProdotto: new UntypedFormControl(productType, Validators.compose([
+        Validators.required,
+      ])),
+      clothingSizeType: new UntypedFormControl(productType, Validators.compose([
         Validators.required,
       ])),
       colorVariants: this.fb.array([]),
@@ -284,7 +293,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
             return 0;
           }
         });
-        this.sizeColumns.push(value.size);
+        this.sizeColumns.push(value.desc);
       }
       this.addSizeVariants(indexColor, null, sizeVariant)
     }
@@ -329,7 +338,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
         this.taglieSelected.forEach(taglia => {
           const size: ISizeVariant = {
             id: taglia.id,
-            descSize: taglia.size,
+            descSize: taglia.desc,
             stock: 0
           };
           sizeVariantArray.push(size);
@@ -402,7 +411,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   }
 
   addTaglia(event: MatChipInputEvent): void {
-    const value = this.taglie.find(taglia => taglia.size === event.value) || null;
+    const value = this.taglie.find(taglia => taglia.desc === event.value) || null;
     if (value) {
       this.taglieSelected.push(value);
       this.taglieSelected.sort((a, b) => {
@@ -414,7 +423,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
           return 0;
         }
       });
-      this.sizeColumns.push(value.size);
+      this.sizeColumns.push(value.desc);
       this.coloriSelected.forEach((color, index) => {
         this.addSizeVariants(index, value.id)
       });
@@ -427,7 +436,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   }
 
   selectedTaglia(event: MatAutocompleteSelectedEvent): void {
-    const value = this.taglie.find(taglia => taglia.size === event.option.value) || null;
+    const value = this.taglie.find(taglia => taglia.desc === event.option.value) || null;
     if (value) {
       this.taglieSelected.push(value);
       this.taglieSelected.sort((a, b) => {
@@ -475,14 +484,14 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     });
   }
 
-  private _filterTaglia(inputTaglia: string | null): ISize[] {
+  private _filterTaglia(inputTaglia: string | null): ISimplePickList[] {
     const tagliaAviable = this.taglie.filter(taglia => {
-      const check = !UTILITY.checkObj(this.taglieSelected.find(tagliaSelected => tagliaSelected.size === taglia.size));
+      const check = !UTILITY.checkObj(this.taglieSelected.find(tagliaSelected => tagliaSelected.desc === taglia.desc));
       return check;
-    }) as ISize[];
+    }) as ISimplePickList[];
     if (UTILITY.checkText(inputTaglia)) {
       const valueFilter = inputTaglia!.toLowerCase();
-      return tagliaAviable.filter(taglia => taglia.size.toLowerCase().includes(valueFilter));
+      return tagliaAviable.filter(taglia => taglia.desc.toLowerCase().includes(valueFilter));
     } else {
       return tagliaAviable;
     }

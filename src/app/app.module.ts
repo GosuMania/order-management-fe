@@ -64,6 +64,9 @@ import {ApiInterceptor} from "./interceptors/api.interceptor";
 import {
   CreaModificaOrdineDialogComponent
 } from "./dialogs/crea-modifica-ordine-dialog/crea-modifica-ordine-dialog.component";
+import {ProductsOrderComponent} from "./components/products-order/products-order.component";
+import {ProductsCartComponent} from "./components/products-cart/products-cart.component";
+import { VariantsProductOrderComponent } from './components/variants-product-order/variants-product-order.component';
 
 registerLocaleData(localeIt, 'it');
 
@@ -119,7 +122,10 @@ const Ux_Modules = [
     CreaModificaClienteDialogComponent,
     CreaModificaArticoloDialogComponent,
     CreaModificaOrdineDialogComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    ProductsOrderComponent,
+    ProductsCartComponent,
+    VariantsProductOrderComponent
   ],
     imports: [
         BrowserModule,

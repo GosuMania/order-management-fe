@@ -24,9 +24,10 @@ export const environment = {
   PRODUCT_GET_ALL_WITH_PAGINATION: 'product/get-all-with-pagination',
   PRODUCT_GET_ALL_WITH_PAGINATION_SEARCH: 'product/get-all-with-pagination-search',
 
-
   COLOR_GET_ALL: 'color/get-all',
+  CLOTHING_SIZE_TYPE_GET_ALL: 'clothing-size-type/get-all',
   CLOTHING_SIZE_GET_ALL: 'clothing-size/get-all',
+  CLOTHING_NUMBER_SIZE_GET_ALL: 'clothing-number-size/get-all',
   PRODUCT_TYPE_GET_ALL: 'product-type/get-all',
   SHOE_SIZE_GET_ALL: 'shoe-size/get-all',
   UTILITY_UPLOAD_IMAGE: 'image/upload',

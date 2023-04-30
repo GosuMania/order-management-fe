@@ -1,0 +1,213 @@
+<div class="example-container">
+
+  <div class="container-table mat-elevation-z8" *ngIf="!isSmall">
+    <table mat-table matSort multiTemplateDataRows [dataSource]="dataSource"
+           (matSortChange)="sortChange($event)">
+
+      <ng-container matColumnDef="immagine">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef> Immagine</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element">
+          <img class="image-product" [src]="element.image ? element.image : '/assets/img/no_image_aviable.jpg'">
+        </td>
+        <td class="mat-cell" mat-cell>
+          vuoto
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="descProvider">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Fornitore</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descProvider}} </td>
+        <td class="mat-cell" mat-cell>
+          vuoto
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="descProductType">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tipologia</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descProductType | titlecase}} </td>
+        <td class="mat-cell" mat-cell>
+          vuoto
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="codiceArticolo">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Codice Articolo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.productCode}} </td>
+        <td class="mat-cell" mat-cell>
+          vuoto
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="descrizioneArticolo">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Descrizione Articolo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.productDesc}} </td>
+        <td class="mat-cell" mat-cell>
+          vuoto
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="prezzo">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Prezzo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.price | currency : 'EUR'}} </td>
+        <td class="mat-cell" mat-cell>
+          vuoto
+        </td>
+      </ng-container>
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="openDialogAddProduct()" style="z-index: 99"
+                  matTooltip="Modifica articolo">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)"
+                  matTooltip="Elimina articolo">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+        <td class="mat-cell" mat-cell>
+          vuoto
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="expand row"
+                  (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+          <div class="expand-detail-row"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <div class="content-detail-row">
+              <table mat-table [dataSource]="element.colorVariants" class="mat-table" style="text-align-last: center;">
+
+                <ng-container matColumnDef="colore">
+                  <th mat-header-cell *matHeaderCellDef class="header-child-table"> Colore</th>
+                  <td mat-cell *matCellDef="let element2"> {{element2.descColor}} </td>
+                  <td mat-footer-cell *matFooterCellDef> Totale articoli</td>
+                </ng-container>
+
+                <ng-container matColumnDef="tagliaDisponibilita">
+                  <ng-container *ngIf="element.idProductType == 0 || element.idProductType == 2">
+                    <th mat-header-cell *matHeaderCellDef class="header-child-table"> Taglia</th>
+                    <td mat-cell *matCellDef="let element2">
+                      <ng-container *ngFor="let el of element2.sizeVariants; let i = index">
+                        {{el.descSize | uppercase}} ({{el.stock}})
+                        <ng-container *ngIf="i < element2.sizeVariants.length - 1"> -</ng-container>
+                      </ng-container>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+                  <ng-container *ngIf="element.idProductType == 1 || element.idProductType == 3">
+                    <th mat-header-cell *matHeaderCellDef class="header-child-table"> Taglia</th>
+                    <td mat-cell *matCellDef="let element2">
+                      Unica ({{element2.stock}})
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container matColumnDef="totale">
+                  <th mat-header-cell *matHeaderCellDef class="header-child-table"> Totale</th>
+                  <td mat-cell *matCellDef="let element2">
+                    <ng-container *ngIf="element.idProductType == 0 || element.idProductType == 2">
+                      {{getTotalStocksForColor(element2.sizeVariants)}}
+                    </ng-container>
+                    <ng-container *ngIf="element.idProductType == 1 || element.idProductType == 3">
+                      {{element2.stock}}
+                    </ng-container>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef>
+                    {{getTotalStocks(element)}}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsInExpand"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsInExpand;"></tr>
+                <tr mat-footer-row *matFooterRowDef="displayedColumnsInExpand; sticky: true"></tr>
+              </table>
+            </div>
+
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+          class="example-element-row"
+          [class.example-expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="expand-detail-row"></tr>
+    </table>
+  </div>
+
+  <div class="container-table" *ngIf="isSmall">
+    <table class="mat-table" mat-table matSort matTableResponsive [dataSource]="dataSource" (matSortChange)="sortChange($event)">
+
+      <ng-container matColumnDef="immagine">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef> Immagine</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element">
+          <img class="image-product" [src]="element.image ? element.image : '/assets/img/no_image_aviable.jpg'">
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="descProvider">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Fornitore</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descProvider}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="descProductType">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tipologia</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descProductType | titlecase}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="codiceArticolo">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Codice Articolo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.productCode}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="descrizioneArticolo">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Descrizione Articolo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.productDesc}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="prezzo">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Prezzo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.price | currency : 'EUR'}} </td>
+      </ng-container>
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="openDialogAddProduct()" style="z-index: 99"
+                  matTooltip="Modifica articolo">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="delete(element.id)"  style="z-index: 99"
+                  matTooltip="Elimina articolo">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr class="mat-header-row" mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+      <tr class="mat-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div *ngIf="dataSource.data.length === 0" class="no-records">
+    Nessun prodotto aggiunto
+  </div>
+
+
+</div>

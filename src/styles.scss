@@ -92,4 +92,8 @@ app-crea-modifica-articolo-dialog {
   height: 100% !important;
 }
 
+mat-dialog-content {
+  height: -webkit-fill-available !important;
+}
+
 
