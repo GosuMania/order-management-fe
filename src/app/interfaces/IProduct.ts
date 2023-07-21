@@ -12,6 +12,7 @@ export interface IProduct {
   descProductType?: string;
   colorVariants: IColorVariant[] | null;
   isAdded?: boolean;
+  disableCartButton?: boolean;
 }
 
 export interface IColorVariant {
@@ -19,12 +20,14 @@ export interface IColorVariant {
   descColor?: string;
   sizeVariants?: ISizeVariant[] | null;
   stock: number | null;
+  stockOrder?: number | null;
 }
 
 export interface ISizeVariant {
   id: number | null;
   descSize?: string;
   stock: number;
+  stockOrder?: number | null;
 }
 
 export interface IProductPagination {

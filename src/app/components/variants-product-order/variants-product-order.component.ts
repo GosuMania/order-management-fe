@@ -1,7 +1,7 @@
-import {Component, ElementRef, EventEmitter, Inject, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, Output} from '@angular/core';
 import {IColorVariant, IProduct, ISizeVariant} from "../../interfaces/IProduct";
 import {UTILITY} from "../../constants/utility.constant";
-import {FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormControl, Validators} from "@angular/forms";
+import {FormArray, FormControl, FormGroup, UntypedFormBuilder, Validators} from "@angular/forms";
 import {IColor} from "../../interfaces/IColor";
 import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
@@ -16,10 +16,12 @@ import {ISimplePickList} from "../../interfaces/ISimplePickList";
   templateUrl: './variants-product-order.component.html',
   styleUrls: ['./variants-product-order.component.scss']
 })
-export class VariantsProductOrderComponent {
+export class VariantsProductOrderComponent implements AfterViewInit {
 
   product!: IProduct;
   @Input() productStock!: IProduct;
+  @Output() changeValue = new EventEmitter<boolean>(false);
+  @Output() isLoaded = new EventEmitter<boolean>(false);
 
 
   isSmall = false;
@@ -74,6 +76,10 @@ export class VariantsProductOrderComponent {
       this.onChanges();
     }, 500)
 
+  }
+
+  ngAfterViewInit(): void {
+    this.isLoaded.emit(true)
   }
 
   ngOnInit() {
@@ -146,6 +152,13 @@ export class VariantsProductOrderComponent {
       stockColor: [colorVariant.stock]
     });
     this.colorVariants.push(variantForm);
+    variantForm.get('stockColor')?.valueChanges.subscribe(
+      value => {
+        console.log('Modifica: ', value);
+        colorVariant.stockOrder = value;
+        this.changeValue.emit(this.disableCartButton());
+      }
+    )
   }
 
   addSizeUpdate(indexColor: number, sizeVariant: ISizeVariant): void {
@@ -198,6 +211,7 @@ export class VariantsProductOrderComponent {
     });
     this.getSizeVariants(indexColor).push(sizeVariantForm);
 
+
     this.getSizeVariants(indexColor).controls.sort((a, b) => {
       const first = a.get('idSize')?.value;
       const second = b.get('idSize')?.value;
@@ -209,6 +223,15 @@ export class VariantsProductOrderComponent {
         return 0;
       }
     });
+
+    sizeVariantForm.get('stock')?.valueChanges.subscribe(
+      value => {
+        console.log('Modifica: ', value);
+        sizeVariant.stockOrder = value;
+        this.changeValue.emit(this.disableCartButton());
+      }
+    )
+
   }
 
   /*** GET VALUES TO SAVE ***/
@@ -241,4 +264,27 @@ export class VariantsProductOrderComponent {
     return colorVariants;
   }
 
+  disableCartButton(): boolean {
+    let check = true;
+    switch (this.product.idProductType) {
+      case this.tipologiaProdotti[0].id:
+      case this.tipologiaProdotti[2].id:
+        this.product.colorVariants?.forEach(variant => {
+          variant.sizeVariants?.forEach(sizeVariant => {
+            if (sizeVariant.stockOrder && sizeVariant.stockOrder > 0) {
+              check = false;
+            }
+          });
+        });
+        break;
+      default:
+        this.product.colorVariants?.forEach(variant => {
+          if (variant.stockOrder && variant.stockOrder > 0) {
+            check = false;
+          }
+        });
+        break;
+    }
+    return check;
+  }
 }

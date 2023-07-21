@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Inject, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Inject, ViewChild} from '@angular/core';
 import {
   FormArray,
   FormGroup,
@@ -7,32 +7,19 @@ import {
   UntypedFormGroup,
   Validators
 } from "@angular/forms";
-import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
-import {ICustomer, ICustomerPagination} from "../../interfaces/ICustomer";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
-import {CustomerService} from "../../services/customer.service";
 import {CommonService} from "../../services/common.service";
-import {AuthService} from "../../services/auth.service";
 import {UTILITY} from "../../constants/utility.constant";
 import * as moment from "moment/moment";
-import {
-  CreaModificaClienteDialogComponent
-} from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
-import {
-  CreaModificaArticoloDialogComponent
-} from "../../dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";
-import {IColorVariant, IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
+import {IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
 import {IColor} from "../../interfaces/IColor";
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {ProviderService} from "../../services/provider.service";
 import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
-import {MatChipInputEvent} from "@angular/material/chips";
-import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {VariantsProductOrderComponent} from "../variants-product-order/variants-product-order.component";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
 
@@ -98,7 +85,7 @@ export class ProductsCartComponent implements AfterViewInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public orderProductList: IProduct[], public dialog: MatDialog,
               private productService: ProductService, private commonService: CommonService,
-              private fb: UntypedFormBuilder) {
+              private fb: UntypedFormBuilder, private cdkRef: ChangeDetectorRef) {
 
 
     this.commonService.isSmall.subscribe(res => {
@@ -205,6 +192,27 @@ export class ProductsCartComponent implements AfterViewInit {
          */
         this.total = data.meta.total;
         this.lastPage = data.meta.last_page;
+        data.data.forEach(product => {
+          this.orderProductList.forEach(orderProduct => {
+            if(product.id === orderProduct.id) {
+              switch (product.idProductType) {
+                case this.tipologiaProdotti[0].id:
+                case this.tipologiaProdotti[2].id:
+                  orderProduct.colorVariants?.forEach((variant, indexColor) => {
+                    variant.sizeVariants?.forEach((sizeVariant, indexSize) => {
+                      product!.colorVariants![indexColor].sizeVariants![indexSize].stockOrder = sizeVariant.stockOrder;
+                    });
+                  });
+                  break;
+                default:
+                  orderProduct.colorVariants?.forEach((variant, index) => {
+                    product!.colorVariants![index].stockOrder = variant.stockOrder;
+                  })
+                  break;
+              }
+            }
+          })
+        })
         this.dataSource = new MatTableDataSource<IProduct>(data.data);
       });
   }
@@ -298,4 +306,31 @@ export class ProductsCartComponent implements AfterViewInit {
     });
   }
 
+  disableCartButton(element: IProduct): boolean {
+    let check = true;
+    switch (element.idProductType) {
+      case this.tipologiaProdotti[0].id:
+      case this.tipologiaProdotti[2].id:
+          element.colorVariants?.forEach(variant => {
+            if(variant.stockOrder && variant.stockOrder > 0) {
+              check = false;
+            }
+          })
+        break;
+      default:
+        element.colorVariants?.forEach(variant => {
+          if (variant.stockOrder && variant.stockOrder > 0) {
+            check = false;
+          }
+        });
+        break;
+    }
+    return check;
+  }
+
+  changeValue(event: boolean, element: IProduct) {
+    element.disableCartButton = event;
+    this.cdkRef.detectChanges();
+    console.log('ooooooooooooooooo');
+  }
 }

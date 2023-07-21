@@ -136,7 +136,6 @@ const Ux_Modules = [
         FormsModule,
         Ux_Modules,
         MatTableResponsiveModule,
-        ReactiveFormsModule,
         FormsModule,
     ],
   exports: [
