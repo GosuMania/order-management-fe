@@ -91,7 +91,7 @@
       </button>
     </div>
   </div>
-  <app-products-order #productsOrderComponent [orderProductList]="order.productList"></app-products-order>
+  <app-products-order #productsOrderComponent [orderProductList]="order.productList" (updateOrderProductList)="reloadList($event)"></app-products-order>
 
 
   <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -132,6 +132,6 @@
   <mat-spinner></mat-spinner>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="save()" [disabled]="!orderForm.valid">SALVA</button>
+  <button mat-button (click)="save()" [disabled]="!orderForm.valid && !myControl.valid && !(order && order.productList && order.productList.length > 0)">SALVA</button>
   <button mat-button (click)="refreshList.emit()" mat-dialog-close>CHIUDI</button>
 </mat-dialog-actions>

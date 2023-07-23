@@ -1,19 +1,12 @@
 import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {
-  FormArray,
-  FormControl, FormGroup,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  Validators
-} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {FormControl, FormGroup, UntypedFormBuilder, UntypedFormControl, Validators} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
 import {AuthService} from "../../services/auth.service";
 import {CommonService} from "../../services/common.service";
-import {IColorVariant, IProduct, ISizeVariant} from "../../interfaces/IProduct";
+import {IProduct} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
 import {IColor} from "../../interfaces/IColor";
-import {MatChipInputEvent} from "@angular/material/chips";
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {Observable, startWith} from "rxjs";
 import {map} from "rxjs/operators";
@@ -25,7 +18,6 @@ import {CustomerService} from "../../services/customer.service";
 import {ICustomer} from "../../interfaces/ICustomer";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
 import {IOrder} from "../../interfaces/IOrder";
-import {IUser} from "../../interfaces/IUser";
 import {ProductsCartComponent} from "../../components/products-cart/products-cart.component";
 import {ProductsOrderComponent} from "../../components/products-order/products-order.component";
 
@@ -48,7 +40,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
 
   @ViewChild('productsOrderComponent') productsOrderComponent!: ProductsOrderComponent;
 
-  myControl = new FormControl<string | ICustomer>('');
+  myControl = new FormControl<null | ICustomer>(null, Validators.required);
 
   alertOK = false;
   alertKO = false;
@@ -200,7 +192,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       idSeason: null,
       idDelivery: null,
       totalPieces: 0,
-      totalAmount:  0,
+      totalAmount: 0,
     };
 
     if (UTILITY.checkObj(data) && UTILITY.checkObj(data.order) && UTILITY.checkText(data.order.id)) {
@@ -215,30 +207,23 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
         Validators.minLength(3)
       ])),
       orderType: new UntypedFormControl(this.order.idOrderType, Validators.compose([
-        Validators.required,
-        Validators.minLength(3)
+        Validators.required
       ])),
       paymentMethod: new UntypedFormControl(this.order.idPaymentMethods, Validators.compose([
-        Validators.required,
-        Validators.minLength(3)
+        Validators.required
       ])),
       delivery: new UntypedFormControl(this.order.idDelivery, Validators.compose([
-        Validators.required,
+        Validators.required
       ])),
       seasonType: new UntypedFormControl(this.order.idSeason, Validators.compose([
-        Validators.required,
-      ])),
-      colorVariants: this.fb.array([]),
+        Validators.required
+      ]))
     });
 
   }
 
   onChanges() {
   }
-
-
-
-
 
 
   private onError() {
@@ -249,42 +234,91 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
 
   /*** SALVATAGGIO ***/
   save() {
-    /*
-    const product: IProduct = {
-      id: UTILITY.checkText(this.order!.id) ? this.order!.id : null,
-      image: this.order.image,
-      idProductType: this.orderForm.get('tipologiaProdotto')?.value.id,
-      descProductType: this.orderForm.get('tipologiaProdotto')?.value.desc,
-      idProvider: this.orderForm.get('fornitore')?.value.id,
-      descProvider: this.orderForm.get('fornitore')?.value.ragioneSociale,
-      productCode: this.orderForm.get('codiceArticolo')?.value,
-      productDesc: this.orderForm.get('descrizioneArticolo')?.value,
-      colorVariants: colorVariants,
-      price: this.orderForm.get('prezzo')?.value,
-    };
-    this.productService.createOrUpdateProduct(product).subscribe(res => {
-      console.log('Risultato', res);
-      if (UTILITY.checkText(this.order!.id)) {
-        this.alertUpdateOK = true;
-      } else {
-        this.alertOK = true;
-        this.order.id = res.id;
-      }
-      this.alertChangeFormatPrice = false;
-      this.scrollToBottom();
-      this.refreshList.emit();
-    }, error => {
-      if (UTILITY.checkText(this.order!.id)) {
-        this.alertUpdateKO = true;
-      } else {
-        this.alertKO = true;
-      }
-      this.alertChangeFormatPrice = false;
-      this.scrollToBottom();
-      console.log('# error salvataggio: ', error);
-    })
 
-     */
+
+    if (this.myControl.value && this.myControl.value!.id) {
+      console.log('Value: ', this.myControl?.value)
+      const totalPieces = this.getTotalPieces(this.order.productList);
+      const totalAmount = this.getTotalAmount(this.order.productList);
+      const order: IOrder = {
+        id: UTILITY.checkText(this.order!.id) ? this.order!.id : null,
+        idCustomer: this.myControl.value.id,
+        descCustomer: this.myControl.value?.ragioneSociale,
+        idUser: this.authService.userProfile.getValue()?.id,
+        descUser: this.authService.userProfile.getValue()?.username,
+        idOrderType: this.orderForm.get('orderType')?.value.id,
+        idPaymentMethods: this.orderForm.get('paymentMethod')?.value.id,
+        idDelivery: this.orderForm.get('delivery')?.value.id,
+        idSeason: this.orderForm.get('seasonType')?.value.id,
+        totalPieces: totalPieces,
+        totalAmount: totalAmount,
+        productList: this.order.productList
+      };
+      this.orderService.createOrUpdateOrder(order).subscribe(result => {
+        console.log(result);
+      }, error => {
+        console.log(error);
+      })
+
+    }
+
+
+    /*
+this.productService.createOrUpdateProduct(product).subscribe(res => {
+  console.log('Risultato', res);
+  if (UTILITY.checkText(this.order!.id)) {
+    this.alertUpdateOK = true;
+  } else {
+    this.alertOK = true;
+    this.order.id = res.id;
+  }
+  this.alertChangeFormatPrice = false;
+  this.scrollToBottom();
+  this.refreshList.emit();
+}, error => {
+  if (UTILITY.checkText(this.order!.id)) {
+    this.alertUpdateKO = true;
+  } else {
+    this.alertKO = true;
+  }
+  this.alertChangeFormatPrice = false;
+  this.scrollToBottom();
+  console.log('# error salvataggio: ', error);
+})
+
+ */
+  }
+
+  getTotalPieces(productList: IProduct[]): number {
+    let total = 0;
+    productList.forEach(product => {
+      product.colorVariants?.forEach(colorVariant => {
+        if (colorVariant.stock)
+          total = total + colorVariant.stock;
+
+        colorVariant.sizeVariants?.forEach(sizeVariant => {
+          if (sizeVariant.stock)
+            total = total + sizeVariant.stock;
+        });
+      });
+    });
+    return total;
+  }
+
+  getTotalAmount(productList: IProduct[]): number {
+    let total = 0;
+    productList.forEach(product => {
+      product.colorVariants?.forEach(colorVariant => {
+        if (colorVariant.stock && product.price)
+          total = total + product.price * colorVariant.stock;
+
+        colorVariant.sizeVariants?.forEach(sizeVariant => {
+          if (sizeVariant.stock && product.price)
+            total = total + product.price *sizeVariant.stock;
+        });
+      });
+    });
+    return total;
   }
 
   /*** ALERT ***/
@@ -316,7 +350,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.order.productList = dialogRef.componentInstance.orderProductList;
-      this.productsOrderComponent.refreshList();
+      this.productsOrderComponent.refreshList(this.order.productList);
       this.cdkRef.detectChanges();
       console.log('The dialog was closed');
     });
@@ -331,5 +365,9 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       console.log('The dialog was closed');
     });
      */
+  }
+
+  reloadList(orderProductList: IProduct[]) {
+    this.order.productList = orderProductList;
   }
 }

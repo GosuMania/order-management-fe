@@ -1,11 +1,16 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Inject, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {
   FormArray,
   FormGroup,
   UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators
 } from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -13,8 +18,7 @@ import {MatSort, Sort} from "@angular/material/sort";
 import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {CommonService} from "../../services/common.service";
 import {UTILITY} from "../../constants/utility.constant";
-import * as moment from "moment/moment";
-import {IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
+import {IProduct, IProductPagination} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
 import {IColor} from "../../interfaces/IColor";
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -36,12 +40,8 @@ import {ISimplePickList} from "../../interfaces/ISimplePickList";
   ],
 })
 export class ProductsCartComponent implements AfterViewInit {
-  @ViewChild('variantsProductOrderComponent') variantsProductOrderComponent!: VariantsProductOrderComponent;
+  @ViewChildren('variantsProductOrderComponent') variantsProductOrderComponent!: QueryList<VariantsProductOrderComponent>;
   utility = UTILITY;
-
-  campaignOne: UntypedFormGroup;
-  startDate: any;
-  endDate: any;
   cercaValue: string = '';
   perPage = 5;
   lastPage = 0;
@@ -50,15 +50,11 @@ export class ProductsCartComponent implements AfterViewInit {
   currentPage = 0;
   total = 0;
   isSmall = false;
-
   colori: IColor[] = [];
   taglie: ISimplePickList[] = [];
   fornitori: IProvider[] = [];
   tipologiaProdotti: IProductType[] = [];
-
   articoloForm!: FormGroup;
-
-
   displayedColumns: string[] = [
     'immagine',
     'descProvider',
@@ -69,13 +65,6 @@ export class ProductsCartComponent implements AfterViewInit {
     'actions'
   ];
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
-
-  displayedColumnsInExpand: string[] = [
-    'colore',
-    'tagliaDisponibilita',
-    'totale'
-  ];
-
   dataSource = new MatTableDataSource<IProduct>([]);
   expandedElement: IProduct[] | null | undefined;
 
@@ -109,33 +98,6 @@ export class ProductsCartComponent implements AfterViewInit {
     // this.dataSource = new MatTableDataSource<IProduct>(ELEMENT_DATA);
     this.refreshList();
 
-    const today = new Date();
-    const month = today.getMonth();
-    const year = today.getFullYear();
-    const day = today.getDate();
-    this.campaignOne = new UntypedFormGroup({
-      start: new UntypedFormControl(null),
-      end: new UntypedFormControl(null),
-    });
-
-    if (UTILITY.checkObj(this.campaignOne)) {
-      this.campaignOne.get('start')?.valueChanges.subscribe(value => {
-        if (UTILITY.checkText(value) && this.startDate !== moment(value).format('YYYY-MM-DD')) {
-          this.startDate = moment(value).format('YYYY-MM-DD');
-        }
-      });
-
-      this.campaignOne.get('end')?.valueChanges.subscribe(value => {
-        if (UTILITY.checkText(value) && this.endDate !== moment(value).format('YYYY-MM-DD')) {
-          this.endDate = moment(value).format('YYYY-MM-DD');
-          if (UTILITY.checkText(this.startDate) && UTILITY.checkText(this.endDate)) {
-            console.log('Date:', this.startDate, ' - ', this.endDate)
-            // TODO far ripartire la chiamata
-          }
-        }
-      });
-    }
-
   }
 
   ngAfterViewInit() {
@@ -145,9 +107,21 @@ export class ProductsCartComponent implements AfterViewInit {
     }
   }
 
-  delete(productInput: IProduct) {
-    this.orderProductList.filter(product => product.id !== productInput.id);
+  delete(productInput: IProduct, index: number) {
     productInput.isAdded = false;
+    productInput.colorVariants?.forEach(colorVariant => {
+      colorVariant.stockOrder = 0;
+      colorVariant.sizeVariants?.forEach(sizeVariant => {
+        sizeVariant.stockOrder = 0;
+      });
+    });
+    this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
+    this.variantsProductOrderComponent.forEach((productOrder) => {
+      if(productOrder.product.id === productInput.id) {
+        productOrder.product = productInput;
+        productOrder.createForm();
+      }
+    });
   }
 
   applyFilter(value: string) {
@@ -175,11 +149,16 @@ export class ProductsCartComponent implements AfterViewInit {
     // this.dataSource.filter = filterValue;
   }
 
-  addProduct(product: IProduct) {
-    let newProduct = JSON.parse(JSON.stringify(product)) as IProduct;
-    newProduct.colorVariants = this.variantsProductOrderComponent.getColorVariantsToSave(product.idProductType);
+  addProduct(productInput: IProduct, index: number) {
+    let newProduct = JSON.parse(JSON.stringify(productInput)) as IProduct;
+    this.variantsProductOrderComponent.forEach((productOrder) => {
+      if(productOrder.product.id === productInput.id) {
+        newProduct.colorVariants = productOrder.getColorVariantsToSave(productInput.idProductType);
+      }
+    });
+    this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
     this.orderProductList.push(newProduct);
-    product.isAdded = true;
+    productInput.isAdded = true;
   }
 
   refreshList() {
@@ -195,18 +174,19 @@ export class ProductsCartComponent implements AfterViewInit {
         data.data.forEach(product => {
           this.orderProductList.forEach(orderProduct => {
             if(product.id === orderProduct.id) {
+              product.isAdded = true;
               switch (product.idProductType) {
                 case this.tipologiaProdotti[0].id:
                 case this.tipologiaProdotti[2].id:
                   orderProduct.colorVariants?.forEach((variant, indexColor) => {
                     variant.sizeVariants?.forEach((sizeVariant, indexSize) => {
-                      product!.colorVariants![indexColor].sizeVariants![indexSize].stockOrder = sizeVariant.stockOrder;
+                      product!.colorVariants![indexColor].sizeVariants![indexSize].stockOrder = sizeVariant.stock;
                     });
                   });
                   break;
                 default:
                   orderProduct.colorVariants?.forEach((variant, index) => {
-                    product!.colorVariants![index].stockOrder = variant.stockOrder;
+                    product!.colorVariants![index].stockOrder = variant.stock;
                   })
                   break;
               }
@@ -215,11 +195,6 @@ export class ProductsCartComponent implements AfterViewInit {
         })
         this.dataSource = new MatTableDataSource<IProduct>(data.data);
       });
-  }
-
-  setProductColor(idColore: number): IColor | null {
-    const colore = this.colori.find(x => x.id === idColore);
-    return colore ? colore : null;
   }
 
 
@@ -241,69 +216,9 @@ export class ProductsCartComponent implements AfterViewInit {
     this.refreshList();
   }
 
-  getTotalStocks(product: IProduct): number {
-    let total = 0;
-    if (product && product.colorVariants && (product.idProductType == 0 || product.idProductType == 2)) {
-      product.colorVariants.forEach(element => {
-        element.sizeVariants?.forEach(element2 => {
-          total = element2.stock + total;
-        });
-      });
-    } else if (product && product.colorVariants) {
-      product.colorVariants.forEach(element => {
-        if (element.stock) {
-          total = element.stock + total;
-        }
-      });
-    }
-    return total;
-  }
-
-  getTotalStocksForColor(variants: ISizeVariant[]): number {
-    let total = 0;
-    variants.forEach(element => {
-      total = element.stock + total;
-    })
-    return total;
-
-  }
-
-
   /*** COLORE ***/
   get colorVariants(): FormArray {
     return this.articoloForm.controls["colorVariants"] as FormArray;
-  }
-
-  getColorVariantsForm(form: any) {
-    return form.controls.colorVariants.controls;
-  }
-
-  getSizeVariants(index: number): FormArray {
-    return this.colorVariants.controls[index].get('sizeVariants') as FormArray;
-  }
-
-  getSizeVariantsForm(form: any) {
-    return form.controls.sizeVariants.controls;
-  }
-
-  addColors(product: IProduct) {
-    product.colorVariants?.forEach(color => {
-      let sizeFormArray: FormArray = this.fb.array([]);
-      color.sizeVariants!.forEach((sizeVariant, i) => {
-        const sizeVariantForm = this.fb.group({
-          idSize: [sizeVariant.id, Validators.required],
-          stock: [sizeVariant.stock, Validators.required]
-        });
-        sizeFormArray.push(sizeVariantForm)
-      })
-      const variantForm = this.fb.group({
-        idColor: [color.id, Validators.required],
-        descColore: [color.descColor, Validators.required],
-        sizeVariants: sizeFormArray as FormArray,
-        stockColor: [color.stock]
-      });
-      this.colorVariants.push(variantForm);
-    });
   }
 
   disableCartButton(element: IProduct): boolean {
@@ -332,5 +247,15 @@ export class ProductsCartComponent implements AfterViewInit {
     element.disableCartButton = event;
     this.cdkRef.detectChanges();
     console.log('ooooooooooooooooo');
+  }
+
+  editProduct(productInput: IProduct) {
+    productInput.isAdded = false;
+    this.variantsProductOrderComponent.forEach((productOrder) => {
+      if(productOrder.product.id === productInput.id) {
+        productOrder.product = productInput;
+        productOrder.createForm();
+      }
+    });
   }
 }

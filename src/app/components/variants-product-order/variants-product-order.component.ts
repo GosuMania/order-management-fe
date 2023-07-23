@@ -88,6 +88,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
 
   createForm() {
     this.product = JSON.parse(JSON.stringify(this.productStock));
+    /*
     this.product.colorVariants?.forEach(
       colorVariant => {
         colorVariant.stock = colorVariant.stock ? 0 : null;
@@ -98,6 +99,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
         )
       }
     )
+     */
 
     this.productForm = this.fb.group({
       colorVariants: this.fb.array([]),
@@ -121,7 +123,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
         }
       });
       this.product.colorVariants.forEach((colorVariant, indexColor) => {
-        if (colorVariant && colorVariant.sizeVariants) {
+        if (colorVariant && colorVariant.sizeVariants && colorVariant.sizeVariants.length > 0) {
           colorVariant.sizeVariants.forEach((sizeVariant, i) => {
             this.addSizeUpdate(indexColor, sizeVariant);
           })
@@ -149,7 +151,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       idColor: [colorVariant.id, Validators.required],
       descColore: [colorVariant.descColor, Validators.required],
       sizeVariants: this.fb.array([]),
-      stockColor: [colorVariant.stock]
+      stockColor: [{value: colorVariant.stockOrder ? colorVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required]
     });
     this.colorVariants.push(variantForm);
     variantForm.get('stockColor')?.valueChanges.subscribe(
@@ -206,7 +208,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
   addSizeVariants(indexColor: number, sizeVariant: ISizeVariant) {
     const sizeVariantForm = this.fb.group({
       idSize: [sizeVariant.id, Validators.required],
-      stock: [sizeVariant.stock, Validators.required],
+      stock: [{value: sizeVariant.stockOrder ? sizeVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required],
       descSize: [sizeVariant.descSize]
     });
     this.getSizeVariants(indexColor).push(sizeVariantForm);
@@ -276,13 +278,29 @@ export class VariantsProductOrderComponent implements AfterViewInit {
             }
           });
         });
+        if(!check) {
+          this.product.colorVariants?.forEach(variant => {
+            variant.sizeVariants?.forEach(sizeVariant => {
+              if (sizeVariant.stockOrder && sizeVariant.stockOrder > sizeVariant.stock!) {
+                check = true;
+              }
+            });
+          });
+        }
         break;
       default:
-        this.product.colorVariants?.forEach(variant => {
+        this.product.colorVariants?.forEach((variant) => {
           if (variant.stockOrder && variant.stockOrder > 0) {
             check = false;
           }
         });
+        if(!check) {
+          this.product.colorVariants?.forEach((variant) => {
+            if (variant.stockOrder && variant.stockOrder > variant.stock!) {
+              check = true;
+            }
+          });
+        }
         break;
     }
     return check;

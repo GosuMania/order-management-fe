@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
@@ -43,10 +43,8 @@ import {ISimplePickList} from "../../interfaces/ISimplePickList";
 export class ProductsOrderComponent implements AfterViewInit {
 
   @Input() orderProductList: IProduct[] = [];
+  @Output() updateOrderProductList = new EventEmitter<any>();
 
-  campaignOne: UntypedFormGroup;
-  startDate: any;
-  endDate: any;
   cercaValue: string = '';
   perPage = 5;
   lastPage = 0;
@@ -109,33 +107,6 @@ export class ProductsOrderComponent implements AfterViewInit {
     // this.dataSource = new MatTableDataSource<IProduct>(ELEMENT_DATA);
     this.refreshList();
 
-    const today = new Date();
-    const month = today.getMonth();
-    const year = today.getFullYear();
-    const day = today.getDate();
-    this.campaignOne = new UntypedFormGroup({
-      start: new UntypedFormControl(null),
-      end: new UntypedFormControl(null),
-    });
-
-    if (UTILITY.checkObj(this.campaignOne)) {
-      this.campaignOne.get('start')?.valueChanges.subscribe(value => {
-        if (UTILITY.checkText(value) && this.startDate !== moment(value).format('YYYY-MM-DD')) {
-          this.startDate = moment(value).format('YYYY-MM-DD');
-        }
-      });
-
-      this.campaignOne.get('end')?.valueChanges.subscribe(value => {
-        if (UTILITY.checkText(value) && this.endDate !== moment(value).format('YYYY-MM-DD')) {
-          this.endDate = moment(value).format('YYYY-MM-DD');
-          if (UTILITY.checkText(this.startDate) && UTILITY.checkText(this.endDate)) {
-            console.log('Date:', this.startDate, ' - ', this.endDate)
-            // TODO far ripartire la chiamata
-          }
-        }
-      });
-    }
-
   }
 
   ngAfterViewInit() {
@@ -145,10 +116,16 @@ export class ProductsOrderComponent implements AfterViewInit {
     }
   }
 
-  delete(id: number) {
-    this.productService.deleteProduct(id).subscribe(res => {
-      this.refreshList();
+  delete(productInput: IProduct) {
+    productInput.isAdded = false;
+    productInput.colorVariants?.forEach(colorVariant => {
+      colorVariant.stockOrder = 0;
+      colorVariant.sizeVariants?.forEach(sizeVariant => {
+        sizeVariant.stockOrder = 0;
+      });
     });
+    this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
+    this.refreshList();
   }
 
   applyFilter(value: string) {
@@ -194,8 +171,13 @@ export class ProductsOrderComponent implements AfterViewInit {
      */
   }
 
-  refreshList() {
+  refreshList(list? : IProduct[]) {
+    if(list) {
+      this.orderProductList = list;
+    }
     this.dataSource = new MatTableDataSource<IProduct>(this.orderProductList);
+
+    this.updateOrderProductList.emit(this.orderProductList);
   }
 
   setProductColor(idColore: number): IColor | null {

@@ -57,11 +57,13 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
+          <!--
           <button mat-icon-button (click)="openDialogAddProduct()" style="z-index: 99"
                   matTooltip="Modifica articolo">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)"
+          -->
+          <button mat-icon-button style="z-index: 99" (click)="delete(element)"
                   matTooltip="Elimina articolo">
             <mat-icon>delete</mat-icon>
           </button>
