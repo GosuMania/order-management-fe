@@ -5,6 +5,7 @@ export interface IUser {
   uid?: string;
   email: string;
   username: string;
+  name: string;
   password?: string;
   typeAccount: string;
   agency: string;

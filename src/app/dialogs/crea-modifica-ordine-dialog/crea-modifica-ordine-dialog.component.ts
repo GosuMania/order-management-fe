@@ -225,7 +225,6 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
   onChanges() {
   }
 
-
   private onError() {
     this.selectedFile.pending = false;
     this.selectedFile.status = 'fail';
@@ -234,8 +233,6 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
 
   /*** SALVATAGGIO ***/
   save() {
-
-
     if (this.myControl.value && this.myControl.value!.id) {
       console.log('Value: ', this.myControl?.value)
       const totalPieces = this.getTotalPieces(this.order.productList);
@@ -245,48 +242,31 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
         idCustomer: this.myControl.value.id,
         descCustomer: this.myControl.value?.ragioneSociale,
         idUser: this.authService.userProfile.getValue()?.id,
-        descUser: this.authService.userProfile.getValue()?.username,
+        descUser: this.authService.userProfile.getValue()?.name,
         idOrderType: this.orderForm.get('orderType')?.value.id,
+        descOrderType: this.orderForm.get('orderType')?.value.desc,
         idPaymentMethods: this.orderForm.get('paymentMethod')?.value.id,
+        descPaymentMethods: this.orderForm.get('paymentMethod')?.value.desc,
         idDelivery: this.orderForm.get('delivery')?.value.id,
+        descDelivery: this.orderForm.get('delivery')?.value.desc,
         idSeason: this.orderForm.get('seasonType')?.value.id,
+        descSeason: this.orderForm.get('seasonType')?.value.desc,
         totalPieces: totalPieces,
         totalAmount: totalAmount,
         productList: this.order.productList
       };
-      this.orderService.createOrUpdateOrder(order).subscribe(result => {
-        console.log(result);
-      }, error => {
-        console.log(error);
-      })
-
+      this.orderService.createOrUpdateOrder(order).subscribe({
+        next: value => {
+          console.log('Result: ', value)
+        },
+        error: err => {
+          console.log('Result: ', err)
+        }
+      });
+    } else {
+      this.myControl.setErrors({'incorrect': true});
     }
 
-
-    /*
-this.productService.createOrUpdateProduct(product).subscribe(res => {
-  console.log('Risultato', res);
-  if (UTILITY.checkText(this.order!.id)) {
-    this.alertUpdateOK = true;
-  } else {
-    this.alertOK = true;
-    this.order.id = res.id;
-  }
-  this.alertChangeFormatPrice = false;
-  this.scrollToBottom();
-  this.refreshList.emit();
-}, error => {
-  if (UTILITY.checkText(this.order!.id)) {
-    this.alertUpdateKO = true;
-  } else {
-    this.alertKO = true;
-  }
-  this.alertChangeFormatPrice = false;
-  this.scrollToBottom();
-  console.log('# error salvataggio: ', error);
-})
-
- */
   }
 
   getTotalPieces(productList: IProduct[]): number {
@@ -314,7 +294,7 @@ this.productService.createOrUpdateProduct(product).subscribe(res => {
 
         colorVariant.sizeVariants?.forEach(sizeVariant => {
           if (sizeVariant.stock && product.price)
-            total = total + product.price *sizeVariant.stock;
+            total = total + product.price * sizeVariant.stock;
         });
       });
     });

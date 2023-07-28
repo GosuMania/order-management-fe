@@ -67,6 +67,9 @@ import {
 import {ProductsOrderComponent} from "./components/products-order/products-order.component";
 import {ProductsCartComponent} from "./components/products-cart/products-cart.component";
 import { VariantsProductOrderComponent } from './components/variants-product-order/variants-product-order.component';
+import {
+  CreaModificaVariantsDialogComponent
+} from "./dialogs/crea-modifica-variants-dialog/crea-modifica-variants-dialog.component";
 
 registerLocaleData(localeIt, 'it');
 
@@ -125,7 +128,8 @@ const Ux_Modules = [
     SpinnerComponent,
     ProductsOrderComponent,
     ProductsCartComponent,
-    VariantsProductOrderComponent
+    VariantsProductOrderComponent,
+    CreaModificaVariantsDialogComponent
   ],
     imports: [
         BrowserModule,

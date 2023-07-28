@@ -26,6 +26,9 @@ import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
 import {VariantsProductOrderComponent} from "../variants-product-order/variants-product-order.component";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
+import {
+  CreaModificaVariantsDialogComponent
+} from "../../dialogs/crea-modifica-variants-dialog/crea-modifica-variants-dialog.component";
 
 @Component({
   selector: 'app-products-cart',
@@ -150,6 +153,27 @@ export class ProductsCartComponent implements AfterViewInit {
   }
 
   addProduct(productInput: IProduct, index: number) {
+    const dialogRef = this.dialog.open(CreaModificaVariantsDialogComponent, {
+      minHeight: 'calc(100vh - 90px)',
+      height: '90%',
+      width: '90%',
+      data: productInput
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      let newProduct = dialogRef.componentInstance.product as IProduct;
+      this.variantsProductOrderComponent.forEach((productOrder) => {
+        if(productOrder.product.id === productInput.id) {
+          newProduct.colorVariants = productOrder.getColorVariantsToSave(productInput.idProductType);
+        }
+      });
+      this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
+      this.orderProductList.push(newProduct);
+      productInput.isAdded = true;
+      this.cdkRef.detectChanges();
+      console.log('The dialog was closed: ', result);
+    });
+    /*
     let newProduct = JSON.parse(JSON.stringify(productInput)) as IProduct;
     this.variantsProductOrderComponent.forEach((productOrder) => {
       if(productOrder.product.id === productInput.id) {
@@ -159,6 +183,7 @@ export class ProductsCartComponent implements AfterViewInit {
     this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
     this.orderProductList.push(newProduct);
     productInput.isAdded = true;
+     */
   }
 
   refreshList() {

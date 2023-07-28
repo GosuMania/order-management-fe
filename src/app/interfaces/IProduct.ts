@@ -17,6 +17,7 @@ export interface IProduct {
 
 export interface IColorVariant {
   id: number | null;
+  idProductVariant?: number;
   descColor?: string;
   sizeVariants?: ISizeVariant[] | null;
   stock: number | null;
@@ -25,6 +26,7 @@ export interface IColorVariant {
 
 export interface ISizeVariant {
   id: number | null;
+  idProductVariant?: number;
   descSize?: string;
   stock: number;
   stockOrder?: number | null;

@@ -149,6 +149,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
   addColorVariantsUpdate(indexColor: number, colorVariant: IColorVariant) {
     const variantForm = this.fb.group({
       idColor: [colorVariant.id, Validators.required],
+      idProductVariant: [colorVariant.idProductVariant, Validators.required],
       descColore: [colorVariant.descColor, Validators.required],
       sizeVariants: this.fb.array([]),
       stockColor: [{value: colorVariant.stockOrder ? colorVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required]
@@ -208,6 +209,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
   addSizeVariants(indexColor: number, sizeVariant: ISizeVariant) {
     const sizeVariantForm = this.fb.group({
       idSize: [sizeVariant.id, Validators.required],
+      idProductVariant: [sizeVariant.idProductVariant, Validators.required],
       stock: [{value: sizeVariant.stockOrder ? sizeVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required],
       descSize: [sizeVariant.descSize]
     });
@@ -246,6 +248,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
         color.controls.sizeVariants.controls.forEach((size: any, indexSize: number) => {
           const sizeVariant: ISizeVariant = {
             id: size.value.idSize,
+            idProductVariant: size.value.idProductVariant,
             stock: size.value.stock,
             descSize: size.value.descSize
           };
@@ -257,6 +260,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
 
       const colorVariant: IColorVariant = {
         id: color.value.idColor,
+        idProductVariant: color.value.idProductVariant,
         sizeVariants: sizeVariants,
         stock: stock,
         descColor: color.value.descColore

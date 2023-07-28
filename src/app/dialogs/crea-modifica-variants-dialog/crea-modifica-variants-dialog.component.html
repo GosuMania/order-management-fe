@@ -1,0 +1,10 @@
+<mat-dialog-content #scrollContentDialog class="mat-typography">
+  <app-variants-product-order #variantsProductOrderComponent *ngIf="utility.checkObj(product)"
+                              [productStock]="product"
+                              (changeValue)="changeValue($event, product)"></app-variants-product-order>
+  <app-spinner *ngIf="!utility.checkObj(product)"></app-spinner>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button>CONFERMA</button>
+  <button mat-button mat-dialog-close>CHIUDI</button>
+</mat-dialog-actions>
