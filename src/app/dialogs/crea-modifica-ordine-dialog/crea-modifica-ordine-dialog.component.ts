@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, UntypedFormBuilder, UntypedFormControl, Validators} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
 import {AuthService} from "../../services/auth.service";
@@ -107,7 +107,8 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
               private authService: AuthService, private commonService: CommonService, private providerService: ProviderService,
               private orderService: OrderService, private customerService: CustomerService, public dialog: MatDialog,
-              private cdkRef: ChangeDetectorRef) {
+              private cdkRef: ChangeDetectorRef, public dialogRef: MatDialogRef<CreaModificaOrdineDialogComponent>) {
+    this.dialogRef.disableClose = true;
 
     this.commonService.isSmall.subscribe(res => {
       this.isSmall = res;

@@ -110,7 +110,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
-              private authService: AuthService, private commonService: CommonService, private providerService: ProviderService) {
+              private authService: AuthService, private commonService: CommonService, private providerService: ProviderService,
+              public dialogRef: MatDialogRef<CreaModificaArticoloDialogComponent>) {
+    this.dialogRef.disableClose = true;
 
     this.commonService.isSmall.subscribe(res => {
       this.isSmall = res;

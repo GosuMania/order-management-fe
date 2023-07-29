@@ -159,7 +159,6 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       value => {
         console.log('Modifica: ', value);
         colorVariant.stockOrder = value;
-        this.changeValue.emit(this.disableCartButton());
       }
     )
   }
@@ -232,7 +231,6 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       value => {
         console.log('Modifica: ', value);
         sizeVariant.stockOrder = value;
-        this.changeValue.emit(this.disableCartButton());
       }
     )
 

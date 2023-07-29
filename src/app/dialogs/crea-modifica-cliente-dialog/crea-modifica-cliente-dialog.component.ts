@@ -104,7 +104,9 @@ export class CreaModificaClienteDialogComponent implements OnInit {
   };
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private customerService: CustomerService,
-              private authService: AuthService, private commonService: CommonService) {
+              private authService: AuthService, private commonService: CommonService,
+              public dialogRef: MatDialogRef<CreaModificaClienteDialogComponent>) {
+    this.dialogRef.disableClose = true;
     this.agenti = [];
     this.commonService.utenti.subscribe((utenti: IUser[]) => {
       if (utenti.length === 0) {

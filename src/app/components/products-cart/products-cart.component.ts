@@ -1,17 +1,5 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  QueryList,
-  ViewChild,
-  ViewChildren
-} from '@angular/core';
-import {
-  FormArray,
-  FormGroup,
-  UntypedFormBuilder,
-} from "@angular/forms";
+import {AfterViewInit, ChangeDetectorRef, Component, Inject, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {FormArray, FormGroup, UntypedFormBuilder,} from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
@@ -120,7 +108,7 @@ export class ProductsCartComponent implements AfterViewInit {
     });
     this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
     this.variantsProductOrderComponent.forEach((productOrder) => {
-      if(productOrder.product.id === productInput.id) {
+      if (productOrder.product.id === productInput.id) {
         productOrder.product = productInput;
         productOrder.createForm();
       }
@@ -161,29 +149,16 @@ export class ProductsCartComponent implements AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      let newProduct = dialogRef.componentInstance.product as IProduct;
-      this.variantsProductOrderComponent.forEach((productOrder) => {
-        if(productOrder.product.id === productInput.id) {
-          newProduct.colorVariants = productOrder.getColorVariantsToSave(productInput.idProductType);
-        }
-      });
-      this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
-      this.orderProductList.push(newProduct);
-      productInput.isAdded = true;
-      this.cdkRef.detectChanges();
-      console.log('The dialog was closed: ', result);
-    });
-    /*
-    let newProduct = JSON.parse(JSON.stringify(productInput)) as IProduct;
-    this.variantsProductOrderComponent.forEach((productOrder) => {
-      if(productOrder.product.id === productInput.id) {
-        newProduct.colorVariants = productOrder.getColorVariantsToSave(productInput.idProductType);
+      if(result) {
+        let newProduct = result as IProduct;
+        this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
+        this.orderProductList.push(newProduct);
+        productInput.isAdded = true;
+        this.cdkRef.detectChanges();
+        console.log('The dialog was closed: ', result);
       }
+
     });
-    this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
-    this.orderProductList.push(newProduct);
-    productInput.isAdded = true;
-     */
   }
 
   refreshList() {
@@ -198,7 +173,7 @@ export class ProductsCartComponent implements AfterViewInit {
         this.lastPage = data.meta.last_page;
         data.data.forEach(product => {
           this.orderProductList.forEach(orderProduct => {
-            if(product.id === orderProduct.id) {
+            if (product.id === orderProduct.id) {
               product.isAdded = true;
               switch (product.idProductType) {
                 case this.tipologiaProdotti[0].id:
@@ -251,11 +226,11 @@ export class ProductsCartComponent implements AfterViewInit {
     switch (element.idProductType) {
       case this.tipologiaProdotti[0].id:
       case this.tipologiaProdotti[2].id:
-          element.colorVariants?.forEach(variant => {
-            if(variant.stockOrder && variant.stockOrder > 0) {
-              check = false;
-            }
-          })
+        element.colorVariants?.forEach(variant => {
+          if (variant.stockOrder && variant.stockOrder > 0) {
+            check = false;
+          }
+        })
         break;
       default:
         element.colorVariants?.forEach(variant => {
@@ -277,7 +252,7 @@ export class ProductsCartComponent implements AfterViewInit {
   editProduct(productInput: IProduct) {
     productInput.isAdded = false;
     this.variantsProductOrderComponent.forEach((productOrder) => {
-      if(productOrder.product.id === productInput.id) {
+      if (productOrder.product.id === productInput.id) {
         productOrder.product = productInput;
         productOrder.createForm();
       }
