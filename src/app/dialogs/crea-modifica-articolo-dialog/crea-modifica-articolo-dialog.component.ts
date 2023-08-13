@@ -111,7 +111,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
               private authService: AuthService, private commonService: CommonService, private providerService: ProviderService,
-              public dialogRef: MatDialogRef<CreaModificaArticoloDialogComponent>) {
+              public dialogRef: MatDialogRef<CreaModificaArticoloDialogComponent>, private cdkRef: ChangeDetectorRef) {
     this.dialogRef.disableClose = true;
 
     this.commonService.isSmall.subscribe(res => {
@@ -158,6 +158,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       descProvider: '',
       productCode: '',
       productDesc: '',
+      idClothingSizeType: null,
       colorVariants: [],
       price: null,
     };
@@ -200,7 +201,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     if (UTILITY.checkText(this.articolo.id) && this.articolo.colorVariants && this.articolo.colorVariants?.length > 0) {
       switch (this.articolo.idProductType) {
         case this.tipologiaProdotti[0].id:
-          this.taglie = this.tagliaAbbigliamento;
+          if(this.articolo.idClothingSizeType)
+          this.taglie = this.tagliaAbbigliamento.slice(0, 8);
+          this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[0]);
           break;
         case this.tipologiaProdotti[2].id:
           this.taglie = this.tagliaScarpe;
@@ -246,7 +249,8 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       this.colorVariants.controls = [];
       switch (value.id) {
         case this.tipologiaProdotti[0].id:
-          this.taglie = this.tagliaAbbigliamento;
+          this.taglie = this.tagliaAbbigliamento.slice(0, 9);
+          this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[0]);
           break;
         case this.tipologiaProdotti[2].id:
           this.taglie = this.tagliaScarpe;
@@ -255,6 +259,25 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
           this.taglie = [];
           break;
       }
+      this.cdkRef.detectChanges();
+    });
+
+    this.articoloForm.get('clothingSizeType')?.valueChanges.subscribe(value => {
+      console.log('Value Tipologia Prodotto:', value);
+      this.coloriSelected = [];
+      this.taglieSelected = [];
+      this.taglie = [];
+      this.colorVariants.controls = [];
+      switch (value.id) {
+        case this.clothingSizeTypes[0].id:
+          this.taglie = this.tagliaAbbigliamento.slice(0, 9);
+          break;
+        case this.clothingSizeTypes[1].id:
+          this.taglie = this.tagliaAbbigliamento.slice(9, this.tagliaAbbigliamento.length);
+          break;
+      }
+      this.taglieCtrl.setValue(null);
+      this.cdkRef.detectChanges();
     });
   }
 
@@ -544,6 +567,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       idProductType: this.articoloForm.get('tipologiaProdotto')?.value.id,
       descProductType: this.articoloForm.get('tipologiaProdotto')?.value.desc,
       idProvider: this.articoloForm.get('fornitore')?.value.id,
+      idClothingSizeType:
+        this.articoloForm.get('clothingSizeType') && this.articoloForm.get('clothingSizeType')?.value ?
+          this.articoloForm.get('clothingSizeType')?.value.id : null,
       descProvider: this.articoloForm.get('fornitore')?.value.ragioneSociale,
       productCode: this.articoloForm.get('codiceArticolo')?.value,
       productDesc: this.articoloForm.get('descrizioneArticolo')?.value,

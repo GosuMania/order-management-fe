@@ -10,6 +10,7 @@ export interface IProduct {
   price: number | null;
   idProductType: number | null;
   descProductType?: string;
+  idClothingSizeType: number | null;
   colorVariants: IColorVariant[] | null;
   isAdded?: boolean;
   disableCartButton?: boolean;

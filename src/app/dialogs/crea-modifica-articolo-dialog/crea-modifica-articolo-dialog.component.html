@@ -90,7 +90,7 @@
           </mat-error>
         </ng-container>
       </mat-form-field>
-      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4" *ngIf="taglie.length > 0 && taglie[0].desc !== tagliaScarpe[0].desc">
         <mat-label>Tipologia taglia abbigliamento*</mat-label>
         <mat-select formControlName="clothingSizeType">
           <mat-option *ngFor="let tipologia of clothingSizeTypes" [value]="tipologia">
