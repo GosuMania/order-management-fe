@@ -205,8 +205,11 @@ export class OrdersComponent implements AfterViewInit {
   }
 
   delete(order: IOrder) {
-    this.orderService.deleteOrder(order).subscribe(res => {
-      this.refreshList();
+    this.orderService.getOrderById(order.id!).subscribe(result => {
+      order.productList = JSON.parse(JSON.stringify(result.productList));
+      this.orderService.deleteOrder(order).subscribe(res => {
+        this.refreshList();
+      });
     });
   }
 }
