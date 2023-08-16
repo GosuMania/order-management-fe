@@ -1,8 +1,7 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
-import {ICustomer, ICustomerPagination} from "../../interfaces/ICustomer";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
@@ -11,22 +10,20 @@ import {CommonService} from "../../services/common.service";
 import {AuthService} from "../../services/auth.service";
 import {UTILITY} from "../../constants/utility.constant";
 import * as moment from "moment/moment";
-import {
-  CreaModificaClienteDialogComponent
-} from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
 import {OrderService} from "../../services/order.service";
 import {IOrder, IOrderPagination} from "../../interfaces/IOrder";
 import {
   CreaModificaOrdineDialogComponent
 } from "../../dialogs/crea-modifica-ordine-dialog/crea-modifica-ordine-dialog.component";
+import {LABEL} from "../../constants/label.constant";
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.scss']
 })
-export class OrdersComponent implements AfterViewInit  {
-
+export class OrdersComponent implements AfterViewInit {
+  label = LABEL;
   campaignOne: UntypedFormGroup;
   startDate: any;
   endDate: any;
@@ -59,7 +56,7 @@ export class OrdersComponent implements AfterViewInit  {
   @ViewChild(MatSort) sort: MatSort | undefined;
 
   constructor(public dialog: MatDialog, private customerService: CustomerService, public commonService: CommonService,
-              private authService: AuthService, private orderService: OrderService) {
+              private authService: AuthService, private orderService: OrderService, private cdkRef: ChangeDetectorRef) {
     this.agenti = [];
     this.commonService.utenti.subscribe((usersApi: IUser[]) => {
       if (usersApi.length === 0) {
@@ -117,7 +114,7 @@ export class OrdersComponent implements AfterViewInit  {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.dataSource.filter = filterValue;
-    if(UTILITY.checkText(filterValue)) {
+    if (UTILITY.checkText(filterValue)) {
       this.orderService.getOrderWithPaginationListSearch(filterValue, this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
         .subscribe((data: IOrderPagination) => {
           this.total = data.meta.total;
@@ -126,6 +123,25 @@ export class OrdersComponent implements AfterViewInit  {
         });
     } else {
       this.refreshList();
+    }
+  }
+
+  openDialog(order: IOrder, isCopy?: boolean) {
+    if (order) {
+      this.orderService.getOrderById(order.id!).subscribe(result => {
+        if (isCopy) {
+          const copyOrder = JSON.parse(JSON.stringify(order));
+          copyOrder.productList = JSON.parse(JSON.stringify(result.productList));
+          copyOrder.id = null;
+          this.openDialogNewOrder(copyOrder)
+        } else {
+          order.productList = JSON.parse(JSON.stringify(result.productList));
+          this.openDialogNewOrder(order);
+
+        }
+      })
+    } else {
+      this.openDialogNewOrder();
     }
   }
 
@@ -181,15 +197,15 @@ export class OrdersComponent implements AfterViewInit  {
     console.log('Stort: ', event);
     this.ascDesc = event.direction.toUpperCase();
     this.orderBy = UTILITY.camelcaseToSnakeCase(event.active);
-    if(!UTILITY.checkText(this.ascDesc) || !UTILITY.checkText(this.orderBy)) {
+    if (!UTILITY.checkText(this.ascDesc) || !UTILITY.checkText(this.orderBy)) {
       this.ascDesc = 'ASC';
       this.orderBy = 'id';
     }
     this.refreshList();
   }
 
-  delete(id: number) {
-    this.orderService.deleteOrder(id).subscribe(res => {
+  delete(order: IOrder) {
+    this.orderService.deleteOrder(order).subscribe(res => {
       this.refreshList();
     });
   }

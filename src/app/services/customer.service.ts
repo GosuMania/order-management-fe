@@ -1,15 +1,24 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {environment} from "../../environments/environment";
 import {map} from "rxjs/operators";
 import {ICustomer} from "../interfaces/ICustomer";
+import {IUser} from "../interfaces/IUser";
 
 @Injectable({
   providedIn: 'root',
 })
 export class CustomerService {
-  constructor(private http: HttpClient) {}
+  public customers: BehaviorSubject<ICustomer[]> = new BehaviorSubject<ICustomer[]>([]);
+
+  constructor(private http: HttpClient) {
+    this.getCustomerList().subscribe(customers => {
+      this.customers.next(customers);
+    })
+  }
+
+
 
   getCustomerList() {
     const myLink = environment.urlApi + environment.CUSTOMER_GET_ALL;

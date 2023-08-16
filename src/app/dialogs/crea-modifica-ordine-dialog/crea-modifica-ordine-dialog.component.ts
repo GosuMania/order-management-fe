@@ -1,4 +1,13 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, UntypedFormBuilder, UntypedFormControl, Validators} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
@@ -20,6 +29,8 @@ import {ISimplePickList} from "../../interfaces/ISimplePickList";
 import {IOrder} from "../../interfaces/IOrder";
 import {ProductsCartComponent} from "../../components/products-cart/products-cart.component";
 import {ProductsOrderComponent} from "../../components/products-order/products-order.component";
+import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
+import {LABEL} from "../../constants/label.constant";
 
 class ImageSnippet {
   pending = false;
@@ -34,11 +45,12 @@ class ImageSnippet {
   templateUrl: './crea-modifica-ordine-dialog.component.html',
   styleUrls: ['./crea-modifica-ordine-dialog.component.scss']
 })
-export class CreaModificaOrdineDialogComponent implements OnInit {
+export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit {
   @ViewChild('imageInput') imageInput: ElementRef<HTMLInputElement> = {} as ElementRef;
   @ViewChild('scrollContentDialog') private scrollContentDialog: ElementRef = {} as ElementRef;
 
   @ViewChild('productsOrderComponent') productsOrderComponent!: ProductsOrderComponent;
+  @ViewChild('auto') autoTrigger!: MatAutocomplete;
 
   myControl = new FormControl<null | ICustomer>(null, Validators.required);
 
@@ -63,6 +75,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
   @ViewChild('coloreInput') coloreInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
   tagliaAbbigliamento: ISimplePickList[] = [];
+  tagliaAbbigliamentoEu: ISimplePickList[] = [];
   tagliaScarpe: ISimplePickList[] = [];
   taglie: ISimplePickList[] = [];
   taglieSelected: ISimplePickList[] = [];
@@ -122,6 +135,10 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       this.tagliaAbbigliamento = sizes as ISimplePickList[];
     });
 
+    this.commonService.clothingNumberSizes.subscribe((sizes: ISimplePickList[]) => {
+      this.tagliaAbbigliamentoEu = sizes as ISimplePickList[];
+    });
+
     this.commonService.shoeSizes.subscribe((sizes: ISimplePickList[]) => {
       this.tagliaScarpe = sizes as ISimplePickList[];
     });
@@ -134,8 +151,8 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       this.tipologiaProdotti = productTypes as IProductType[];
     });
 
-    this.customerService.getCustomerList().subscribe((customers: ICustomer[]) => {
-      this.customers = customers;
+    this.customerService.customers.subscribe((customers: ICustomer[]) => {
+      this.customers = customers as ICustomer[];
     })
 
     this.commonService.orderTypeList.subscribe(orderTypeList => {
@@ -154,9 +171,12 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       this.seasonTypes = seasonTypeList;
     });
 
-
     this.createForm(data);
     this.onChanges();
+  }
+
+  ngAfterViewInit(): void {
+    this.autoTrigger.closed.emit();
   }
 
   ngOnInit() {
@@ -194,33 +214,45 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       idDelivery: null,
       totalPieces: 0,
       totalAmount: 0,
+      status: LABEL.PENDING
     };
 
-    if (UTILITY.checkObj(data) && UTILITY.checkObj(data.order) && UTILITY.checkText(data.order.id)) {
+    let customer = null;
+    let orderType = null;
+    let paymentMethod = null;
+    let delivery = null;
+    let seasonType = null;
+    if (UTILITY.checkObj(data) && UTILITY.checkObj(data.order)) {
       this.order = data.order;
       this.title = 'Modifica Ordine';
+      customer = this.customers.find(c => c.id === this.order.idCustomer);
+      orderType = this.orderTypes.find(o => o.id === this.order.idOrderType);
+      paymentMethod = this.paymentMethods.find(p => p.id === this.order.idPaymentMethods);
+      delivery = this.deliveries.find(d => d.id === this.order.idDelivery);
+      seasonType = this.seasonTypes.find(s => s.id === this.order.idSeason);
     } else {
       this.order = newOrder;
     }
     this.orderForm = this.fb.group({
-      customer: new UntypedFormControl(this.order.idCustomer, Validators.compose([
+      customer: new UntypedFormControl(customer, Validators.compose([
         Validators.required,
         Validators.minLength(3)
       ])),
-      orderType: new UntypedFormControl(this.order.idOrderType, Validators.compose([
+      orderType: new UntypedFormControl(orderType, Validators.compose([
         Validators.required
       ])),
-      paymentMethod: new UntypedFormControl(this.order.idPaymentMethods, Validators.compose([
+      paymentMethod: new UntypedFormControl(paymentMethod, Validators.compose([
         Validators.required
       ])),
-      delivery: new UntypedFormControl(this.order.idDelivery, Validators.compose([
+      delivery: new UntypedFormControl(delivery, Validators.compose([
         Validators.required
       ])),
-      seasonType: new UntypedFormControl(this.order.idSeason, Validators.compose([
+      seasonType: new UntypedFormControl(seasonType, Validators.compose([
         Validators.required
       ]))
     });
 
+    this.myControl.setValue(customer ? customer : null);
   }
 
   onChanges() {
@@ -254,6 +286,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
         descSeason: this.orderForm.get('seasonType')?.value.desc,
         totalPieces: totalPieces,
         totalAmount: totalAmount,
+        status: LABEL.PENDING,
         productList: this.order.productList
       };
       this.orderService.createOrUpdateOrder(order).subscribe({
@@ -267,19 +300,19 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     } else {
       this.myControl.setErrors({'incorrect': true});
     }
-
+    this.scrollToBottom();
   }
 
   getTotalPieces(productList: IProduct[]): number {
     let total = 0;
     productList.forEach(product => {
       product.colorVariants?.forEach(colorVariant => {
-        if (colorVariant.stock)
-          total = total + colorVariant.stock;
+        if (colorVariant.stockOrder)
+          total = total + colorVariant.stockOrder;
 
         colorVariant.sizeVariants?.forEach(sizeVariant => {
-          if (sizeVariant.stock)
-            total = total + sizeVariant.stock;
+          if (sizeVariant.stockOrder)
+            total = total + sizeVariant.stockOrder;
         });
       });
     });
@@ -290,12 +323,12 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     let total = 0;
     productList.forEach(product => {
       product.colorVariants?.forEach(colorVariant => {
-        if (colorVariant.stock && product.price)
-          total = total + product.price * colorVariant.stock;
+        if (colorVariant.stockOrder && product.price)
+          total = total + product.price * colorVariant.stockOrder;
 
         colorVariant.sizeVariants?.forEach(sizeVariant => {
-          if (sizeVariant.stock && product.price)
-            total = total + product.price * sizeVariant.stock;
+          if (sizeVariant.stockOrder && product.price)
+            total = total + product.price * sizeVariant.stockOrder;
         });
       });
     });
@@ -349,6 +382,8 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
   }
 
   reloadList(orderProductList: IProduct[]) {
-    this.order.productList = orderProductList;
+    setTimeout(() => {
+      this.order.productList = orderProductList;
+    });
   }
 }

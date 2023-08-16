@@ -63,9 +63,9 @@
       </ng-container>
 
       <ng-container matColumnDef="stagione">
-        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Stagione</th>
-        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descSeason}} </td>
-      </ng-container>
+      <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Stagione</th>
+      <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descSeason}} </td>
+    </ng-container>
 
 
       <ng-container matColumnDef="tipologiaOrdine">
@@ -86,20 +86,20 @@
       <ng-container matColumnDef="actions" >
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef></th>
         <td class="mat-cell" mat-cell *matCellDef="let element">
-          <button mat-icon-button style="z-index: 99" (click)="openDialogNewOrder(element)"
+          <button mat-icon-button style="z-index: 99" (click)="openDialog(element, true)"
                   matTooltip="Duplica ordine">
             <mat-icon>file_copy</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="openDialogNewOrder(element)"
+          <button mat-icon-button style="z-index: 99" (click)="openDialog(element)"
                   matTooltip="Stampa ordine">
             <mat-icon>print</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="openDialogNewOrder(element)"
-                  matTooltip="Modifica ordine">
+          <button mat-icon-button style="z-index: 99" (click)="openDialog(element, false)"
+                  matTooltip="Modifica ordine" [disabled]="element.status === label.CONFIRMED">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)"
-                  matTooltip="Elimina ordine">
+          <button mat-icon-button style="z-index: 99" (click)="delete(element)"
+                  matTooltip="Elimina ordine" [disabled]="element.status === label.CONFIRMED">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

@@ -1,23 +1,16 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
-import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
-import {ICustomer, ICustomerPagination} from "../../interfaces/ICustomer";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
-import {CustomerService} from "../../services/customer.service";
 import {CommonService} from "../../services/common.service";
-import {AuthService} from "../../services/auth.service";
 import {UTILITY} from "../../constants/utility.constant";
 import * as moment from "moment/moment";
 import {
-  CreaModificaClienteDialogComponent
-} from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
-import {
   CreaModificaArticoloDialogComponent
 } from "../../dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";
-import {IColorVariant, IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
+import {IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
 import {IColor} from "../../interfaces/IColor";
 import {animate, state, style, transition, trigger} from '@angular/animations';

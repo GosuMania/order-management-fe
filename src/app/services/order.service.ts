@@ -50,9 +50,9 @@ export class OrderService {
     );
   }
 
-  deleteOrder(id: number): Observable<any> {
-    const myLink = environment.urlApi + environment.ORDER_DELETE + '/' + id;
-    return this.http.delete<any>(myLink);
+  deleteOrder(order: IOrder): Observable<any> {
+    const myLink = environment.urlApi + environment.ORDER_DELETE;
+    return this.http.post<any>(myLink, order);
   }
 
   getTotalPiecesAndAmounts() {

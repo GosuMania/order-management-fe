@@ -1,30 +1,17 @@
 import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
-import {IUser} from "../../interfaces/IUser";
 import {MatTableDataSource} from "@angular/material/table";
-import {ICustomer, ICustomerPagination} from "../../interfaces/ICustomer";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
-import {CustomerService} from "../../services/customer.service";
 import {CommonService} from "../../services/common.service";
-import {AuthService} from "../../services/auth.service";
 import {UTILITY} from "../../constants/utility.constant";
-import * as moment from "moment/moment";
-import {
-  CreaModificaClienteDialogComponent
-} from "../../dialogs/crea-modifica-cliente-dialog/crea-modifica-cliente-dialog.component";
-import {
-  CreaModificaArticoloDialogComponent
-} from "../../dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";
-import {IColorVariant, IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
+import {IProduct, IProductPagination, ISizeVariant} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
 import {IColor} from "../../interfaces/IColor";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ProviderService} from "../../services/provider.service";
 import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
-import {ProductsComponent} from "../../pages/products/products.component";
 import {ProductsCartComponent} from "../products-cart/products-cart.component";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
 
@@ -105,15 +92,18 @@ export class ProductsOrderComponent implements AfterViewInit {
     });
 
     // this.dataSource = new MatTableDataSource<IProduct>(ELEMENT_DATA);
-    this.refreshList();
 
   }
 
   ngAfterViewInit() {
-    if (this.paginator && this.sort) {
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    }
+    this.refreshList(this.orderProductList);
+    setTimeout(() => {
+      if (this.paginator && this.sort) {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }
+    }, 1000)
+
   }
 
   delete(productInput: IProduct) {
@@ -171,12 +161,11 @@ export class ProductsOrderComponent implements AfterViewInit {
      */
   }
 
-  refreshList(list? : IProduct[]) {
-    if(list) {
+  refreshList(list?: IProduct[]) {
+    if (list) {
       this.orderProductList = list;
     }
     this.dataSource = new MatTableDataSource<IProduct>(this.orderProductList);
-
     this.updateOrderProductList.emit(this.orderProductList);
   }
 
@@ -209,13 +198,15 @@ export class ProductsOrderComponent implements AfterViewInit {
     if (product && product.colorVariants && (product.idProductType == 0 || product.idProductType == 2)) {
       product.colorVariants.forEach(element => {
         element.sizeVariants?.forEach(element2 => {
-          total = element2.stock + total;
+          if (element2.stockOrder) {
+            total = element2.stockOrder + total;
+          }
         });
       });
     } else if (product && product.colorVariants) {
       product.colorVariants.forEach(element => {
-        if (element.stock) {
-          total = element.stock + total;
+        if (element.stockOrder) {
+          total = element.stockOrder + total;
         }
       });
     }
@@ -225,7 +216,9 @@ export class ProductsOrderComponent implements AfterViewInit {
   getTotalStocksForColor(variants: ISizeVariant[]): number {
     let total = 0;
     variants.forEach(element => {
-      total = element.stock + total;
+      if (element.stockOrder) {
+        total = element.stockOrder + total;
+      }
     })
     return total;
 

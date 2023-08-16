@@ -152,10 +152,11 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       idProductVariant: [colorVariant.idProductVariant, Validators.required],
       descColore: [colorVariant.descColor, Validators.required],
       sizeVariants: this.fb.array([]),
-      stockColor: [{value: colorVariant.stockOrder ? colorVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required]
+      stockColor: [{value: colorVariant.stock, disabled: true}, Validators.required],
+      stockOrderColor: [{value: colorVariant.stockOrder ? colorVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required]
     });
     this.colorVariants.push(variantForm);
-    variantForm.get('stockColor')?.valueChanges.subscribe(
+    variantForm.get('stockOrderColor')?.valueChanges.subscribe(
       value => {
         console.log('Modifica: ', value);
         colorVariant.stockOrder = value;
@@ -209,7 +210,8 @@ export class VariantsProductOrderComponent implements AfterViewInit {
     const sizeVariantForm = this.fb.group({
       idSize: [sizeVariant.id, Validators.required],
       idProductVariant: [sizeVariant.idProductVariant, Validators.required],
-      stock: [{value: sizeVariant.stockOrder ? sizeVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required],
+      stockSize: [{value: sizeVariant.stock, disabled: true}, Validators.required],
+      stockOrderSize: [{value: sizeVariant.stockOrder ? sizeVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required],
       descSize: [sizeVariant.descSize]
     });
     this.getSizeVariants(indexColor).push(sizeVariantForm);
@@ -227,7 +229,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       }
     });
 
-    sizeVariantForm.get('stock')?.valueChanges.subscribe(
+    sizeVariantForm.get('stockOrderSize')?.valueChanges.subscribe(
       value => {
         console.log('Modifica: ', value);
         sizeVariant.stockOrder = value;
@@ -239,7 +241,8 @@ export class VariantsProductOrderComponent implements AfterViewInit {
   /*** GET VALUES TO SAVE ***/
   getColorVariantsToSave(idTipologiaProdotto: number | null): IColorVariant[] {
     let colorVariants: IColorVariant[] = [];
-    let stock: number | null = null;
+    let stockOrderColor: number | null = null;
+    let stockColor: number | null = null;
     this.colorVariants.controls.forEach((color: any, indexColor: number) => {
       const sizeVariants: ISizeVariant[] = [];
       if (idTipologiaProdotto === 0 || idTipologiaProdotto === 2) {
@@ -247,20 +250,23 @@ export class VariantsProductOrderComponent implements AfterViewInit {
           const sizeVariant: ISizeVariant = {
             id: size.value.idSize,
             idProductVariant: size.value.idProductVariant,
-            stock: size.value.stock,
+            stock: size.value.stockSize,
+            stockOrder: size.value.stockOrderSize,
             descSize: size.value.descSize
           };
           sizeVariants.push(sizeVariant);
         })
       } else {
-        stock = color.value.stockColor + 0;
+        stockOrderColor = color.value.stockOrderColor + 0;
+        stockColor = color.value.stockColor + 0;
       }
 
       const colorVariant: IColorVariant = {
         id: color.value.idColor,
         idProductVariant: color.value.idProductVariant,
         sizeVariants: sizeVariants,
-        stock: stock,
+        stock: stockColor,
+        stockOrder: stockOrderColor,
         descColor: color.value.descColore
       };
       colorVariants.push(colorVariant);

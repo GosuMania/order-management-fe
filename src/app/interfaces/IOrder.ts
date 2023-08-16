@@ -13,7 +13,7 @@ export interface IOrder {
   descUser?: string;
   idCustomer: number | null;
   descCustomer?: string;
-  idOrderType: string | null;
+  idOrderType: number | null;
   descOrderType?: string;
   idPaymentMethods: number | null;
   descPaymentMethods?: string;
@@ -23,6 +23,7 @@ export interface IOrder {
   descDelivery?: string;
   totalPieces: number;
   totalAmount: number;
+  status: string;
   date?: string;
 }
 

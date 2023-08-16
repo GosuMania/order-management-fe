@@ -4,7 +4,7 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Cliente*</mat-label>
-        <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
+        <input #inputCustomer type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
           <mat-option *ngFor="let customer of filteredOptionsCustomers | async" [value]="customer">
             {{customer.ragioneSociale}}
@@ -91,8 +91,9 @@
       </button>
     </div>
   </div>
-  <app-products-order #productsOrderComponent [orderProductList]="order.productList" (updateOrderProductList)="reloadList($event)"></app-products-order>
-
+  <app-products-order #productsOrderComponent *ngIf="order && orderForm && order.productList.length > 0"
+                      [orderProductList]="order.productList"
+                      (updateOrderProductList)="reloadList($event)"></app-products-order>
 
   <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
     <strong>Perfetto!</strong> Ordine salvato.
@@ -132,6 +133,9 @@
   <mat-spinner></mat-spinner>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="save()" [disabled]="!orderForm.valid && !myControl.valid && !(order && order.productList && order.productList.length > 0)">SALVA</button>
+  <button mat-button (click)="save()"
+          [disabled]="!orderForm.valid && !myControl.valid && !(order && order.productList && order.productList.length > 0)">
+    SALVA
+  </button>
   <button mat-button (click)="refreshList.emit()" mat-dialog-close>CHIUDI</button>
 </mat-dialog-actions>

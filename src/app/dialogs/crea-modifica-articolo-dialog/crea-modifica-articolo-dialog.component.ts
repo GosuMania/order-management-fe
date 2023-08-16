@@ -61,6 +61,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   @ViewChild('coloreInput') coloreInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
   tagliaAbbigliamento: ISimplePickList[] = [];
+  tagliaAbbigliamentoEu: ISimplePickList[] = [];
   tagliaScarpe: ISimplePickList[] = [];
   taglie: ISimplePickList[] = [];
   taglieSelected: ISimplePickList[] = [];
@@ -121,8 +122,16 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       this.colori = colors as IColor[];
     });
 
+    this.commonService.clothingSizeTypeList.subscribe((clothingSizeTypes: ISimplePickList[]) => {
+      this.clothingSizeTypes = clothingSizeTypes as ISimplePickList[];
+    });
+
     this.commonService.clothingSizes.subscribe((sizes: ISimplePickList[]) => {
       this.tagliaAbbigliamento = sizes as ISimplePickList[];
+    });
+
+    this.commonService.clothingNumberSizes.subscribe((sizes: ISimplePickList[]) => {
+      this.tagliaAbbigliamentoEu = sizes as ISimplePickList[];
     });
 
     this.commonService.shoeSizes.subscribe((sizes: ISimplePickList[]) => {
@@ -136,11 +145,6 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     this.commonService.tipologiaProdotti.subscribe((productTypes: IProductType[]) => {
       this.tipologiaProdotti = productTypes as IProductType[];
     });
-
-    this.commonService.getClothingSizeTypeList().subscribe((clothingSizeTypes: ISimplePickList[]) => {
-      this.clothingSizeTypes = clothingSizeTypes as ISimplePickList[];
-    });
-
 
     this.createForm(data);
     this.onChanges();
@@ -201,9 +205,13 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     if (UTILITY.checkText(this.articolo.id) && this.articolo.colorVariants && this.articolo.colorVariants?.length > 0) {
       switch (this.articolo.idProductType) {
         case this.tipologiaProdotti[0].id:
-          if(this.articolo.idClothingSizeType)
-          this.taglie = this.tagliaAbbigliamento.slice(0, 8);
-          this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[0]);
+          if(this.articolo.idClothingSizeType === this.clothingSizeTypes[0].id) {
+            this.taglie = this.tagliaAbbigliamento;
+            this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[0]);
+          } else {
+            this.taglie = this.tagliaAbbigliamentoEu;
+            this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[1]);
+          }
           break;
         case this.tipologiaProdotti[2].id:
           this.taglie = this.tagliaScarpe;
@@ -249,7 +257,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       this.colorVariants.controls = [];
       switch (value.id) {
         case this.tipologiaProdotti[0].id:
-          this.taglie = this.tagliaAbbigliamento.slice(0, 9);
+          this.taglie = this.tagliaAbbigliamento;
           this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[0]);
           break;
         case this.tipologiaProdotti[2].id:
@@ -270,10 +278,10 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       this.colorVariants.controls = [];
       switch (value.id) {
         case this.clothingSizeTypes[0].id:
-          this.taglie = this.tagliaAbbigliamento.slice(0, 9);
+          this.taglie = this.tagliaAbbigliamento;
           break;
         case this.clothingSizeTypes[1].id:
-          this.taglie = this.tagliaAbbigliamento.slice(9, this.tagliaAbbigliamento.length);
+          this.taglie = this.tagliaAbbigliamentoEu;
           break;
       }
       this.taglieCtrl.setValue(null);

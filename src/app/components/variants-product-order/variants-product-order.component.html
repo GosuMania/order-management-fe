@@ -8,7 +8,8 @@
             <strong>{{colorVariant?.controls?.descColore?.value | titlecase}}</strong>
             <br>
             <mat-form-field style="max-width: 6rem; text-align: center;">
-              <input matInput type="number" formControlName="stockColor" min="0" [max]="productStock!.colorVariants![i]!.stock">
+              <input matInput style="display: none" type="number" formControlName="stockColor" min="0" [max]="productStock!.colorVariants![i]!.stock">
+              <input matInput type="number" formControlName="stockOrderColor" min="0" [max]="productStock!.colorVariants![i]!.stock">
             </mat-form-field>
             ({{productStock!.colorVariants![i]!.stock}})
           </div>
@@ -44,7 +45,9 @@
                   {{taglieSelected[j].desc | uppercase}}
                   <br>
                   <mat-form-field style="max-width: 6rem; text-align: center;">
-                    <input matInput type="number" formControlName="stock"
+                    <input style="display: none" matInput type="number" formControlName="stockSize"
+                           min="0" [max]="productStock!.colorVariants![i]!.sizeVariants![j]!.stock">
+                    <input matInput type="number" formControlName="stockOrderSize"
                            min="0" [max]="productStock!.colorVariants![i]!.sizeVariants![j]!.stock">
                   </mat-form-field>
                   ({{productStock!.colorVariants![i]!.sizeVariants![j]!.stock}})
