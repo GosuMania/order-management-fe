@@ -88,12 +88,17 @@ mat-error {
   float: right;
 }
 
-app-crea-modifica-articolo-dialog {
-  height: 100% !important;
-}
-
 mat-dialog-content {
   height: -webkit-fill-available !important;
+  max-height: 82% !important;
+  padding-bottom: 4rem !important;
+  overflow: scroll !important;
+}
+
+mat-dialog-actions {
+  position: sticky !important;
+  bottom: 1rem !important;
+  justify-content: flex-end;
 }
 
 

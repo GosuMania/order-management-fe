@@ -45,12 +45,14 @@ class ImageSnippet {
   templateUrl: './crea-modifica-ordine-dialog.component.html',
   styleUrls: ['./crea-modifica-ordine-dialog.component.scss']
 })
-export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit {
+export class CreaModificaOrdineDialogComponent implements OnInit {
   @ViewChild('imageInput') imageInput: ElementRef<HTMLInputElement> = {} as ElementRef;
   @ViewChild('scrollContentDialog') private scrollContentDialog: ElementRef = {} as ElementRef;
 
   @ViewChild('productsOrderComponent') productsOrderComponent!: ProductsOrderComponent;
-  @ViewChild('auto') autoTrigger!: MatAutocomplete;
+  @ViewChild('inputCustomer') inputCustomer: ElementRef<HTMLInputElement> = {} as ElementRef;
+  @ViewChild('autocomplete') autocomplete!: MatAutocomplete;
+
 
   myControl = new FormControl<null | ICustomer>(null, Validators.required);
 
@@ -66,21 +68,12 @@ export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit 
   orderForm!: FormGroup;
   order!: IOrder;
   public refreshList = new EventEmitter();
-
   colori: IColor[] = [];
-  coloriSelected: IColor[] = [];
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-  coloriCtrl = new FormControl();
-  filterColori: Observable<IColor[]> | undefined;
   @ViewChild('coloreInput') coloreInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
   tagliaAbbigliamento: ISimplePickList[] = [];
   tagliaAbbigliamentoEu: ISimplePickList[] = [];
   tagliaScarpe: ISimplePickList[] = [];
-  taglie: ISimplePickList[] = [];
-  taglieSelected: ISimplePickList[] = [];
-  taglieCtrl = new FormControl();
-  filterTaglie: Observable<ISimplePickList[]> | undefined;
   @ViewChild('tagliaInput') tagliaInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
   fornitori: IProvider[] = [];
@@ -91,9 +84,6 @@ export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit 
   deliveries: ISimplePickList[] = [];
   seasonTypes: ISimplePickList[] = [];
   tipologiaProdotti: IProductType[] = [];
-  sizeColumns: string[] = [];
-
-  selectedFileOnChange: any;
 
   selectedFile: ImageSnippet = new ImageSnippet();
 
@@ -115,7 +105,6 @@ export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit 
       {type: 'required', message: 'Campo obbligatorio mancante.'},
     ]
   };
-
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
               private authService: AuthService, private commonService: CommonService, private providerService: ProviderService,
@@ -175,10 +164,6 @@ export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit 
     this.onChanges();
   }
 
-  ngAfterViewInit(): void {
-    this.autoTrigger.closed.emit();
-  }
-
   ngOnInit() {
     this.filteredOptionsCustomers = this.myControl.valueChanges.pipe(
       startWith(''),
@@ -224,12 +209,21 @@ export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit 
     let seasonType = null;
     if (UTILITY.checkObj(data) && UTILITY.checkObj(data.order)) {
       this.order = data.order;
-      this.title = 'Modifica Ordine';
+      this.title = UTILITY.checkObj(data.order.id) ? 'Modifica Ordine' : 'Nuovo Ordine';
       customer = this.customers.find(c => c.id === this.order.idCustomer);
       orderType = this.orderTypes.find(o => o.id === this.order.idOrderType);
       paymentMethod = this.paymentMethods.find(p => p.id === this.order.idPaymentMethods);
       delivery = this.deliveries.find(d => d.id === this.order.idDelivery);
       seasonType = this.seasonTypes.find(s => s.id === this.order.idSeason);
+      setTimeout(() => {
+        if(this.autocomplete) {
+          this.autocomplete.showPanel = false;
+        }
+        const inputElement = this.inputCustomer.nativeElement;
+        if (inputElement) {
+          inputElement.blur();
+        }
+      },300);
     } else {
       this.order = newOrder;
     }
@@ -253,6 +247,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit 
     });
 
     this.myControl.setValue(customer ? customer : null);
+
   }
 
   onChanges() {
@@ -291,9 +286,20 @@ export class CreaModificaOrdineDialogComponent implements OnInit, AfterViewInit 
       };
       this.orderService.createOrUpdateOrder(order).subscribe({
         next: value => {
-          console.log('Result: ', value)
+          if(order.id) {
+            this.alertUpdateOK = true;
+          } else {
+            this.alertOK = true;
+          }
+          // this.order = order;
+          this.order = value.id;
         },
         error: err => {
+          if(order.id) {
+            this.alertUpdateKO = true;
+          } else {
+            this.alertKO = true;
+          }
           console.log('Result: ', err)
         }
       });

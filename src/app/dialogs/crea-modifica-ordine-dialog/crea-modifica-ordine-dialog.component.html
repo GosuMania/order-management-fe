@@ -1,11 +1,11 @@
 <h2 mat-dialog-title>{{title}}</h2>
-<mat-dialog-content #scrollContentDialog *ngIf="orderForm" class="mat-typography" style="overflow: scroll;">
+<mat-dialog-content #scrollContentDialog *ngIf="orderForm" class="mat-typography">
   <form class="add-lessons-form" [formGroup]="orderForm">
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Cliente*</mat-label>
         <input #inputCustomer type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        <mat-autocomplete #auto="matAutocomplete" #autocomplete [displayWith]="displayFn">
           <mat-option *ngFor="let customer of filteredOptionsCustomers | async" [value]="customer">
             {{customer.ragioneSociale}}
           </mat-option>
@@ -81,7 +81,7 @@
 
   <div class="filters row">
     <div class="col-sm-12 col-md-6 col-lg-5 col-xl-4">
-      <h3>Lista Prodotti</h3>
+      <h2>Carrello</h2>
     </div>
 
     <div class="col-sm-12 col-md-6 col-lg-7 col-xl-8" style="text-align: end">
@@ -91,9 +91,14 @@
       </button>
     </div>
   </div>
-  <app-products-order #productsOrderComponent *ngIf="order && orderForm && order.productList.length > 0"
+  <app-products-order #productsOrderComponent *ngIf="order && orderForm && order.productList && order.productList.length > 0"
                       [orderProductList]="order.productList"
                       (updateOrderProductList)="reloadList($event)"></app-products-order>
+
+
+  <div *ngIf="!order || !order.productList || order!.productList!.length === 0" class="no-records">
+    Il tuo carrello è vuoto
+  </div>
 
   <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
     <strong>Perfetto!</strong> Ordine salvato.

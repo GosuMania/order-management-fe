@@ -1,4 +1,3 @@
-<h1>PRODUCTS ORDER</h1>
 <div class="example-container">
   <div class="container-table mat-elevation-z8" *ngIf="!isSmall">
     <table mat-table matSort multiTemplateDataRows [dataSource]="dataSource"
@@ -206,10 +205,4 @@
       <tr class="mat-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
-
-  <div *ngIf="dataSource.data.length === 0" class="no-records">
-    Nessun prodotto aggiunto
-  </div>
-
-
 </div>

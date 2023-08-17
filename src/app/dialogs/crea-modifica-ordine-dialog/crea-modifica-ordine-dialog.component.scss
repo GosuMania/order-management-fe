@@ -1,3 +1,12 @@
+.no-records {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 10%;
+}
+
 .add-button {
   background-color: #8b3c7f;
 }
@@ -18,6 +27,7 @@
   align-items: center;
   margin-bottom: 1rem;
 }
+
 .not-display {
   display: none;
 }
@@ -63,6 +73,7 @@
 .input-wrapper {
   position: relative;
 }
+
 .input-currency {
   position: absolute;
   right: 2rem;
@@ -79,3 +90,5 @@
 .section-container-mobile {
   text-align: center;
 }
+
+
