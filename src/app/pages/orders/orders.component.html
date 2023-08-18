@@ -90,10 +90,9 @@
                   matTooltip="Duplica ordine">
             <mat-icon>file_copy</mat-icon>
           </button>
-          <button mat-icon-button style="z-index: 99" (click)="openDialog(element)"
-                  matTooltip="Stampa ordine">
-            <mat-icon>print</mat-icon>
-          </button>
+
+          <app-pdf-generator [orderInfo]="{order: element, otherInfo: null}"></app-pdf-generator>
+
           <button mat-icon-button style="z-index: 99" (click)="openDialog(element, false)"
                   matTooltip="Modifica ordine" [disabled]="element.status === label.CONFIRMED">
             <mat-icon>edit</mat-icon>

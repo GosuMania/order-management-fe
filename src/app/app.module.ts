@@ -70,6 +70,7 @@ import { VariantsProductOrderComponent } from './components/variants-product-ord
 import {
   CreaModificaVariantsDialogComponent
 } from "./dialogs/crea-modifica-variants-dialog/crea-modifica-variants-dialog.component";
+import {PdfGeneratorComponent} from "./components/pdf-generator/pdf-generator.component";
 
 registerLocaleData(localeIt, 'it');
 
@@ -129,7 +130,8 @@ const Ux_Modules = [
     ProductsOrderComponent,
     ProductsCartComponent,
     VariantsProductOrderComponent,
-    CreaModificaVariantsDialogComponent
+    CreaModificaVariantsDialogComponent,
+    PdfGeneratorComponent
   ],
     imports: [
         BrowserModule,
