@@ -90,7 +90,8 @@
           </mat-error>
         </ng-container>
       </mat-form-field>
-      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4" *ngIf="taglie.length > 0 && taglie[0].desc !== tagliaScarpe[0].desc">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4" *ngIf="taglie.length > 0 && taglie[0].desc !== tagliaScarpe[0].desc
+                    && articoloForm.get('tipologiaProdotto')!.value && tipologiaProdotti && articoloForm.get('tipologiaProdotto')!.value!.id === tipologiaProdotti[0]!.id">
         <mat-label>Tipologia taglia abbigliamento*</mat-label>
         <mat-select formControlName="clothingSizeType">
           <mat-option *ngFor="let tipologia of clothingSizeTypes" [value]="tipologia">
@@ -186,8 +187,9 @@
             <div class="row">
               <ng-container formArrayName="sizeVariants">
                 <ng-container
-                              *ngFor="let sizeVariant of getSizeVariantsForm(colorVariant); let j = index">
-                  <div class="col-sm-6 col-md-3 col-lg-1 col-xl-1" style="width: auto; text-align: center" [formGroupName]="j">
+                  *ngFor="let sizeVariant of getSizeVariantsForm(colorVariant); let j = index">
+                  <div class="col-sm-6 col-md-3 col-lg-1 col-xl-1" style="width: auto; text-align: center"
+                       [formGroupName]="j">
                     <mat-form-field style="display: none">
                       <mat-label>Taglia*</mat-label>
                       <mat-select formControlName="idSize">
@@ -250,6 +252,7 @@
     </button>
   </div>
 
+  {{articoloForm.valid}}
 </mat-dialog-content>
 <mat-dialog-content *ngIf="!articoloForm" style="text-align: -webkit-center;">
   <mat-spinner></mat-spinner>

@@ -169,11 +169,15 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
     let provider = null;
     let productType = null;
+    let clothingSizeType = null;
     if (UTILITY.checkObj(data) && UTILITY.checkObj(data.product) && UTILITY.checkText(data.product.id)) {
       this.articolo = data.product;
       this.title = 'Modifica Articolo';
       provider = this.fornitori.find(fornitore => fornitore.id === this.articolo.idProvider);
       productType = this.tipologiaProdotti.find(tipologiaProdotto => tipologiaProdotto.id === this.articolo.idProductType);
+      if(productType && productType.id === this.tipologiaProdotti[0].id && UTILITY.checkText(this.articolo.idClothingSizeType)) {
+        clothingSizeType = this.clothingSizeTypes.find(clothingSize => clothingSize.id === this.articolo.idClothingSizeType);
+      }
     } else {
       this.articolo = newProduct;
     }
@@ -196,8 +200,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       tipologiaProdotto: new UntypedFormControl(productType, Validators.compose([
         Validators.required,
       ])),
-      clothingSizeType: new UntypedFormControl(productType, Validators.compose([
-        Validators.required,
+      clothingSizeType: new UntypedFormControl(clothingSizeType, Validators.compose([
       ])),
       colorVariants: this.fb.array([]),
     });
@@ -212,12 +215,15 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
             this.taglie = this.tagliaAbbigliamentoEu;
             this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[1]);
           }
+          this.articoloForm.get('clothingSizeType')?.addValidators([Validators.required]);
           break;
         case this.tipologiaProdotti[2].id:
           this.taglie = this.tagliaScarpe;
+          this.articoloForm.get('clothingSizeType')?.removeValidators([Validators.required]);
           break;
         default:
           this.taglie = [];
+          this.articoloForm.get('clothingSizeType')?.removeValidators([Validators.required]);
           break;
       }
       this.articolo.colorVariants.forEach(colorVariant => {
