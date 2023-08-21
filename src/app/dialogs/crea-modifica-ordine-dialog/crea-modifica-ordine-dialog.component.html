@@ -91,7 +91,8 @@
       </button>
     </div>
   </div>
-  <app-products-order #productsOrderComponent *ngIf="order && orderForm && order.productList && order.productList.length > 0"
+  <app-products-order #productsOrderComponent
+                      *ngIf="order && orderForm && order.productList && order.productList.length > 0"
                       [orderProductList]="order.productList"
                       (updateOrderProductList)="reloadList($event)"></app-products-order>
 
@@ -100,39 +101,40 @@
     Il tuo carrello è vuoto
   </div>
 
-  <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Perfetto!</strong> Ordine salvato.
-    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
-            aria-label="Close">
-      <mat-icon aria-hidden="true">close</mat-icon>
-    </button>
-  </div>
+  <ng-container style="margin-top: 2rem">
+    <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Perfetto!</strong> Ordine salvato.
+      <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+              aria-label="Close">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </div>
 
-  <div *ngIf="alertUpdateOK" class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Perfetto!</strong> Ordine aggiornato.
-    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
-            aria-label="Close">
-      <mat-icon aria-hidden="true">close</mat-icon>
-    </button>
-  </div>
+    <div *ngIf="alertUpdateOK" class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Perfetto!</strong> Ordine aggiornato.
+      <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+              aria-label="Close">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </div>
 
 
-  <div *ngIf="alertKO" class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>Errore!</strong> Non è possibile creare l'ordine, riprova più tardi .
-    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
-            aria-label="Close">
-      <mat-icon aria-hidden="true">close</mat-icon>
-    </button>
-  </div>
+    <div *ngIf="alertKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Errore!</strong> Non è possibile creare l'ordine, riprova più tardi .
+      <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+              aria-label="Close">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </div>
 
-  <div *ngIf="alertUpdateKO" class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>Errore!</strong> Non è possibile aggiornare l'ordine, riprova più tardi.
-    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
-            aria-label="Close">
-      <mat-icon aria-hidden="true">close</mat-icon>
-    </button>
-  </div>
-
+    <div *ngIf="alertUpdateKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Errore!</strong> Non è possibile aggiornare l'ordine, riprova più tardi.
+      <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+              aria-label="Close">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </div>
+  </ng-container>
 </mat-dialog-content>
 <mat-dialog-content *ngIf="!orderForm" style="text-align: -webkit-center;">
   <mat-spinner></mat-spinner>

@@ -292,7 +292,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
             this.alertOK = true;
           }
           // this.order = order;
-          this.order = value.id;
+          this.order.id = value.id;
         },
         error: err => {
           if(order.id) {

@@ -35,6 +35,8 @@ export class VariantsProductOrderComponent implements AfterViewInit {
   coloriCtrl = new FormControl();
 
   tagliaAbbigliamento: ISimplePickList[] = [];
+  tagliaAbbigliamentoEu: ISimplePickList[] = [];
+  clothingSizeTypes: ISimplePickList[] = [];
   tagliaScarpe: ISimplePickList[] = [];
   taglie: ISimplePickList[] = [];
   taglieSelected: ISimplePickList[] = [];
@@ -57,6 +59,14 @@ export class VariantsProductOrderComponent implements AfterViewInit {
 
     this.commonService.clothingSizes.subscribe((sizes: ISimplePickList[]) => {
       this.tagliaAbbigliamento = sizes as ISimplePickList[];
+    });
+
+    this.commonService.clothingSizeTypeList.subscribe((clothingSizeTypes: ISimplePickList[]) => {
+      this.clothingSizeTypes = clothingSizeTypes as ISimplePickList[];
+    });
+
+    this.commonService.clothingNumberSizes.subscribe((sizes: ISimplePickList[]) => {
+      this.tagliaAbbigliamentoEu = sizes as ISimplePickList[];
     });
 
     this.commonService.shoeSizes.subscribe((sizes: ISimplePickList[]) => {
@@ -108,7 +118,11 @@ export class VariantsProductOrderComponent implements AfterViewInit {
     if (UTILITY.checkText(this.product.id) && this.product.colorVariants && this.product.colorVariants?.length > 0) {
       switch (this.product.idProductType) {
         case this.tipologiaProdotti[0].id:
-          this.taglie = this.tagliaAbbigliamento;
+          if(this.product.idClothingSizeType === this.clothingSizeTypes[0].id) {
+            this.taglie = this.tagliaAbbigliamento;
+          } else {
+            this.taglie = this.tagliaAbbigliamentoEu;
+          }
           break;
         case this.tipologiaProdotti[2].id:
           this.taglie = this.tagliaScarpe;

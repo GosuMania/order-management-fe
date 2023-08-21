@@ -3,6 +3,7 @@ import {IMeta} from "./ICustomer";
 export interface IProduct {
   id?: number | null;
   image: string | null;
+  base64Image?: any;
   idProvider: number | null;
   descProvider?: string;
   productCode: string;
