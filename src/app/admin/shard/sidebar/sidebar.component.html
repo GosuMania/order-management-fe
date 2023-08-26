@@ -19,7 +19,11 @@
         <mat-icon>store</mat-icon>
         <span>Clienti</span>
       </button>
-      <button mat-button class="menu-button" routerLink="/products">
+      <button mat-button class="menu-button" routerLink="/providers" *ngIf="userProfile && userProfile.type === 'ADMIN'">
+        <mat-icon>business</mat-icon>
+        <span>Fornitori</span>
+      </button>
+      <button mat-button class="menu-button" routerLink="/products" *ngIf="userProfile && userProfile.type === 'ADMIN'">
         <mat-icon>style</mat-icon>
         <span>Articoli</span>
       </button>
@@ -35,10 +39,12 @@
         <mat-icon>cached</mat-icon>
         <span>Cambio merce</span>
       </button>
+      <!--
       <button mat-button class="menu-button" routerLink="/calendar">
         <mat-icon>calendar_today</mat-icon>
         <span>Calendario</span>
       </button>
+      -->
     </div>
   </div>
 </div>

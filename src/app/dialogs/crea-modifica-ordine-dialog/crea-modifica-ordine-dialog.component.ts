@@ -156,7 +156,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       this.deliveries = deliveryList;
     });
 
-    this.commonService.seasonTypeList.subscribe(seasonTypeList => {
+    this.commonService.seasonList.subscribe(seasonTypeList => {
       this.seasonTypes = seasonTypeList;
     });
 

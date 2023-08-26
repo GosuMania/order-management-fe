@@ -43,10 +43,12 @@ export const environment = {
   PROVIDER_GET_BY_ID: 'provider/get-by-id',
   PROVIDER_DELETE: 'provider/delete',
   PROVIDER_GET_ALL_WITH_PAGINATION: 'provider/get-all-with-pagination',
+  PROVIDER_GET_ALL_WITH_PAGINATION_SEARCH: 'provider/get-all-with-pagination-search',
   DELIVERY_GET_ALL: 'delivery/get-all',
   ORDER_TYPE_GET_ALL: 'order-type/get-all',
   PAYMENT_METHODS_GET_ALL: 'payment-method/get-all',
   SEASON_TYPE_GET_ALL: 'season-type/get-all',
+  SEASON_GET_ALL: 'season/get-all',
 
   ORDER_GET_ALL: 'order/get-all',
   ORDER_CREATE_OR_UPDATE: 'order/create-or-update',

@@ -1,0 +1,165 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<mat-dialog-content #scrollContentDialog class="mat-typography">
+  <form class="add-lessons-form" [formGroup]="clienteForm">
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Ragione sociale</mat-label>
+        <input matInput type="text" formControlName="ragioneSociale" placeholder="Ex: Nome Negozio srl" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.ragioneSociale">
+          <mat-error *ngIf="clienteForm.get('ragioneSociale')!.hasError(validation.type) && clienteForm.get('ragioneSociale')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Partita IVA</mat-label>
+        <input matInput type="text" formControlName="piva" placeholder="Ex: 01234567891" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.piva">
+          <mat-error *ngIf="clienteForm.get('piva')!.hasError(validation.type) && clienteForm.get('piva')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Codice Fiscale</mat-label>
+        <input matInput type="text" formControlName="codiceFiscale" placeholder="Ex: RSSMRA70H25A940U" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.codiceFiscale">
+          <mat-error *ngIf="clienteForm.get('codiceFiscale')!.hasError(validation.type) && clienteForm.get('codiceFiscale')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Codice SDI</mat-label>
+        <input matInput type="text" formControlName="codiceSdi" placeholder="Ex: 123" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.codiceSdi">
+          <mat-error *ngIf="clienteForm.get('codiceSdi')!.hasError(validation.type) && clienteForm.get('codiceSdi')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>PEC</mat-label>
+        <input matInput type="text" formControlName="pec" placeholder="nome.cognome@pec.it" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.pec">
+          <mat-error *ngIf="clienteForm.get('pec')!.hasError(validation.type) && clienteForm.get('pec')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Indirizzo</mat-label>
+        <input matInput type="text" formControlName="indirizzo" placeholder="Via Roma, 100" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.indirizzo">
+          <mat-error *ngIf="clienteForm.get('indirizzo')!.hasError(validation.type) && clienteForm.get('indirizzo')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>CAP</mat-label>
+        <input matInput type="text" formControlName="cap" placeholder="00042" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.cap">
+          <mat-error *ngIf="clienteForm.get('cap')!.hasError(validation.type) && clienteForm.get('cap')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Località</mat-label>
+        <input matInput type="text" formControlName="localita" placeholder="Bracciano" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.localita">
+          <mat-error *ngIf="clienteForm.get('localita')!.hasError(validation.type) && clienteForm.get('localita')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Provincia</mat-label>
+        <input matInput type="text" formControlName="provincia" placeholder="Roma" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.provincia">
+          <mat-error *ngIf="clienteForm.get('provincia')!.hasError(validation.type) && clienteForm.get('provincia')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Paese</mat-label>
+        <mat-select [(value)]="fornitore.paese" formControlName="paese">
+          <mat-option *ngFor="let paese of paesi" [value]="paese.code">
+            {{paese.name}}
+          </mat-option>
+        </mat-select>
+        <ng-container *ngFor="let validation of validationCliente.paese">
+          <mat-error *ngIf="clienteForm.get('paese')!.hasError(validation.type) && clienteForm.get('paese')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Telefono</mat-label>
+        <input matInput type="text" formControlName="telefono" placeholder="3381234567 / 0811234567" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.telefono">
+          <mat-error *ngIf="clienteForm.get('telefono')!.hasError(validation.type) && clienteForm.get('telefono')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>E-mail</mat-label>
+        <input matInput type="text" formControlName="email" placeholder="username@gmail.com" maxlength="255">
+        <ng-container *ngFor="let validation of validationCliente.email">
+          <mat-error *ngIf="clienteForm.get('email')!.hasError(validation.type) && clienteForm.get('email')!.dirty">
+            {{validation.message}}
+          </mat-error>
+        </ng-container>
+      </mat-form-field>
+    </div>
+  </form>
+
+
+  <div *ngIf="alertOK" class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Perfetto!</strong> Cliente caricato.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="alertUpdateOK" class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Perfetto!</strong> Cliente aggiornato.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+
+  <div *ngIf="alertKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Errore!</strong> Non è possibile caricare l'cliente, riprova più tardi .
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="alertUpdateKO" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Errore!</strong> Non è possibile aggiornare l'cliente, riprova più tardi.
+    <button (click)="closeAlert()" mat-raised-button class="close closeAlert" data-dismiss="alert"
+            aria-label="Close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="save()">SALVA</button>
+  <button mat-button mat-dialog-close>CHIUDI</button>
+</mat-dialog-actions>

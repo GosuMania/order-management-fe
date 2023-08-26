@@ -71,6 +71,10 @@ import {
   CreaModificaVariantsDialogComponent
 } from "./dialogs/crea-modifica-variants-dialog/crea-modifica-variants-dialog.component";
 import {PdfGeneratorComponent} from "./components/pdf-generator/pdf-generator.component";
+import {ProvidersComponent} from "./pages/providers/providers.component";
+import {
+  CreaModificaFornitoreDialogComponent
+} from "./dialogs/crea-modifica-fornitore-dialog/crea-modifica-fornitore-dialog.component";
 
 registerLocaleData(localeIt, 'it');
 
@@ -131,7 +135,9 @@ const Ux_Modules = [
     ProductsCartComponent,
     VariantsProductOrderComponent,
     CreaModificaVariantsDialogComponent,
-    PdfGeneratorComponent
+    PdfGeneratorComponent,
+    ProvidersComponent,
+    CreaModificaFornitoreDialogComponent
   ],
     imports: [
         BrowserModule,

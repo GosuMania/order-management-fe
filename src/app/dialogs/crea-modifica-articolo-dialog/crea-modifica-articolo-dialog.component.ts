@@ -138,7 +138,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       this.tagliaScarpe = sizes as ISimplePickList[];
     });
 
-    this.commonService.fornitori.subscribe((providers: IProvider[]) => {
+    this.providerService.providers.subscribe((providers: IProvider[]) => {
       this.fornitori = providers as IProvider[];
     });
 

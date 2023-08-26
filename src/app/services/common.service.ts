@@ -37,6 +37,8 @@ export class CommonService {
 
   public paymentMethodsList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
 
+  public seasonList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
   public seasonTypeList: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
 
 
@@ -82,6 +84,10 @@ export class CommonService {
 
     this.getSeasonTypeList().subscribe(seasonTypeList => {
       this.seasonTypeList.next(seasonTypeList);
+    });
+
+    this.getSeasonList().subscribe(seasonList => {
+      this.seasonList.next(seasonList);
     });
 
     this.getClothingSizeTypeList().subscribe(clothingSizeTypeList => {
@@ -182,6 +188,13 @@ export class CommonService {
 
   getSeasonTypeList() {
     const myLink = environment.urlApi + environment.SEASON_TYPE_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getSeasonList() {
+    const myLink = environment.urlApi + environment.SEASON_GET_ALL;
     return this.http.get<any>(myLink).pipe(
       map(res => res.data)
     );

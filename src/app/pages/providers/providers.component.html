@@ -1,0 +1,79 @@
+<div class="example-container">
+  <div class="filters row">
+    <mat-form-field class="col-sm-12 col-md-6 col-lg-5 col-xl-4">
+      <input matInput [(ngModel)]="cercaValue" placeholder="Cerca">
+      <button matTooltip="Pulisci"  *ngIf="cercaValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button matTooltip="Cerca" *ngIf="cercaValue" matSuffix mat-icon-button (click)="applyFilter(cercaValue)">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="col-sm-12 col-md-6 col-lg-7 col-xl-8" style="text-align: end">
+      <button class="add-button" mat-fab extended (click)="openDialogAddFornitore()">
+        <mat-icon>add</mat-icon>
+        Aggiungi fornitore
+      </button>
+    </div>
+
+  </div>
+
+  <div class="container-table">
+    <table class="mat-table" mat-table matSort matTableResponsive [dataSource]="dataSource" (matSortChange)="sortChange($event)">
+
+      <ng-container matColumnDef="ragioneSociale">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Ragione sociale</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.ragioneSociale}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="piva">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> P.IVA</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.piva}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="provincia">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Provincia</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.provincia}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="telefono">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Telefono</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.telefono}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions" >
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef></th>
+        <td class="mat-cell" mat-cell *matCellDef="let element">
+          <button mat-icon-button style="z-index: 99" (click)="openDialogAddFornitore(element)"
+                  matTooltip="Modifica cliente">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button style="z-index: 99" (click)="delete(element.id)"
+                  matTooltip="Elimina cliente">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr class="mat-header-row" mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+      <tr class="mat-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator class="mat-paginator"
+                   [length]="total"
+                   [pageIndex]="currentPage"
+                   [pageSize]="perPage"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons
+                   (page)="paginatorChange($event)"
+                    >
+    </mat-paginator>
+  </div>
+
+</div>

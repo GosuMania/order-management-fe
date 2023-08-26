@@ -11,6 +11,7 @@ import {OrdersComponent} from "./pages/orders/orders.component";
 import {StatisticsComponent} from "./pages/statistics/statistics.component";
 import {MerchandiseExchangeComponent} from "./pages/merchandise-exchange/merchandise-exchange.component";
 import {CalendarComponent} from "./pages/calendar/calendar.component";
+import {ProvidersComponent} from "./pages/providers/providers.component";
 
 const routes: Routes = [
   {path:'', component: DefaultComponent,
@@ -21,6 +22,7 @@ const routes: Routes = [
     {path: 'register', component: SignUpComponent},
     {path: 'profile', component: UserProfileComponent},
     {path: 'customers', component: CustomersComponent},
+    {path: 'providers', component: ProvidersComponent},
     {path: 'products', component: ProductsComponent},
     {path: 'orders', component: OrdersComponent},
     {path: 'statistics', component: StatisticsComponent},

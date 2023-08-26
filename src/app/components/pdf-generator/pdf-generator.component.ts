@@ -155,7 +155,7 @@ export class PdfGeneratorComponent {
                 {text: 'Prezzo', alignment: 'center', bold: true},
                 {text: 'Totale', alignment: 'center', bold: true}],
               ...orderInfo.order.productList.map(p => ([
-                'RISOLVO ALLA FINE', p.productCode, p.productDesc, this.getDettaglioStack(p), this.getQuantityForProduct(p), this.formatPrice(p.price!), this.formatPrice(+p.price! * this.getQuantityForProduct(p))
+                p.base64Image, p.productCode, p.productDesc, this.getDettaglioStack(p), this.getQuantityForProduct(p), this.formatPrice(p.price!), this.formatPrice(+p.price! * this.getQuantityForProduct(p))
                 // p.image, p.productCode, p.productDesc, 'test', this.getQuantityForProduct(p), p.price, (+p.price! * this.getQuantityForProduct(p)).toFixed(2)
               ])),
               [{
@@ -227,10 +227,10 @@ export class PdfGeneratorComponent {
   generatePDF(orderInfo: { order: IOrder, otherInfo: any }, totalPages: number) {
     if (orderInfo && orderInfo.order && orderInfo.order.cliente && orderInfo.order.productList) {
       /*
-      orderInfo.order.productList = orderInfo.order.productList.map(p => {
-        const base64Image = this.convertImageToBase64(p.image!); // Funzione da implementare
-        return {...p, base64Image};
+      orderInfo.order.productList.map(p => {
+        p.base64Image = this.convertImageToBase64(p.image!); // Funzione da implementare
       });
+
        */
       // Creo pdf temporaneo per recupera pagine totali
       const documentDefinition = {
@@ -345,8 +345,20 @@ export class PdfGeneratorComponent {
                   {text: 'Prezzo', alignment: 'center', bold: true},
                   {text: 'Totale', alignment: 'center', bold: true}],
                 ...orderInfo.order.productList.map(p => ([
-                  'RISOLVO ALLA FINE', p.productCode, p.productDesc, this.getDettaglioStack(p), this.getQuantityForProduct(p), this.formatPrice(p.price!), this.formatPrice(+p.price! * this.getQuantityForProduct(p))
-                  // p.image, p.productCode, p.productDesc, 'test', this.getQuantityForProduct(p), p.price, (+p.price! * this.getQuantityForProduct(p)).toFixed(2)
+                  {
+                    image: 'data:image/jpeg;base64,' + p.base64Image,
+                    // width: 'auto',
+                    // height: 80,
+                    fit: [80, 80], // Controlla l'adattamento dell'immagine
+                    alignment: 'center',
+                    style: 'image-product'
+                  },
+                  {text: p.productCode, alignment: 'center'},
+                  {text: p.productDesc, alignment: 'center'},
+                  {stack: this.getDettaglioStack(p), alignment: 'center'},
+                  {text: this.getQuantityForProduct(p), alignment: 'center'},
+                  {text: this.formatPrice(p.price!), alignment: 'center'},
+                  {text: this.formatPrice(+p.price! * this.getQuantityForProduct(p)), alignment: 'center'}
                 ])),
                 [{
                   text: 'Prezzo Totale',
@@ -394,6 +406,19 @@ export class PdfGeneratorComponent {
             decoration: 'underline',
             fontSize: 14,
             margin: [0, 15, 0, 15]
+          },
+          'image-product': {
+            border: 5,
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'column', // Centra verticalmente
+            alignItems: 'center', // Centra orizzontalmente
+            justifyContent: 'center', // Centra verticalmente
+            background: 'red',
+            objectFit: 'cover',
+            width: 80,
+            height: 80,
+            padding: 5,
           }
         }
       };
@@ -415,20 +440,26 @@ export class PdfGeneratorComponent {
         stackContent.push({text: {text: `${colorVariant.descColor?.toUpperCase()}`, bold: true}});
         let textSizeVariant = '';
         colorVariant.sizeVariants?.forEach((sizeVariant, index) => {
-          textSizeVariant = textSizeVariant + `${sizeVariant.descSize?.toUpperCase()} (${sizeVariant.stockOrder})`
-          if (index < colorVariant.sizeVariants?.length! - 1) {
-            textSizeVariant = textSizeVariant + ` - `
+          if (sizeVariant.stockOrder && sizeVariant.stockOrder > 0) {
+            textSizeVariant = textSizeVariant + `${sizeVariant.descSize?.toUpperCase()} (${sizeVariant.stockOrder})`
+            if (index < colorVariant.sizeVariants?.length! - 1) {
+              textSizeVariant = textSizeVariant + ` - `
+            }
           }
         });
-        stackContent.push({text: `${textSizeVariant}`});
-        stackContent.push({text: '\n'}); // Aggiunge una riga nuova
+        if (textSizeVariant !== '') {
+          stackContent.push({text: `${textSizeVariant}`});
+          stackContent.push({text: '\n'}); // Aggiunge una riga nuova
+        }
       });
     } else {
       p.colorVariants?.forEach((colorVariant, index) => {
-        stackContent.push({text: {text: `${colorVariant.descColor?.toUpperCase()}`, bold: true}});
-        const textSizeVariant = `Unica (${colorVariant.stockOrder})`
-        stackContent.push({text: `${textSizeVariant}`});
-        stackContent.push({text: '\n'}); // Aggiunge una riga nuova
+        if (colorVariant.stockOrder && colorVariant.stockOrder > 0) {
+          stackContent.push({text: {text: `${colorVariant.descColor?.toUpperCase()}`, bold: true}});
+          const textSizeVariant = `Unica (${colorVariant.stockOrder})`
+          stackContent.push({text: `${textSizeVariant}`});
+          stackContent.push({text: '\n'}); // Aggiunge una riga nuova
+        }
       });
     }
 
@@ -478,10 +509,11 @@ export class PdfGeneratorComponent {
     reader.readAsDataURL(blob);
   }
 
-  async convertImageToBase64(url: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+  convertImageToBase64(url: string) {
+    return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = "Anonymous";
+      img.setAttribute("crossOrigin", "anonymous");
+      // img.crossOrigin = "Anonymous";
       img.onload = () => {
         const canvas = document.createElement("canvas");
         canvas.width = img.width;

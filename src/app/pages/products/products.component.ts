@@ -87,10 +87,9 @@ export class ProductsComponent implements AfterViewInit {
     this.commonService.clothingSizes.subscribe((sizes: ISimplePickList[]) => {
       this.taglie = sizes as ISimplePickList[];
     });
-    this.commonService.fornitori.subscribe((providers: IProvider[]) => {
+    this.providerService.providers.subscribe((providers: IProvider[]) => {
       this.fornitori = providers as IProvider[];
     });
-
     this.commonService.tipologiaProdotti.subscribe((productTypes: IProductType[]) => {
       this.tipologiaProdotti = productTypes as IProductType[];
     });

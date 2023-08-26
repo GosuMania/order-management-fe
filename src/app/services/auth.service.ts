@@ -40,4 +40,8 @@ export class AuthService {
       map(res => res.data)
     );
   }
+
+  resetPassword(email: string): Observable<any> {
+    return this.http.post<any>(environment.urlApi + 'auth/reset-password', {email: email});
+  }
 }

@@ -7,7 +7,7 @@ export interface IUser {
   username: string;
   name: string;
   password?: string;
-  typeAccount: string;
+  type: string;
   agency: string;
   agencyObj?: IAgency; // poi vediamo se serve
 }

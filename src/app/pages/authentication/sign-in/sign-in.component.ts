@@ -11,6 +11,8 @@ import { AuthStateService } from '../../../services/auth-state.service';
 })
 export class SignInComponent implements OnInit {
   loginForm: UntypedFormGroup;
+  resetForm: UntypedFormGroup;
+
   errors:any = null;
   constructor(
     public router: Router,
@@ -23,12 +25,18 @@ export class SignInComponent implements OnInit {
       email: [],
       password: [],
     });
+    this.resetForm = this.fb.group({
+      emailResetPassword: []
+    });
   }
   ngOnInit() {}
   onSubmit() {
     this.authService.signin(this.loginForm.value).subscribe(
       (result) => {
         this.responseHandler(result);
+        this.authService.profileUser().subscribe((data: any) => {
+          this.authService.userProfile.next(data);
+        });
       },
       (error) => {
         this.errors = error.error;
@@ -36,6 +44,7 @@ export class SignInComponent implements OnInit {
       () => {
         this.authState.setAuthState(true);
         this.loginForm.reset();
+
         this.router.navigate(['home']);
       }
     );
@@ -43,5 +52,18 @@ export class SignInComponent implements OnInit {
   // Handle response
   responseHandler(data:any) {
     this.token.handleData(data.access_token);
+  }
+
+  resetPassword() {
+    this.authService.resetPassword(this.resetForm.get('emailResetPassword')?.value).subscribe(
+      (result) => {
+        console.log('Result: ', result)
+      },
+      (error) => {
+        console.log('Error: ', error)
+      },
+      () => {
+      }
+    );
   }
 }

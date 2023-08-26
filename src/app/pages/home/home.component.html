@@ -7,7 +7,15 @@
       <div>Clienti</div>
     </button>
   </div>
-  <div class="button-col">
+  <div class="button-col" *ngIf="userProfile && userProfile.type === 'ADMIN'">
+    <button mat-fab extended routerLink="/providers">
+      <div>
+        <mat-icon  class="customIconSize">business</mat-icon>
+      </div>
+      <div>Fornitori</div>
+    </button>
+  </div>
+  <div class="button-col" *ngIf="userProfile && userProfile.type === 'ADMIN'">
     <button mat-fab extended routerLink="/products">
       <div>
         <mat-icon class="customIconSize">style</mat-icon>
@@ -47,6 +55,7 @@
       </div>
     </button>
   </div>
+  <!--
   <div class="button-col">
     <button mat-fab extended routerLink="/calendar">
       <div>
@@ -57,16 +66,8 @@
       </div>
     </button>
   </div>
-  <div class="button-col">
-    <button mat-fab extended routerLink="/calendar">
-      <div>
-        <mat-icon class="customIconSize">business</mat-icon>
-      </div>
-      <div>
-        Fornitori
-      </div>
-    </button>
-  </div>
+  -->
+  <!--
   <div class="button-col">
     <button mat-fab extended routerLink="/calendar">
       <div>
@@ -77,6 +78,7 @@
       </div>
     </button>
   </div>
+  -->
   <!--
   <div class="button-col">
     <button mat-fab extended routerLink="/calendar">

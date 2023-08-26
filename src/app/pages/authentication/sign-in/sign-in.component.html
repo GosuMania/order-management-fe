@@ -11,15 +11,27 @@
       {{ errors?.error }}
     </div>
     <!-- Login -->
-    <mat-form-field  class="example-full-width">
+    <mat-form-field class="example-full-width">
       <mat-label>Email address</mat-label>
-      <input matInput  type="email" class="form-control" formControlName="email">
+      <input matInput type="email" class="form-control" formControlName="email">
     </mat-form-field>
     <mat-form-field mat-form-field class="example-full-width">
       <mat-label>Password</mat-label>
-      <input matInput  type="password" class="form-control" formControlName="password">
+      <input matInput type="password" class="form-control" formControlName="password">
     </mat-form-field>
     <br>
-    <button mat-raised-button color="accent" type="submit" [disabled]="!loginForm.valid" style="width: 80%">Log in</button>
+    <button mat-raised-button color="accent" type="submit" [disabled]="!loginForm.valid" style="width: 80%">Log in
+    </button>
   </form>
+  <!--
+  <br>
+  <form class="example-form" [formGroup]="resetForm" (ngSubmit)="resetPassword()">
+    <mat-form-field mat-form-field class="example-full-width">
+      <mat-label>Reset Password</mat-label>
+      <input matInput type="email" class="form-control" formControlName="emailResetPassword">
+    </mat-form-field>
+    <button mat-raised-button color="accent" type="submit" [disabled]="!resetForm.valid" style="width: 80%">Log in
+    </button>
+  </form>
+  -->
 </div>
