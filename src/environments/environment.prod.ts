@@ -24,6 +24,7 @@ export const environment = {
   PRODUCT_GET_ALL_WITH_PAGINATION: 'product/get-all-with-pagination',
   PRODUCT_GET_ALL_WITH_PAGINATION_SEARCH: 'product/get-all-with-pagination-search',
 
+
   CLOTHING_SIZE_TYPE_GET_ALL: 'clothing-size-type/get-all',
   CLOTHING_SIZE_GET_ALL: 'clothing-size/get-all',
   CLOTHING_NUMBER_SIZE_GET_ALL: 'clothing-number-size/get-all',
@@ -47,6 +48,7 @@ export const environment = {
   ORDER_TYPE_GET_ALL: 'order-type/get-all',
   PAYMENT_METHODS_GET_ALL: 'payment-method/get-all',
   SEASON_TYPE_GET_ALL: 'season-type/get-all',
+  SEASON_GET_ALL: 'season/get-all',
 
   ORDER_GET_ALL: 'order/get-all',
   ORDER_CREATE_OR_UPDATE: 'order/create-or-update',
