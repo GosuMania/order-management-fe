@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Inject, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Inject, ViewChild} from '@angular/core';
 import {FormArray, FormGroup, UntypedFormBuilder,} from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -12,7 +12,6 @@ import {IColor} from "../../interfaces/IColor";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
-import {VariantsProductOrderComponent} from "../variants-product-order/variants-product-order.component";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
 import {
   CreaModificaVariantsDialogComponent
@@ -31,7 +30,6 @@ import {
   ],
 })
 export class ProductsCartComponent implements AfterViewInit {
-  @ViewChildren('variantsProductOrderComponent') variantsProductOrderComponent!: QueryList<VariantsProductOrderComponent>;
   utility = UTILITY;
   cercaValue: string = '';
   perPage = 5;
@@ -55,18 +53,19 @@ export class ProductsCartComponent implements AfterViewInit {
     'prezzo',
     'actions'
   ];
-  columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   dataSource = new MatTableDataSource<IProduct>([]);
-  expandedElement: IProduct[] | null | undefined;
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
+  orderProductList!: IProduct[];
+  orderProductListBK!: IProduct[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public orderProductList: IProduct[], public dialog: MatDialog,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog,
               private productService: ProductService, private commonService: CommonService,
               private fb: UntypedFormBuilder, private cdkRef: ChangeDetectorRef) {
-
+    this.orderProductList = data.orderProductList;
+    this.orderProductListBK = data.orderProductListBK ? data.orderProductListBK : [];
 
     this.commonService.isSmall.subscribe(res => {
       this.isSmall = res;
@@ -86,7 +85,6 @@ export class ProductsCartComponent implements AfterViewInit {
       this.tipologiaProdotti = productTypes as IProductType[];
     });
 
-    // this.dataSource = new MatTableDataSource<IProduct>(ELEMENT_DATA);
     this.refreshList();
 
   }
@@ -99,20 +97,16 @@ export class ProductsCartComponent implements AfterViewInit {
   }
 
   delete(productInput: IProduct, index: number) {
-    productInput.isAdded = false;
-    productInput.colorVariants?.forEach(colorVariant => {
-      colorVariant.stockOrder = 0;
-      colorVariant.sizeVariants?.forEach(sizeVariant => {
-        sizeVariant.stockOrder = 0;
-      });
-    });
     this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
+    this.refreshList();
+    /*
     this.variantsProductOrderComponent.forEach((productOrder) => {
       if (productOrder.product.id === productInput.id) {
         productOrder.product = productInput;
         productOrder.createForm();
       }
     });
+     */
   }
 
   applyFilter(value: string) {
@@ -137,7 +131,6 @@ export class ProductsCartComponent implements AfterViewInit {
     } else {
       this.refreshList();
     }
-    // this.dataSource.filter = filterValue;
   }
 
   addProduct(productInput: IProduct, index: number) {
@@ -145,11 +138,11 @@ export class ProductsCartComponent implements AfterViewInit {
       minHeight: 'calc(100vh - 90px)',
       height: '90%',
       width: '90%',
-      data: productInput
+      data: {product: productInput}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result) {
+      if (result) {
         let newProduct = result as IProduct;
         this.orderProductList = this.orderProductList.filter(product => product.id !== productInput.id);
         this.orderProductList.push(newProduct);
@@ -157,18 +150,12 @@ export class ProductsCartComponent implements AfterViewInit {
         this.cdkRef.detectChanges();
         console.log('The dialog was closed: ', result);
       }
-
     });
   }
 
   refreshList() {
     this.productService.getProductWithPaginationList(this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1)
       .subscribe((data: IProductPagination) => {
-        /*
-        if(data.data.length > 0) {
-          data.data.forEach(product => product.colore = this.setProductColor(product.idColore));
-        }
-         */
         this.total = data.meta.total;
         this.lastPage = data.meta.last_page;
         data.data.forEach(product => {
@@ -180,19 +167,46 @@ export class ProductsCartComponent implements AfterViewInit {
                 case this.tipologiaProdotti[2].id:
                   orderProduct.colorVariants?.forEach((variant, indexColor) => {
                     variant.sizeVariants?.forEach((sizeVariant, indexSize) => {
-                      product!.colorVariants![indexColor].sizeVariants![indexSize].stockOrder = sizeVariant.stock;
+                      product!.colorVariants![indexColor].sizeVariants![indexSize].stockOrder = sizeVariant.stockOrder;
                     });
                   });
                   break;
                 default:
                   orderProduct.colorVariants?.forEach((variant, index) => {
-                    product!.colorVariants![index].stockOrder = variant.stock;
+                    product!.colorVariants![index].stockOrder = variant.stockOrder;
                   })
                   break;
               }
             }
-          })
-        })
+          });
+        });
+        if(this.orderProductListBK.length > 0) {
+          this.orderProductListBK.forEach(productBk => {
+            if(!this.orderProductList.find(product => product.id === productBk.id)) {
+              data.data.find(product => {
+                if(product.id === productBk.id) {
+                  switch (productBk.idProductType) {
+                    case this.tipologiaProdotti[0].id:
+                    case this.tipologiaProdotti[2].id:
+                      productBk.colorVariants?.forEach((variant, indexColor) => {
+                        variant.sizeVariants?.forEach((sizeVariant, indexSize) => {
+                          product!.colorVariants![indexColor].sizeVariants![indexSize].stock =
+                            product!.colorVariants![indexColor].sizeVariants![indexSize].stock + sizeVariant.stockOrder!;
+                        });
+                      });
+                      break;
+                    default:
+                      productBk.colorVariants?.forEach((variant, index) => {
+                        product!.colorVariants![index].stock = product!.colorVariants![index].stock! + variant.stockOrder!;
+                      })
+                      break;
+                  }
+
+                }
+              })
+            }
+          });
+        }
         this.dataSource = new MatTableDataSource<IProduct>(data.data);
       });
   }
@@ -221,41 +235,5 @@ export class ProductsCartComponent implements AfterViewInit {
     return this.articoloForm.controls["colorVariants"] as FormArray;
   }
 
-  disableCartButton(element: IProduct): boolean {
-    let check = true;
-    switch (element.idProductType) {
-      case this.tipologiaProdotti[0].id:
-      case this.tipologiaProdotti[2].id:
-        element.colorVariants?.forEach(variant => {
-          if (variant.stockOrder && variant.stockOrder > 0) {
-            check = false;
-          }
-        })
-        break;
-      default:
-        element.colorVariants?.forEach(variant => {
-          if (variant.stockOrder && variant.stockOrder > 0) {
-            check = false;
-          }
-        });
-        break;
-    }
-    return check;
-  }
 
-  changeValue(event: boolean, element: IProduct) {
-    element.disableCartButton = event;
-    this.cdkRef.detectChanges();
-    console.log('ooooooooooooooooo');
-  }
-
-  editProduct(productInput: IProduct) {
-    productInput.isAdded = false;
-    this.variantsProductOrderComponent.forEach((productOrder) => {
-      if (productOrder.product.id === productInput.id) {
-        productOrder.product = productInput;
-        productOrder.createForm();
-      }
-    });
-  }
 }

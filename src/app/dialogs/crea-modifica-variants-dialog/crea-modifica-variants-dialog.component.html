@@ -3,6 +3,9 @@
   <app-variants-product-order #variantsProductOrderComponent *ngIf="utility.checkObj(product)"
                               [productStock]="product"></app-variants-product-order>
   <app-spinner *ngIf="!utility.checkObj(product)"></app-spinner>
+  <mat-error *ngIf="checkValid"  class="alert alert-danger">
+    Attenzione! Una o più delle quantità inserite superano le quantità disponibili.
+  </mat-error>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="confirm()" cdkFocusInitial>CONFERMA</button>

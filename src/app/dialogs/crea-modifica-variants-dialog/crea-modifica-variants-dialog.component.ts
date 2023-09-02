@@ -12,6 +12,7 @@ import {VariantsProductOrderComponent} from "../../components/variants-product-o
 })
 export class CreaModificaVariantsDialogComponent {
   product!: IProduct;
+  checkValid = false;
   utility = UTILITY;
   @ViewChildren('variantsProductOrderComponent') variantsProductOrderComponent!: QueryList<VariantsProductOrderComponent>;
   @ViewChild('scrollContentDialog') private scrollContentDialog: ElementRef = {} as ElementRef;
@@ -20,21 +21,25 @@ export class CreaModificaVariantsDialogComponent {
               public dialogRef: MatDialogRef<CreaModificaVariantsDialogComponent>) {
     this.dialogRef.disableClose = true;
 
-    this.product = data;
-  }
-
-  changeValue(event: IProduct) {
-    this.product = event;
-    this.cdkRef.detectChanges();
+    this.product = JSON.parse(JSON.stringify(data.product));
   }
 
   confirm(): void {
     let newProduct = this.product;
+    let check = false;
+    this.checkValid = false;
     this.variantsProductOrderComponent.forEach((productOrder) => {
       if (productOrder.product.id === newProduct.id) {
-        newProduct.colorVariants = productOrder.getColorVariantsToSave(newProduct.idProductType);
+        check = productOrder.checkValidate(newProduct.idProductType);
+        if(check) {
+          newProduct.colorVariants = productOrder.getColorVariantsToSave(newProduct.idProductType);
+        }
       }
     });
-    this.dialogRef.close(newProduct);
+    if(check) {
+      this.dialogRef.close(newProduct);
+    } else {
+      this.checkValid = true;
+    }
   }
 }

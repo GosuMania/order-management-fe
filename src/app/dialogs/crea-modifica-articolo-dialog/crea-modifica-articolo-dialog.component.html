@@ -111,7 +111,7 @@
       <mat-form-field class="example-chip-list" appearance="fill">
         <mat-label>Colori*</mat-label>
         <mat-chip-grid #chipGridColore aria-label="Seleziona colori">
-          <mat-chip-row *ngFor="let colore of coloriSelected" (removed)="removeColore(colore.id)">
+          <mat-chip-row *ngFor="let colore of coloriSelected" (removed)="removeColore(colore.id!)">
             {{colore.colore | titlecase}}
             <button matChipRemove [attr.aria-label]="'remove ' + colore">
               <mat-icon>cancel</mat-icon>
@@ -134,7 +134,7 @@
       <mat-form-field class="example-chip-list" appearance="fill">
         <mat-label>Taglie*</mat-label>
         <mat-chip-grid #chipGridTaglia aria-label="Seleziona taglie">
-          <mat-chip-row *ngFor="let taglia of taglieSelected" (removed)="removeTaglia(taglia.id)">
+          <mat-chip-row *ngFor="let taglia of taglieSelected" (removed)="removeTaglia(taglia.id!)">
             {{taglia.desc | uppercase}}
             <button matChipRemove [attr.aria-label]="'remove ' + taglia">
               <mat-icon>cancel</mat-icon>

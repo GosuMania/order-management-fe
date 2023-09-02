@@ -98,18 +98,6 @@ export class VariantsProductOrderComponent implements AfterViewInit {
 
   createForm() {
     this.product = JSON.parse(JSON.stringify(this.productStock));
-    /*
-    this.product.colorVariants?.forEach(
-      colorVariant => {
-        colorVariant.stock = colorVariant.stock ? 0 : null;
-        colorVariant.sizeVariants?.forEach(
-          sizeVariant => {
-            sizeVariant.stock = 0;
-          }
-        )
-      }
-    )
-     */
 
     this.productForm = this.fb.group({
       colorVariants: this.fb.array([]),
@@ -118,7 +106,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
     if (UTILITY.checkText(this.product.id) && this.product.colorVariants && this.product.colorVariants?.length > 0) {
       switch (this.product.idProductType) {
         case this.tipologiaProdotti[0].id:
-          if(this.product.idClothingSizeType === this.clothingSizeTypes[0].id) {
+          if (this.product.idClothingSizeType === this.clothingSizeTypes[0].id) {
             this.taglie = this.tagliaAbbigliamento;
           } else {
             this.taglie = this.tagliaAbbigliamentoEu;
@@ -167,7 +155,8 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       descColore: [colorVariant.descColor, Validators.required],
       sizeVariants: this.fb.array([]),
       stockColor: [{value: colorVariant.stock, disabled: true}, Validators.required],
-      stockOrderColor: [{value: colorVariant.stockOrder ? colorVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required]
+      stockOrderColor: [{value: colorVariant.stockOrder ? colorVariant.stockOrder : 0, disabled: this.product.isAdded},
+        [Validators.required, Validators.max(colorVariant.stock ? colorVariant.stock : 0)]]
     });
     this.colorVariants.push(variantForm);
     variantForm.get('stockOrderColor')?.valueChanges.subscribe(
@@ -185,9 +174,9 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       if (!valueFind) {
         this.taglieSelected.push(value);
         this.taglieSelected.sort((a, b) => {
-          if (a.id > b.id) {
+          if (a.id! > b.id!) {
             return 1;
-          } else if (a.id < b.id) {
+          } else if (a.id! < b.id!) {
             return -1;
           } else {
             return 0;
@@ -225,7 +214,8 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       idSize: [sizeVariant.id, Validators.required],
       idProductVariant: [sizeVariant.idProductVariant, Validators.required],
       stockSize: [{value: sizeVariant.stock, disabled: true}, Validators.required],
-      stockOrderSize: [{value: sizeVariant.stockOrder ? sizeVariant.stockOrder : 0, disabled: this.product.isAdded}, Validators.required],
+      stockOrderSize: [{value: sizeVariant.stockOrder ? sizeVariant.stockOrder : 0, disabled: this.product.isAdded},
+        [Validators.required, Validators.max(sizeVariant.stock ? sizeVariant.stock : 0)]],
       descSize: [sizeVariant.descSize]
     });
     this.getSizeVariants(indexColor).push(sizeVariantForm);
@@ -250,6 +240,28 @@ export class VariantsProductOrderComponent implements AfterViewInit {
       }
     )
 
+  }
+
+  checkValidate(idTipologiaProdotto: number | null): boolean {
+    let checkValid = true;
+    this.colorVariants.controls.forEach((color: any, indexColor: number) => {
+      if (idTipologiaProdotto === 0 || idTipologiaProdotto === 2) {
+        color.controls.sizeVariants.controls.forEach((size: any, indexSize: number) => {
+          if (size.value.stockOrderSize > this.product.colorVariants![indexColor].sizeVariants![indexSize].stock) {
+            checkValid = false;
+            // size.valid = false;
+            size.setErrors({ 'max': true })
+          }
+        });
+      } else {
+        if (color.value.stockSize < this.product.colorVariants![indexColor].stock!) {
+          checkValid = false;
+          // color.valid = false;
+          color.setErrors({ 'max': true })
+        }
+      }
+    });
+    return checkValid;
   }
 
   /*** GET VALUES TO SAVE ***/
@@ -300,7 +312,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
             }
           });
         });
-        if(!check) {
+        if (!check) {
           this.product.colorVariants?.forEach(variant => {
             variant.sizeVariants?.forEach(sizeVariant => {
               if (sizeVariant.stockOrder && sizeVariant.stockOrder > sizeVariant.stock!) {
@@ -316,7 +328,7 @@ export class VariantsProductOrderComponent implements AfterViewInit {
             check = false;
           }
         });
-        if(!check) {
+        if (!check) {
           this.product.colorVariants?.forEach((variant) => {
             if (variant.stockOrder && variant.stockOrder > variant.stock!) {
               check = true;

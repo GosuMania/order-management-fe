@@ -1,5 +1,5 @@
 export interface ISimplePickList {
-  id: number;
+  id?: number;
   desc: string;
   desc2?: string;
   year?: string; // per Season

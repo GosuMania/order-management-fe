@@ -75,6 +75,10 @@ import {ProvidersComponent} from "./pages/providers/providers.component";
 import {
   CreaModificaFornitoreDialogComponent
 } from "./dialogs/crea-modifica-fornitore-dialog/crea-modifica-fornitore-dialog.component";
+import {
+  CreaModificaColorDialogComponent
+} from "./dialogs/crea-modifica-color-dialog/crea-modifica-color-dialog.component";
+import {ColorsComponent} from "./pages/colors/colors.component";
 
 registerLocaleData(localeIt, 'it');
 
@@ -137,7 +141,9 @@ const Ux_Modules = [
     CreaModificaVariantsDialogComponent,
     PdfGeneratorComponent,
     ProvidersComponent,
-    CreaModificaFornitoreDialogComponent
+    CreaModificaFornitoreDialogComponent,
+    CreaModificaColorDialogComponent,
+    ColorsComponent
   ],
     imports: [
         BrowserModule,

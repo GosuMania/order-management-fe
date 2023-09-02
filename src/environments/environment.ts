@@ -30,13 +30,18 @@ export const environment = {
   PRODUCT_GET_ALL_WITH_PAGINATION_SEARCH: 'product/get-all-with-pagination-search',
 
 
-  COLOR_GET_ALL: 'color/get-all',
   CLOTHING_SIZE_TYPE_GET_ALL: 'clothing-size-type/get-all',
   CLOTHING_SIZE_GET_ALL: 'clothing-size/get-all',
   CLOTHING_NUMBER_SIZE_GET_ALL: 'clothing-number-size/get-all',
   PRODUCT_TYPE_GET_ALL: 'product-type/get-all',
   SHOE_SIZE_GET_ALL: 'shoe-size/get-all',
   UTILITY_UPLOAD_IMAGE: 'image/upload',
+
+  COLOR_GET_ALL: 'color/get-all',
+  COLOR_CREATE_OR_UPDATE: 'color/create-or-update',
+  COLOR_DELETE: 'color/delete',
+  COLOR_GET_ALL_WITH_PAGINATION: 'color/get-all-with-pagination',
+  COLOR_GET_ALL_WITH_PAGINATION_SEARCH: 'color/get-all-with-pagination-search',
 
   PROVIDER_GET_ALL: 'provider/get-all',
   PROVIDER_CREATE_OR_UPDATE: 'provider/create-or-update',

@@ -324,9 +324,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       if (!valueFind) {
         this.taglieSelected.push(value);
         this.taglieSelected.sort((a, b) => {
-          if (a.id > b.id) {
+          if (a.id! > b.id!) {
             return 1;
-          } else if (a.id < b.id) {
+          } else if (a.id! < b.id!) {
             return -1;
           } else {
             return 0;
@@ -376,7 +376,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       if (this.taglieSelected.length > 0) {
         this.taglieSelected.forEach(taglia => {
           const size: ISizeVariant = {
-            id: taglia.id,
+            id: taglia.id!,
             descSize: taglia.desc,
             stock: 0
           };
@@ -454,9 +454,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     if (value) {
       this.taglieSelected.push(value);
       this.taglieSelected.sort((a, b) => {
-        if (a.id > b.id) {
+        if (a.id! > b.id!) {
           return 1;
-        } else if (a.id < b.id) {
+        } else if (a.id! < b.id!) {
           return -1;
         } else {
           return 0;
@@ -464,7 +464,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       });
       this.sizeColumns.push(value.desc);
       this.coloriSelected.forEach((color, index) => {
-        this.addSizeVariants(index, value.id)
+        this.addSizeVariants(index, value.id!)
       });
     }
 
@@ -479,16 +479,16 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     if (value) {
       this.taglieSelected.push(value);
       this.taglieSelected.sort((a, b) => {
-        if (a.id > b.id) {
+        if (a.id! > b.id!) {
           return 1;
-        } else if (a.id < b.id) {
+        } else if (a.id! < b.id!) {
           return -1;
         } else {
           return 0;
         }
       });
       this.coloriSelected.forEach((color, index) => {
-        this.addSizeVariants(index, value.id)
+        this.addSizeVariants(index, value.id!)
       })
     }
     this.tagliaInput.nativeElement.value = '';

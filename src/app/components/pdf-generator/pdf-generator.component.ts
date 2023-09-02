@@ -437,7 +437,6 @@ export class PdfGeneratorComponent {
 
     if (p.idProductType === 0 || p.idProductType === 2) {
       p.colorVariants?.forEach(colorVariant => {
-        stackContent.push({text: {text: `${colorVariant.descColor?.toUpperCase()}`, bold: true}});
         let textSizeVariant = '';
         colorVariant.sizeVariants?.forEach((sizeVariant, index) => {
           if (sizeVariant.stockOrder && sizeVariant.stockOrder > 0) {
@@ -448,6 +447,7 @@ export class PdfGeneratorComponent {
           }
         });
         if (textSizeVariant !== '') {
+          stackContent.push({text: {text: `${colorVariant.descColor?.toUpperCase()}`, bold: true}});
           stackContent.push({text: `${textSizeVariant}`});
           stackContent.push({text: '\n'}); // Aggiunge una riga nuova
         }

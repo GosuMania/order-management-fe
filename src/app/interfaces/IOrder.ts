@@ -9,6 +9,7 @@ export interface IOrder {
   user?: IUser | null;
   cliente?: ICustomer | null;
   productList: IProduct[];
+  productListBK?: IProduct[];
   idUser: number | undefined;
   descUser?: string;
   idCustomer: number | null;

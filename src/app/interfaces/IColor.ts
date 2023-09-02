@@ -1,5 +1,13 @@
+import {IMeta} from "./ICustomer";
+
 export interface IColor {
-  id: number;
-  codice: string;
+  id: number | null;
+  codice?: string;
   colore: string;
+}
+
+
+export interface IColorPagination {
+  meta: IMeta,
+  data: IColor[]
 }

@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -16,7 +15,6 @@ import {CommonService} from "../../services/common.service";
 import {IProduct} from "../../interfaces/IProduct";
 import {ProductService} from "../../services/product.service";
 import {IColor} from "../../interfaces/IColor";
-import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {Observable, startWith} from "rxjs";
 import {map} from "rxjs/operators";
 import {IProvider} from "../../interfaces/IProvider";
@@ -29,7 +27,7 @@ import {ISimplePickList} from "../../interfaces/ISimplePickList";
 import {IOrder} from "../../interfaces/IOrder";
 import {ProductsCartComponent} from "../../components/products-cart/products-cart.component";
 import {ProductsOrderComponent} from "../../components/products-order/products-order.component";
-import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
+import {MatAutocomplete} from "@angular/material/autocomplete";
 import {LABEL} from "../../constants/label.constant";
 
 class ImageSnippet {
@@ -209,6 +207,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     let seasonType = null;
     if (UTILITY.checkObj(data) && UTILITY.checkObj(data.order)) {
       this.order = data.order;
+      this.order.productListBK = JSON.parse(JSON.stringify(this.order.productList));
       this.title = UTILITY.checkObj(data.order.id) ? 'Modifica Ordine' : 'Nuovo Ordine';
       customer = this.customers.find(c => c.id === this.order.idCustomer);
       orderType = this.orderTypes.find(o => o.id === this.order.idOrderType);
@@ -291,7 +290,6 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
           } else {
             this.alertOK = true;
           }
-          // this.order = order;
           this.order.id = value.id;
         },
         error: err => {
@@ -366,7 +364,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     const dialogRef = this.dialog.open(ProductsCartComponent, {
       height: '90%',
       width: '90%',
-      data: this.order.productList
+      data: {orderProductList: this.order.productList, orderProductListBK: this.order.productListBK}
     });
     dialogRef.afterClosed().subscribe(result => {
       this.order.productList = dialogRef.componentInstance.orderProductList;
@@ -374,17 +372,6 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
       this.cdkRef.detectChanges();
       console.log('The dialog was closed');
     });
-    /*
-
-    dialogRef.componentInstance.refreshList.subscribe(() => {
-      this.refreshList();
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      dialogRef.componentInstance.refreshList.unsubscribe();
-      console.log('The dialog was closed');
-    });
-     */
   }
 
   reloadList(orderProductList: IProduct[]) {
