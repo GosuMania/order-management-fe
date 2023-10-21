@@ -18,9 +18,14 @@ export class AuthService {
   public userProfile: BehaviorSubject<IUser | null> = new BehaviorSubject<IUser | null>( null);
 
   constructor(private http: HttpClient) {
-    this.profileUser().subscribe((data: any) => {
-      this.userProfile.next(data);
-    });
+    try {
+      this.profileUser().subscribe((data: any) => {
+        this.userProfile.next(data);
+      });
+    } catch (e) {
+      this.userProfile.next(null);
+    }
+
   }
   // User registration
   register(user: User): Observable<any> {

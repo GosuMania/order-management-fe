@@ -1,0 +1,127 @@
+<div class="example-container">
+  <div class="filters row">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+      <strong>Totale Ordini</strong> {{total}}
+
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+      <strong>Totale Articoli</strong> {{totalPieces}}
+
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+      <strong>Totale Importo</strong>
+      {{totalAmount | currency: 'EUR'}}
+    </div>
+  </div>
+  <hr>
+  <form [formGroup]="orderForm">
+    <div class="filters row">
+      <!--
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-5 col-xl-4">
+        <input matInput [(ngModel)]="cercaValue" placeholder="Cerca">
+        <button matTooltip="Pulisci"  *ngIf="cercaValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
+          <mat-icon>close</mat-icon>
+        </button>
+        <button matTooltip="Cerca" *ngIf="cercaValue" matSuffix mat-icon-button (click)="applyFilter(cercaValue)">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+      -->
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Fornitore*</mat-label>
+        <mat-select formControlName="provider">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore.id">
+            {{fornitore.ragioneSociale}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <mat-label>Stagione*</mat-label>
+        <mat-select formControlName="season">
+          <mat-option *ngFor="let stagione of stagioni" [value]="stagione.id">
+            {{stagione.desc}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6" style="text-align: start">
+      <button class="add-button" mat-fab extended (click)="refreshList()" [disabled]="!orderForm.valid">
+        <mat-icon>search</mat-icon>
+        Cerca
+      </button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6" style="text-align: end" *ngIf="orderForm">
+      <app-xlsx-generator [valueFilter]="{ provider: orderForm.get('provider')!.value, season: orderForm.get('season')!.value, isDisabled: dataSource!.data!.length > 0}"></app-xlsx-generator>
+    </div>
+  </div>
+
+  <div class="container-table">
+    <table class="mat-table" mat-table matSort matTableResponsive [dataSource]="dataSource"
+           (matSortChange)="sortChange($event)">
+
+      <ng-container matColumnDef="numeroOrdine">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> N° ordine</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="utente">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Agente</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descUser}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cliente">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Cliente</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descCustomer}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dataOrdine">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Data Ordine</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.date | date: 'dd/MM/YYYY'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="consegna">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Consegna</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descDelivery}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stagione">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Stagione</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descSeason}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="tipologiaOrdine">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Pezzi e Prezzo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalPieces}}
+          - {{element.totalAmount | currency: 'EUR'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalePezzi">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Articoli</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalPieces}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totaleImporto">
+        <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Importo</th>
+        <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalAmount | currency: 'EUR'}}</td>
+      </ng-container>
+
+      <tr class="mat-header-row" mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+      <tr class="mat-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator class="mat-paginator"
+                   [length]="total"
+                   [pageIndex]="currentPage"
+                   [pageSize]="perPage"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons
+                   (page)="paginatorChange($event)"
+    >
+    </mat-paginator>
+  </div>
+
+</div>

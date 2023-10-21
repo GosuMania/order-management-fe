@@ -13,6 +13,7 @@ import {MerchandiseExchangeComponent} from "./pages/merchandise-exchange/merchan
 import {CalendarComponent} from "./pages/calendar/calendar.component";
 import {ProvidersComponent} from "./pages/providers/providers.component";
 import {ColorsComponent} from "./pages/colors/colors.component";
+import {OrdersProviderComponent} from "./pages/orders-provider/orders-provider.component";
 
 const routes: Routes = [
   {path:'', component: DefaultComponent,
@@ -30,6 +31,7 @@ const routes: Routes = [
     {path: 'merchandise-exchange', component: MerchandiseExchangeComponent},
     {path: 'calendar', component: CalendarComponent},
     {path: 'colors', component: ColorsComponent},
+    {path: 'orders-provider', component: OrdersProviderComponent},
   ]
 
 }

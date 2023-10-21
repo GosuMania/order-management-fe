@@ -9,7 +9,7 @@ import {CustomerService} from "../../services/customer.service";
 import {CommonService} from "../../services/common.service";
 import {AuthService} from "../../services/auth.service";
 import {UTILITY} from "../../constants/utility.constant";
-import * as moment from "moment/moment";
+import * as moment from "moment";
 import {OrderService} from "../../services/order.service";
 import {IOrder, IOrderPagination} from "../../interfaces/IOrder";
 import {

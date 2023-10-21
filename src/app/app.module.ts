@@ -48,7 +48,7 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {MatTableResponsiveModule} from "./components/mat-table-responsive/mat-table-responsive.module";
 import {ProductsComponent} from "./pages/products/products.component";
 import {OrdersComponent} from "./pages/orders/orders.component";
-import {MomentPipe} from "./pipes/moment.pipe";
+import {MyMomentPipe} from "./pipes/my-moment.pipe";
 import localeIt from '@angular/common/locales/it';
 import {registerLocaleData} from "@angular/common";
 import {
@@ -79,6 +79,8 @@ import {
   CreaModificaColorDialogComponent
 } from "./dialogs/crea-modifica-color-dialog/crea-modifica-color-dialog.component";
 import {ColorsComponent} from "./pages/colors/colors.component";
+import {OrdersProviderComponent} from "./pages/orders-provider/orders-provider.component";
+import { XlsxGeneratorComponent } from './components/xlsx-generator/xlsx-generator.component';
 
 registerLocaleData(localeIt, 'it');
 
@@ -130,7 +132,7 @@ const Ux_Modules = [
     CustomersComponent,
     ProductsComponent,
     OrdersComponent,
-    MomentPipe,
+    MyMomentPipe,
     CreaModificaClienteDialogComponent,
     CreaModificaArticoloDialogComponent,
     CreaModificaOrdineDialogComponent,
@@ -143,7 +145,9 @@ const Ux_Modules = [
     ProvidersComponent,
     CreaModificaFornitoreDialogComponent,
     CreaModificaColorDialogComponent,
-    ColorsComponent
+    ColorsComponent,
+    OrdersProviderComponent,
+    XlsxGeneratorComponent
   ],
     imports: [
         BrowserModule,
@@ -158,7 +162,7 @@ const Ux_Modules = [
     ],
   exports: [
     MatTableResponsiveModule,
-    MomentPipe
+    MyMomentPipe
   ],
   providers: [
     {

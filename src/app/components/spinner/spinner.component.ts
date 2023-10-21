@@ -21,7 +21,7 @@ export class SpinnerComponent {
   init() {
 
     this.spinnerService.getSpinnerObserver().subscribe((status) => {
-      this.showSpinner = (status === 'start');
+      this.showSpinner = status === 'start';
       this.cdRef.detectChanges();
     });
   }

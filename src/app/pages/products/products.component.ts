@@ -6,7 +6,7 @@ import {MatSort, Sort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {CommonService} from "../../services/common.service";
 import {UTILITY} from "../../constants/utility.constant";
-import * as moment from "moment/moment";
+import * as moment from "moment";
 import {
   CreaModificaArticoloDialogComponent
 } from "../../dialogs/crea-modifica-articolo-dialog/crea-modifica-articolo-dialog.component";

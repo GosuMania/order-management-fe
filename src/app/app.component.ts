@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TokenService} from "./services/token.service";
 import {AuthStateService} from "./services/auth-state.service";
 import {Router} from "@angular/router";
+import {CommonService} from "./services/common.service";
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ import {Router} from "@angular/router";
 export class AppComponent implements OnInit {
   isSignedIn!: boolean;
 
-  constructor(private auth: AuthStateService, public router: Router, public token: TokenService) {
+  constructor(private auth: AuthStateService, public router: Router, public token: TokenService,
+              private commonService: CommonService) {
   }
 
   ngOnInit() {

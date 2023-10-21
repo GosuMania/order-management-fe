@@ -25,6 +25,9 @@ export class CommonService {
 
   public clothingNumberSizes: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
 
+  public clothingChildrenSizes: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
+
+
   public shoeSizes: BehaviorSubject<ISimplePickList[]> = new BehaviorSubject<ISimplePickList[]>([]);
 
   public fornitori: BehaviorSubject<IProvider[]> = new BehaviorSubject<IProvider[]>([]);
@@ -56,6 +59,10 @@ export class CommonService {
 
     this.getClothingNumberSizeList().subscribe(clothingNumberSizes => {
       this.clothingNumberSizes.next(clothingNumberSizes);
+    });
+
+    this.getClothingChildrenSizeList().subscribe(clothingChildrenSizes => {
+      this.clothingChildrenSizes.next(clothingChildrenSizes);
     });
 
     this.getShoesSizeList().subscribe(shoeSizes => {
@@ -130,6 +137,14 @@ export class CommonService {
       map(res => res.data)
     );
   }
+
+  getClothingChildrenSizeList() {
+    const myLink = environment.urlApi + environment.CLOTHING_CHILDREN_SIZE_GET_ALL;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
 
   getShoesSizeList() {
     const myLink = environment.urlApi + environment.SHOE_SIZE_GET_ALL;

@@ -4,7 +4,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
-import * as moment from 'moment';
+import * as moment from "moment";
 import {MatDialog} from "@angular/material/dialog";
 import {
   CreaModificaClienteDialogComponent

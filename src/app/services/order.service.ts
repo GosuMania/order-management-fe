@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
 import {environment} from "../../environments/environment";
 import {map} from "rxjs/operators";
 import {IOrder} from "../interfaces/IOrder";
@@ -9,7 +9,8 @@ import {IOrder} from "../interfaces/IOrder";
   providedIn: 'root',
 })
 export class OrderService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getOrderList() {
     const myLink = environment.urlApi + environment.ORDER_GET_ALL;
@@ -37,6 +38,26 @@ export class OrderService {
     );
   }
 
+  getOrderWithPaginationListSearchProvider(word: string | null, orderBy: string, ascDesc: string, perPage: number, page: number, idProvider: number, idSeason: number) {
+    const myLink = environment.urlApi + environment.ORDER_GET_ALL_WITH_PAGINATION_SEARCH_PROVIDER +
+      '/' + word +
+      '/' + orderBy + '/' + ascDesc +
+      '/' + perPage + '/' + page +
+      '/' + idProvider + '/' + idSeason;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res)
+    );
+  }
+
+  getOrderProviderPDF(idProvider: number, idSeason: number) {
+    const myLink = environment.urlApi + environment.ORDER_GET_ALL_PROVIDER_PDF +
+      '/' + idProvider + '/' + idSeason;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res)
+    );
+  }
+
+
   createOrUpdateOrder(order: IOrder): Observable<any> {
     return this.http.post<any>(environment.urlApi + environment.ORDER_CREATE_OR_UPDATE, order).pipe(
       map(res => res.data)
@@ -56,10 +77,17 @@ export class OrderService {
   }
 
   getTotalPiecesAndAmounts() {
-  const myLink = environment.urlApi + environment.ORDER_GET_TOTAL_PIECES_AND_AMOUNTS;
-  return this.http.get<any>(myLink).pipe(
-    map(res => res.data)
-);
-}
+    const myLink = environment.urlApi + environment.ORDER_GET_TOTAL_PIECES_AND_AMOUNTS;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getTotalPiecesAndAmountsPDF() {
+    const myLink = environment.urlApi + environment.ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PDF;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
 }
 

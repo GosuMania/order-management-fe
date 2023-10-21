@@ -62,6 +62,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
   tagliaAbbigliamento: ISimplePickList[] = [];
   tagliaAbbigliamentoEu: ISimplePickList[] = [];
+  taglieAbbigliamentoBambino: ISimplePickList[] = [];
   tagliaScarpe: ISimplePickList[] = [];
   taglie: ISimplePickList[] = [];
   taglieSelected: ISimplePickList[] = [];
@@ -92,8 +93,11 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     descrizioneArticolo: [
       {type: 'required', message: 'Campo obbligatorio mancante.'},
     ],
-    prezzo: [
+    barcode: [
       {type: 'required', message: 'Campo obbligatorio mancante.'},
+    ],
+    prezzo: [
+      {type: 'pattern', message: 'Formato inserito non valido.'},
     ],
     tipologiaProdotto: [
       {type: 'required', message: 'Campo obbligatorio mancante.'},
@@ -134,6 +138,10 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       this.tagliaAbbigliamentoEu = sizes as ISimplePickList[];
     });
 
+    this.commonService.clothingChildrenSizes.subscribe((sizes: ISimplePickList[]) => {
+      this.taglieAbbigliamentoBambino = sizes as ISimplePickList[];
+    });
+
     this.commonService.shoeSizes.subscribe((sizes: ISimplePickList[]) => {
       this.tagliaScarpe = sizes as ISimplePickList[];
     });
@@ -164,6 +172,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       productDesc: '',
       idClothingSizeType: null,
       colorVariants: [],
+      barcode: null,
       price: null,
     };
 
@@ -194,7 +203,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
         Validators.required,
         Validators.minLength(3)
       ])),
-      prezzo: new UntypedFormControl(this.articolo.price, Validators.compose([
+      barcode: new UntypedFormControl(this.articolo.barcode, Validators.compose([
+      ])),
+      prezzo: new UntypedFormControl(this.articolo.price?.toFixed(2), Validators.compose([
         Validators.required,
       ])),
       tipologiaProdotto: new UntypedFormControl(productType, Validators.compose([
@@ -208,12 +219,19 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     if (UTILITY.checkText(this.articolo.id) && this.articolo.colorVariants && this.articolo.colorVariants?.length > 0) {
       switch (this.articolo.idProductType) {
         case this.tipologiaProdotti[0].id:
-          if(this.articolo.idClothingSizeType === this.clothingSizeTypes[0].id) {
-            this.taglie = this.tagliaAbbigliamento;
-            this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[0]);
-          } else {
-            this.taglie = this.tagliaAbbigliamentoEu;
-            this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[1]);
+          switch (this.articolo.idClothingSizeType) {
+            case this.clothingSizeTypes[0].id:
+              this.taglie = this.tagliaAbbigliamento;
+              this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[0]);
+              break;
+            case this.clothingSizeTypes[1].id:
+              this.taglie = this.tagliaAbbigliamentoEu;
+              this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[1]);
+              break;
+            case this.clothingSizeTypes[2].id:
+              this.taglie = this.taglieAbbigliamentoBambino;
+              this.articoloForm.get('clothingSizeType')?.setValue(this.clothingSizeTypes[2]);
+              break;
           }
           this.articoloForm.get('clothingSizeType')?.addValidators([Validators.required]);
           break;
@@ -252,10 +270,6 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       map((taglia: string | null) => (taglia ? this._filterTaglia(taglia) : this._filterTaglia(null))),
     );
 
-    this.articoloForm.get('prezzo')?.valueChanges.subscribe(value => {
-      // this.alertChangeFormatPrice = false;
-    });
-
     this.articoloForm.get('tipologiaProdotto')?.valueChanges.subscribe(value => {
       console.log('Value Tipologia Prodotto:', value);
       this.coloriSelected = [];
@@ -288,6 +302,9 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
           break;
         case this.clothingSizeTypes[1].id:
           this.taglie = this.tagliaAbbigliamentoEu;
+          break;
+        case this.clothingSizeTypes[2].id:
+          this.taglie = this.taglieAbbigliamentoBambino;
           break;
       }
       this.taglieCtrl.setValue(null);
@@ -588,6 +605,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       productCode: this.articoloForm.get('codiceArticolo')?.value,
       productDesc: this.articoloForm.get('descrizioneArticolo')?.value,
       colorVariants: colorVariants,
+      barcode: this.articoloForm.get('barcode')?.value,
       price: this.articoloForm.get('prezzo')?.value,
     };
     this.productService.createOrUpdateProduct(product).subscribe(res => {
@@ -659,7 +677,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   }
 
   onBlurPrice() {
-    const valueInput = this.articoloForm.get('prezzo')?.value;
+    const valueInput = Number(this.articoloForm.get('prezzo')?.value);
     const value = valueInput.toFixed(2)
     this.articoloForm.get('prezzo')?.setValue(value);
     if (value + '' != valueInput + '') {

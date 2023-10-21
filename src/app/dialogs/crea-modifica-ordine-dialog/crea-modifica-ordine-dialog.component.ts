@@ -71,6 +71,7 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
 
   tagliaAbbigliamento: ISimplePickList[] = [];
   tagliaAbbigliamentoEu: ISimplePickList[] = [];
+  taglieAbbigliamentoBambino: ISimplePickList[] = [];
   tagliaScarpe: ISimplePickList[] = [];
   @ViewChild('tagliaInput') tagliaInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
@@ -104,6 +105,8 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     ]
   };
 
+  customerSelected!: ICustomer | null;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
               private authService: AuthService, private commonService: CommonService, private providerService: ProviderService,
               private orderService: OrderService, private customerService: CustomerService, public dialog: MatDialog,
@@ -125,6 +128,11 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     this.commonService.clothingNumberSizes.subscribe((sizes: ISimplePickList[]) => {
       this.tagliaAbbigliamentoEu = sizes as ISimplePickList[];
     });
+
+    this.commonService.clothingChildrenSizes.subscribe((sizes: ISimplePickList[]) => {
+      this.taglieAbbigliamentoBambino = sizes as ISimplePickList[];
+    });
+
 
     this.commonService.shoeSizes.subscribe((sizes: ISimplePickList[]) => {
       this.tagliaScarpe = sizes as ISimplePickList[];
@@ -246,10 +254,14 @@ export class CreaModificaOrdineDialogComponent implements OnInit {
     });
 
     this.myControl.setValue(customer ? customer : null);
-
+    this.customerSelected = customer ? customer : null;
   }
 
   onChanges() {
+    this.myControl.valueChanges.subscribe(value => {
+      this.customerSelected = value;
+      console.log('Customer: ', this.customerSelected);
+    })
   }
 
   private onError() {

@@ -8,6 +8,7 @@ export interface IProduct {
   descProvider?: string;
   productCode: string;
   productDesc: string;
+  barcode: string | null;
   price: number | null;
   idProductType: number | null;
   descProductType?: string;

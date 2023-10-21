@@ -50,7 +50,11 @@
       <ng-container matColumnDef="actions" >
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef></th>
         <td class="mat-cell" mat-cell *matCellDef="let element">
-          <button mat-icon-button style="z-index: 99" (click)="openDialogAddClient(element)"
+          <button mat-icon-button style="z-index: 99" (click)="openDialogAddClient(element, true)"
+                  matTooltip="Duplica cliente">
+            <mat-icon>file_copy</mat-icon>
+          </button>
+          <button mat-icon-button style="z-index: 99" (click)="openDialogAddClient(element, false)"
                   matTooltip="Modifica cliente">
             <mat-icon>edit</mat-icon>
           </button>

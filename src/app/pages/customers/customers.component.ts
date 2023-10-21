@@ -5,7 +5,7 @@ import {ICustomer, ICustomerPagination, IDestinazioneMerce} from "../../interfac
 import {MatSort, Sort} from "@angular/material/sort";
 import {UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import {UTILITY} from "../../constants/utility.constant";
-import * as moment from 'moment';
+import * as moment from "moment";
 import {MatDialog} from "@angular/material/dialog";
 import {
   CreaModificaClienteDialogComponent
@@ -134,7 +134,11 @@ export class CustomersComponent implements AfterViewInit {
     // this.dataSource.filter = filterValue;
   }
 
-  openDialogAddClient(cliente?: ICustomer) {
+  openDialogAddClient(cliente?: ICustomer, isNew?: boolean) {
+    if(cliente && isNew) {
+      cliente = JSON.parse(JSON.stringify(cliente));
+      cliente!.id = null;
+    }
     const dialogRef = this.dialog.open(CreaModificaClienteDialogComponent, {
       height: '90%',
       width: '90%',

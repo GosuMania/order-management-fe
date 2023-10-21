@@ -8,7 +8,7 @@ import {OrderService} from "../../services/order.service";
 import {IProduct} from "../../interfaces/IProduct";
 import {CustomerService} from "../../services/customer.service";
 import {DomSanitizer} from "@angular/platform-browser";
-import * as moment from 'moment'
+import * as moment from "moment";
 import {PDFDocument} from 'pdf-lib';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -17,8 +17,9 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   selector: 'app-pdf-generator',
   template: `
     <button mat-icon-button style="z-index: 99" (click)="loadLogoToBase64()"
-            matTooltip="Stampa ordine">
-      <mat-icon>print</mat-icon>
+            matTooltip="Download ordine">
+      <mat-icon>download</mat-icon>
+      <!--<mat-icon>print</mat-icon>-->
     </button>
   `,
 })
@@ -145,9 +146,11 @@ export class PdfGeneratorComponent {
         {
           table: {
             headerRows: 1,
-            widths: ['auto', 'auto', 'auto', '*', 'auto', 60, 60],
+            // Se aggiungo FOTO va aggiungo un auto
+            widths: [60, 120, 'auto', 'auto', 60, 60],
             body: [
-              [{text: 'Foto', alignment: 'center', bold: true},
+              [
+                // {text: 'Foto', alignment: 'center', bold: true},
                 {text: 'Codice', alignment: 'center', bold: true},
                 {text: 'Descrizione', alignment: 'center', bold: true},
                 {text: 'Dettaglio', alignment: 'center', bold: true},
@@ -155,13 +158,28 @@ export class PdfGeneratorComponent {
                 {text: 'Prezzo', alignment: 'center', bold: true},
                 {text: 'Totale', alignment: 'center', bold: true}],
               ...orderInfo.order.productList.map(p => ([
-                p.base64Image, p.productCode, p.productDesc, this.getDettaglioStack(p), this.getQuantityForProduct(p), this.formatPrice(p.price!), this.formatPrice(+p.price! * this.getQuantityForProduct(p))
-                // p.image, p.productCode, p.productDesc, 'test', this.getQuantityForProduct(p), p.price, (+p.price! * this.getQuantityForProduct(p)).toFixed(2)
+                /*
+                {
+                  image: 'data:image/jpeg;base64,' + p.base64Image,
+                  // width: 'auto',
+                  // height: 80,
+                  fit: [80, 80], // Controlla l'adattamento dell'immagine
+                  alignment: 'center',
+                  style: 'image-product'
+                },
+                 */
+                {text: p.productCode, alignment: 'center'},
+                {text: p.productDesc, alignment: 'center'},
+                {stack: this.getDettaglioStack(p), alignment: 'center'},
+                {text: this.getQuantityForProduct(p), alignment: 'center'},
+                {text: this.formatPrice(p.price!), alignment: 'center'},
+                {text: this.formatPrice(+p.price! * this.getQuantityForProduct(p)), alignment: 'center'}
               ])),
               [{
                 text: 'Prezzo Totale',
-                colSpan: 6
-              }, {}, {}, {}, {}, {}, this.formatPrice(orderInfo.order.productList.reduce((sum, p) => sum + (this.getQuantityForProduct(p) * +p.price!), 0))]
+                // Se aggiungo FOTO devo mettere 6 e aggiungere un {} vuoto
+                colSpan: 5
+              }, {}, {}, {}, {}, this.formatPrice(orderInfo.order.productList.reduce((sum, p) => sum + (this.getQuantityForProduct(p) * +p.price!), 0))]
             ]
           }
         },
@@ -193,7 +211,7 @@ export class PdfGeneratorComponent {
       ],
       footer: (currentPage: number) => {
         return {
-          text: `${currentPage}`,
+          text: `${currentPage}}`,
           alignment: 'center',
           margin: [0, 10]
         };
@@ -204,6 +222,19 @@ export class PdfGeneratorComponent {
           decoration: 'underline',
           fontSize: 14,
           margin: [0, 15, 0, 15]
+        },
+        'image-product': {
+          border: 5,
+          borderRadius: 15,
+          display: 'flex',
+          flexDirection: 'column', // Centra verticalmente
+          alignItems: 'center', // Centra orizzontalmente
+          justifyContent: 'center', // Centra verticalmente
+          background: 'red',
+          objectFit: 'cover',
+          width: 80,
+          height: 80,
+          padding: 5,
         }
       }
     };
@@ -226,12 +257,6 @@ export class PdfGeneratorComponent {
 
   generatePDF(orderInfo: { order: IOrder, otherInfo: any }, totalPages: number) {
     if (orderInfo && orderInfo.order && orderInfo.order.cliente && orderInfo.order.productList) {
-      /*
-      orderInfo.order.productList.map(p => {
-        p.base64Image = this.convertImageToBase64(p.image!); // Funzione da implementare
-      });
-
-       */
       // Creo pdf temporaneo per recupera pagine totali
       const documentDefinition = {
         pageOrientation: 'portrait',
@@ -335,9 +360,11 @@ export class PdfGeneratorComponent {
           {
             table: {
               headerRows: 1,
-              widths: ['auto', 'auto', 'auto', '*', 'auto', 60, 60],
+              // Se aggiungo Foto va aggiunto un auto
+              widths: [60, 120, 'auto', 'auto', 60, 60],
               body: [
-                [{text: 'Foto', alignment: 'center', bold: true},
+                [
+                  //{text: 'Foto', alignment: 'center', bold: true},
                   {text: 'Codice', alignment: 'center', bold: true},
                   {text: 'Descrizione', alignment: 'center', bold: true},
                   {text: 'Dettaglio', alignment: 'center', bold: true},
@@ -345,6 +372,7 @@ export class PdfGeneratorComponent {
                   {text: 'Prezzo', alignment: 'center', bold: true},
                   {text: 'Totale', alignment: 'center', bold: true}],
                 ...orderInfo.order.productList.map(p => ([
+                  /*
                   {
                     image: 'data:image/jpeg;base64,' + p.base64Image,
                     // width: 'auto',
@@ -353,6 +381,7 @@ export class PdfGeneratorComponent {
                     alignment: 'center',
                     style: 'image-product'
                   },
+                   */
                   {text: p.productCode, alignment: 'center'},
                   {text: p.productDesc, alignment: 'center'},
                   {stack: this.getDettaglioStack(p), alignment: 'center'},
@@ -362,8 +391,9 @@ export class PdfGeneratorComponent {
                 ])),
                 [{
                   text: 'Prezzo Totale',
-                  colSpan: 6
-                }, {}, {}, {}, {}, {}, this.formatPrice(orderInfo.order.productList.reduce((sum, p) => sum + (this.getQuantityForProduct(p) * +p.price!), 0))]
+                  // Se aggiungo FOTO devo mettere 6 e aggiungere un {} vuoto
+                  colSpan: 5
+                }, {}, {}, {}, {}, this.formatPrice(orderInfo.order.productList.reduce((sum, p) => sum + (this.getQuantityForProduct(p) * +p.price!), 0))]
               ]
             }
           },
@@ -422,18 +452,19 @@ export class PdfGeneratorComponent {
           }
         }
       };
-      if (orderInfo.otherInfo && orderInfo.otherInfo.action === 'download') {
-        pdfMake.createPdf(documentDefinition).download();
+      const customFileName = 'Ordine Numero ' + orderInfo.order.id;
+      if (orderInfo.otherInfo && orderInfo.otherInfo.action === 'open') {
+        pdfMake.createPdf(documentDefinition).download(customFileName);
       } else if (orderInfo.otherInfo && orderInfo.otherInfo.action === 'print') {
         pdfMake.createPdf(documentDefinition).print();
       } else {
-        pdfMake.createPdf(documentDefinition).open();
+        pdfMake.createPdf(documentDefinition).download(customFileName);
       }
     }
   }
 
   getDettaglioStack(p: IProduct): any[] {
-    const stackContent: any = [];
+    let stackContent: any = [];
 
     if (p.idProductType === 0 || p.idProductType === 2) {
       p.colorVariants?.forEach(colorVariant => {
@@ -448,10 +479,15 @@ export class PdfGeneratorComponent {
         });
         if (textSizeVariant !== '') {
           stackContent.push({text: {text: `${colorVariant.descColor?.toUpperCase()}`, bold: true}});
+          // Controlla se l'ultimo oggetto in stackContent è una stringa che termina con " - "
+          if (typeof textSizeVariant === 'string' && textSizeVariant.endsWith(' - ')) {
+            textSizeVariant = textSizeVariant.slice(0, -3); // Rimuovi gli ultimi 3 caratteri ("- ")
+          }
           stackContent.push({text: `${textSizeVariant}`});
           stackContent.push({text: '\n'}); // Aggiunge una riga nuova
         }
       });
+
     } else {
       p.colorVariants?.forEach((colorVariant, index) => {
         if (colorVariant.stockOrder && colorVariant.stockOrder > 0) {
@@ -482,19 +518,6 @@ export class PdfGeneratorComponent {
     return quantity;
   }
 
-  async getImageAsBase64(imageUrl: string): Promise<string> {
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  }
-
   async loadLogoToBase64() {
     const response = await fetch('assets/img/Logo_Order_Management.png');
     const blob = await response.blob();
@@ -507,27 +530,6 @@ export class PdfGeneratorComponent {
       this.loadInfoOrder();
     };
     reader.readAsDataURL(blob);
-  }
-
-  convertImageToBase64(url: string) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.setAttribute("crossOrigin", "anonymous");
-      // img.crossOrigin = "Anonymous";
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        ctx!.drawImage(img, 0, 0, img.width, img.height);
-        const dataURL = canvas.toDataURL("image/jpeg"); // Modifica il formato se necessario
-        resolve(dataURL);
-      };
-      img.onerror = () => {
-        reject(new Error("Failed to load image"));
-      };
-      img.src = url;
-    });
   }
 
   formatPrice(price: number): string {

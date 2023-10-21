@@ -45,6 +45,16 @@
       </div>
     </button>
   </div>
+  <div class="button-col" *ngIf="userProfile && userProfile.type === 'ADMIN'">
+    <button mat-fab extended routerLink="/orders-provider">
+      <div>
+        <mat-icon class="customIconSize">list</mat-icon>
+      </div>
+      <div>
+        Ordini Fornitori
+      </div>
+    </button>
+  </div>
   <div class="button-col">
     <button mat-fab extended routerLink="/statistics">
       <div>

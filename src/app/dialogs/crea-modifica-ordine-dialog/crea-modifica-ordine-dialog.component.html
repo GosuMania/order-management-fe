@@ -17,6 +17,17 @@
           </mat-error>
         </ng-container>
       </mat-form-field>
+
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <mat-label style="font-weight: bold">Destinazione Cliente: </mat-label>
+        <p *ngIf="customerSelected">
+          {{customerSelected.destinazioneMerce.indirizzo}} {{customerSelected.destinazioneMerce.cap}}
+          {{customerSelected.destinazioneMerce.localita}} ({{customerSelected.destinazioneMerce.provincia}}), {{customerSelected.destinazioneMerce.paese}}
+        </p>
+      </div>
+
+    </div>
+    <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Tipologia Ordine*</mat-label>
         <mat-select formControlName="orderType">
@@ -45,9 +56,6 @@
           </mat-error>
         </ng-container>
       </mat-form-field>
-    </div>
-
-    <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Consegna*</mat-label>
         <mat-select formControlName="delivery">
@@ -62,6 +70,9 @@
           </mat-error>
         </ng-container>
       </mat-form-field>
+    </div>
+
+    <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Stagione*</mat-label>
         <mat-select formControlName="seasonType">

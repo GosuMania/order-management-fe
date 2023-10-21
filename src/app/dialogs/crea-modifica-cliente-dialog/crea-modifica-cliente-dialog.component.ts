@@ -1,7 +1,7 @@
 import {Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from "@angular/forms";
-import {ICustomer} from "../../interfaces/ICustomer";
+import {ICustomer, IDestinazioneMerce} from "../../interfaces/ICustomer";
 import {UTILITY} from "../../constants/utility.constant";
 import {IUser} from "../../interfaces/IUser";
 import {PaesiConstant} from "../../constants/paesi.constant";
@@ -141,8 +141,11 @@ export class CreaModificaClienteDialogComponent implements OnInit {
       idAgenteRiferimento: null,
       usernameAgenteRiferimento: null
     };
-    this.cliente = UTILITY.checkObj(data) && UTILITY.checkObj(data.cliente) && UTILITY.checkText(data.cliente.id) ? data.cliente : newCliente;
+    this.cliente = UTILITY.checkObj(data) && UTILITY.checkObj(data.cliente) && UTILITY.checkText(data.cliente.ragioneSociale) ? data.cliente : newCliente;
     this.title = UTILITY.checkText(this.cliente.id) ? 'Modifica Cliente' : 'Nuovo Cliente';
+
+    this.showDestMerce = UTILITY.checkObj(this.cliente.destinazioneMerce) && UTILITY.checkText(this.cliente.destinazioneMerce.indirizzo)
+      && (this.cliente.destinazioneMerce.indirizzo !== this.cliente.indirizzo || this.cliente.destinazioneMerce.cap !== this.cliente.cap);
 
     this.clienteForm = this.fb.group({
       ragioneSociale: new UntypedFormControl(this.cliente.ragioneSociale, Validators.compose([
@@ -192,7 +195,7 @@ export class CreaModificaClienteDialogComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
       ])),
-      destinazioneMerce: [UTILITY.checkObj(this.cliente.destinazioneMerce) && UTILITY.checkText(this.cliente.destinazioneMerce.cap)],
+      destinazioneMerce: [this.showDestMerce],
       indirizzoDM: new UntypedFormControl(this.cliente.destinazioneMerce.indirizzo,
         Validators.compose([
           Validators.required,
@@ -220,10 +223,8 @@ export class CreaModificaClienteDialogComponent implements OnInit {
       agenteRiferimento: [this.cliente.idAgenteRiferimento]
     });
 
-    this.showDestMerce = UTILITY.checkObj(this.cliente.destinazioneMerce) && UTILITY.checkText(this.cliente.destinazioneMerce.cap);
+
     this.onChanges();
-
-
   }
 
   ngOnInit() {
@@ -238,6 +239,24 @@ export class CreaModificaClienteDialogComponent implements OnInit {
 
   save() {
     this.closeAlert();
+    let destinazioneMerce : IDestinazioneMerce;
+    if(this.clienteForm.get('destinazioneMerce')?.value) {
+      destinazioneMerce = {
+        indirizzo: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('indirizzoDM')?.value : null,
+        cap: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('capDM')?.value : null,
+        localita: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('localitaDM')?.value : null,
+        provincia: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('provinciaDM')?.value : null,
+        paese: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('paeseDM')?.value : null
+      };
+    } else {
+      destinazioneMerce = {
+        indirizzo: this.clienteForm.get('indirizzo')?.value,
+        cap: this.clienteForm.get('cap')?.value,
+        localita: this.clienteForm.get('localita')?.value,
+        provincia: this.clienteForm.get('provincia')?.value,
+        paese: this.clienteForm.get('paese')?.value
+      };
+    }
 
     const customer: ICustomer = {
       id: UTILITY.checkText(this.cliente!.id) ? this.cliente!.id : null,
@@ -253,13 +272,7 @@ export class CreaModificaClienteDialogComponent implements OnInit {
       paese: this.clienteForm.get('paese')?.value,
       telefono: this.clienteForm.get('telefono')?.value,
       email: this.clienteForm.get('email')?.value,
-      destinazioneMerce: {
-        indirizzo: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('indirizzoDM')?.value : null,
-        cap: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('capDM')?.value : null,
-        localita: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('localitaDM')?.value : null,
-        provincia: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('provinciaDM')?.value : null,
-        paese: this.clienteForm.get('destinazioneMerce')?.value ? this.clienteForm.get('paeseDM')?.value : null,
-      },
+      destinazioneMerce: destinazioneMerce,
       idAgenteRiferimento: this.clienteForm.get('agenteRiferimento')?.value,
       usernameAgenteRiferimento: this.nomeAgente(this.clienteForm.get('agenteRiferimento')?.value)
     };
