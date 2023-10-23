@@ -24,9 +24,11 @@ export const environment = {
   PRODUCT_GET_ALL_WITH_PAGINATION: 'product/get-all-with-pagination',
   PRODUCT_GET_ALL_WITH_PAGINATION_SEARCH: 'product/get-all-with-pagination-search',
 
+
   CLOTHING_SIZE_TYPE_GET_ALL: 'clothing-size-type/get-all',
   CLOTHING_SIZE_GET_ALL: 'clothing-size/get-all',
   CLOTHING_NUMBER_SIZE_GET_ALL: 'clothing-number-size/get-all',
+  CLOTHING_CHILDREN_SIZE_GET_ALL: 'clothing-children-size/get-all',
   PRODUCT_TYPE_GET_ALL: 'product-type/get-all',
   SHOE_SIZE_GET_ALL: 'shoe-size/get-all',
   UTILITY_UPLOAD_IMAGE: 'image/upload',
@@ -56,5 +58,8 @@ export const environment = {
   ORDER_GET_ALL_WITH_PAGINATION: 'order/get-all-with-pagination',
   ORDER_GET_ALL_WITH_PAGINATION_SEARCH: 'order/get-all-with-pagination-search',
   ORDER_GET_TOTAL_PIECES_AND_AMOUNTS: 'order/get-total-pieces-and-amounts',
-  ORDER_GET_ALL_WITH_PAGINATION_SEARCH_PROVIDER: 'order/getAllWithPaginationSearchFilterProvider'
+  ORDER_GET_ALL_WITH_PAGINATION_SEARCH_PROVIDER: 'order/get-all-with-pagination-search-provider',
+  ORDER_GET_ALL_PROVIDER_XLSX: 'order/get-all-filter-provider-xlsx',
+  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PDF: 'order/get-total-pieces-and-amounts-pdf',
+  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PROVIDER: 'order/get-total-pieces-and-amounts-provider'
 };

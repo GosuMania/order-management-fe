@@ -1,9 +1,10 @@
 <div class="example-container">
   <div class="filters row">
-    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
       <strong>Totale Ordini</strong> {{total}}
 
     </div>
+    <!--
     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
       <strong>Totale Articoli</strong> {{totalPieces}}
 
@@ -12,6 +13,7 @@
       <strong>Totale Importo</strong>
       {{totalAmount | currency: 'EUR'}}
     </div>
+    -->
   </div>
   <hr>
   <form [formGroup]="orderForm">
@@ -30,7 +32,7 @@
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Fornitore*</mat-label>
         <mat-select formControlName="provider">
-          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore.id">
+          <mat-option *ngFor="let fornitore of fornitori" [value]="fornitore">
             {{fornitore.ragioneSociale}}
           </mat-option>
         </mat-select>
@@ -38,7 +40,7 @@
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Stagione*</mat-label>
         <mat-select formControlName="season">
-          <mat-option *ngFor="let stagione of stagioni" [value]="stagione.id">
+          <mat-option *ngFor="let stagione of stagioni" [value]="stagione">
             {{stagione.desc}}
           </mat-option>
         </mat-select>
@@ -91,8 +93,7 @@
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Stagione</th>
         <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.descSeason}} </td>
       </ng-container>
-
-
+      <!--
       <ng-container matColumnDef="tipologiaOrdine">
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Pezzi e Prezzo</th>
         <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalPieces}}
@@ -108,7 +109,7 @@
         <th class="mat-header-cell" mat-header-cell *matHeaderCellDef mat-sort-header> Tot. Importo</th>
         <td class="mat-cell" mat-cell *matCellDef="let element"> {{element.totalAmount | currency: 'EUR'}}</td>
       </ng-container>
-
+      -->
       <tr class="mat-header-row" mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
       <tr class="mat-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>

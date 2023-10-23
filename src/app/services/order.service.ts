@@ -49,11 +49,11 @@ export class OrderService {
     );
   }
 
-  getOrderProviderPDF(idProvider: number, idSeason: number) {
-    const myLink = environment.urlApi + environment.ORDER_GET_ALL_PROVIDER_PDF +
+  getOrderProviderXLSX(idProvider: number, idSeason: number) {
+    const myLink = environment.urlApi + environment.ORDER_GET_ALL_PROVIDER_XLSX +
       '/' + idProvider + '/' + idSeason;
     return this.http.get<any>(myLink).pipe(
-      map(res => res)
+      map(res => res.data)
     );
   }
 
@@ -85,6 +85,14 @@ export class OrderService {
 
   getTotalPiecesAndAmountsPDF() {
     const myLink = environment.urlApi + environment.ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PDF;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getTotalPiecesAndAmountsProvider(idProvider: number, idSeason: number) {
+    const myLink = environment.urlApi + environment.ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PROVIDER +
+    '/' + idProvider + '/' + idSeason;
     return this.http.get<any>(myLink).pipe(
       map(res => res.data)
     );

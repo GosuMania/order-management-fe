@@ -44,8 +44,10 @@ export class OrdersProviderComponent implements AfterViewInit {
     'dataOrdine',
     'consegna',
     'stagione',
+    /*
     'totalePezzi',
     'totaleImporto'
+     */
   ];
   dataSource = new MatTableDataSource<IOrder>([]);
 
@@ -89,19 +91,9 @@ export class OrdersProviderComponent implements AfterViewInit {
     }
   }
 
-  printPDF() {
-    const idProvider = this.orderForm.get('provider')!.value;
-    const idSeason = this.orderForm.get('season')!.value
-    if(idProvider && idSeason) {
-      this.orderService.getOrderProviderPDF(idProvider, idSeason).subscribe(data => {
-        console.log('Data: ', data);
-      });
-    }
-  }
-
   refreshList() {
-    const idProvider = this.orderForm.get('provider')!.value;
-    const idSeason = this.orderForm.get('season')!.value
+    const idProvider = this.orderForm.get('provider')!.value.id;
+    const idSeason = this.orderForm.get('season')!.value.id;
     if(idProvider && idSeason) {
       this.orderService.getOrderWithPaginationListSearchProvider(
         null, this.orderBy, this.ascDesc, this.perPage, this.currentPage + 1, idProvider, idSeason)
@@ -111,12 +103,14 @@ export class OrdersProviderComponent implements AfterViewInit {
           this.lastPage = data.meta.last_page;
           this.dataSource = new MatTableDataSource<IOrder>(data.data);
         });
-      this.orderService.getTotalPiecesAndAmountsPDF()
+      /*
+      this.orderService.getTotalPiecesAndAmountsProvider(idProvider, idSeason)
         .subscribe(data => {
           console.log(data);
           this.totalAmount = data.totalAmount;
           this.totalPieces = data.totalPieces;
         });
+       */
     }
   }
 

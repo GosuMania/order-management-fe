@@ -64,8 +64,9 @@ export const environment = {
   ORDER_GET_ALL_WITH_PAGINATION_SEARCH: 'order/get-all-with-pagination-search',
   ORDER_GET_TOTAL_PIECES_AND_AMOUNTS: 'order/get-total-pieces-and-amounts',
   ORDER_GET_ALL_WITH_PAGINATION_SEARCH_PROVIDER: 'order/get-all-with-pagination-search-provider',
-  ORDER_GET_ALL_PROVIDER_PDF: 'order/get-all-filter-provider-pdf',
-  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PDF: 'order/get-total-pieces-and-amounts-pdf'
+  ORDER_GET_ALL_PROVIDER_XLSX: 'order/get-all-filter-provider-xlsx',
+  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PDF: 'order/get-total-pieces-and-amounts-pdf',
+  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PROVIDER: 'order/get-total-pieces-and-amounts-provider'
 };
 
 /*
