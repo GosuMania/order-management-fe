@@ -16,6 +16,7 @@ export interface IProduct {
   colorVariants: IColorVariant[] | null;
   isAdded?: boolean;
   disableCartButton?: boolean;
+  descSeasonType?: string;
 }
 
 export interface IColorVariant {

@@ -97,5 +97,22 @@ export class OrderService {
       map(res => res.data)
     );
   }
+
+  getOrderProductStats(idSeason: number, idProvider: number | null) {
+    const myLink = environment.urlApi + environment.ORDER_PRODUCT_GET_ORDER_PRODUCT_STATS +
+      '/' + idSeason + '/' + idProvider;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getOrderProductStatsWithPaginationListSearch(ascDesc: string, perPage: number, page: number,idSeason: number, idProvider: number) {
+    const myLink = environment.urlApi + environment.ORDER_PRODUCT_GET_WITH_PAGINATION_ORDER_PRODUCT_STATS +
+      '/' + ascDesc + '/' + perPage + '/' + page +
+      '/' + idProvider + '/' + idSeason;
+    return this.http.get<any>(myLink).pipe(
+      map(res => res)
+    );
+  }
 }
 

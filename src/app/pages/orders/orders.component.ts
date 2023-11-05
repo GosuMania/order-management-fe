@@ -40,12 +40,12 @@ export class OrdersComponent implements AfterViewInit {
   agenti: IUser[] = [];
 
   displayedColumns: string[] = [
-    'numeroOrdine',
-    'utente',
-    'cliente',
-    'dataOrdine',
-    'consegna',
-    'stagione',
+    'id',
+    'descUser',
+    'descCustomer',
+    'date',
+    'descDelivery',
+    'descSeason',
     'totalePezzi',
     'totaleImporto',
     'actions'

@@ -81,6 +81,7 @@ import {
 import {ColorsComponent} from "./pages/colors/colors.component";
 import {OrdersProviderComponent} from "./pages/orders-provider/orders-provider.component";
 import { XlsxGeneratorComponent } from './components/xlsx-generator/xlsx-generator.component';
+import {StatisticsComponent} from "./pages/statistics/statistics.component";
 
 registerLocaleData(localeIt, 'it');
 
@@ -147,7 +148,8 @@ const Ux_Modules = [
     CreaModificaColorDialogComponent,
     ColorsComponent,
     OrdersProviderComponent,
-    XlsxGeneratorComponent
+    XlsxGeneratorComponent,
+    StatisticsComponent
   ],
     imports: [
         BrowserModule,
