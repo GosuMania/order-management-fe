@@ -75,3 +75,14 @@
 .section-container-mobile {
   text-align: center;
 }
+
+.barcode-input-container {
+  position: relative;
+}
+
+.barcode-input-container button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+}

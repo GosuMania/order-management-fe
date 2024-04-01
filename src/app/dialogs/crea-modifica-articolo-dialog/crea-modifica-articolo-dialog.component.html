@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>{{title}}</h2>
-<mat-dialog-content #scrollContentDialog *ngIf="articoloForm" class="mat-typography">
+<mat-dialog-content #scrollContentDialog *ngIf="articoloForm" class="mat-typography" (keydown)="handleKeyDown($event)">
   <form class="add-lessons-form" [formGroup]="articoloForm">
     <div class="row">
       <div class="col">
@@ -33,10 +33,10 @@
           </mat-option>
         </mat-select>
         <ng-container *ngFor="let validation of validationCliente.fornitore">
-          <mat-error
+          <mat-errorminLength
             *ngIf="articoloForm.get('fornitore')!.hasError(validation.type) && articoloForm.get('fornitore')!.dirty">
             {{validation.message}}
-          </mat-error>
+          </mat-errorminLength>
         </ng-container>
       </mat-form-field>
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
@@ -64,7 +64,10 @@
     <div class="row">
       <mat-form-field class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
         <mat-label>Codice a barre</mat-label>
-          <input matInput type="number" formControlName="barcode" placeholder="1234567890">
+        <input matInput type="text" formControlName="barcode" placeholder="1234567890">
+        <button matSuffix mat-icon-button matTooltip="Visualizza" (click)="openBarcodeDialog()">
+          <mat-icon>image</mat-icon>
+        </button>
         <ng-container *ngFor="let validation of validationCliente.barcode">
           <mat-error
             *ngIf="articoloForm.get('barcode')!.hasError(validation.type) && articoloForm.get('barcode')!.dirty">

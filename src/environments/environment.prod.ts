@@ -61,5 +61,8 @@ export const environment = {
   ORDER_GET_ALL_WITH_PAGINATION_SEARCH_PROVIDER: 'order/get-all-with-pagination-search-provider',
   ORDER_GET_ALL_PROVIDER_XLSX: 'order/get-all-filter-provider-xlsx',
   ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PDF: 'order/get-total-pieces-and-amounts-pdf',
-  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PROVIDER: 'order/get-total-pieces-and-amounts-provider'
+  ORDER_GET_TOTAL_PIECES_AND_AMOUNTS_PROVIDER: 'order/get-total-pieces-and-amounts-provider',
+
+  ORDER_PRODUCT_GET_ORDER_PRODUCT_STATS: 'order-product/get-order-product-stats',
+  ORDER_PRODUCT_GET_WITH_PAGINATION_ORDER_PRODUCT_STATS: 'order-product/get-with-pagination-order-product-stats',
 };

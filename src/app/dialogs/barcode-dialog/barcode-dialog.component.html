@@ -1,0 +1,13 @@
+<mat-dialog-content style="padding: 3rem; overflow-y: hidden !important; overflow-x: hidden !important;">
+  <canvas #barcodeCanvas></canvas>
+  <div style="display: none;">
+    <button id="hiddenFocusElement" autofocus></button>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button id="button-download" (click)="printBarcode(barcodeValue)">
+    <mat-icon>download</mat-icon>
+    DOWNLOAD
+  </button>
+  <button mat-button mat-dialog-close  id="button-close" style="margin-left: 1rem">CHIUDI</button>
+</mat-dialog-actions>

@@ -82,6 +82,8 @@ import {ColorsComponent} from "./pages/colors/colors.component";
 import {OrdersProviderComponent} from "./pages/orders-provider/orders-provider.component";
 import { XlsxGeneratorComponent } from './components/xlsx-generator/xlsx-generator.component';
 import {StatisticsComponent} from "./pages/statistics/statistics.component";
+import { BarcodeComponent } from './components/barcode/barcode.component';
+import { BarcodeDialogComponent } from './dialogs/barcode-dialog/barcode-dialog.component';
 
 registerLocaleData(localeIt, 'it');
 
@@ -149,7 +151,9 @@ const Ux_Modules = [
     ColorsComponent,
     OrdersProviderComponent,
     XlsxGeneratorComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    BarcodeComponent,
+    BarcodeDialogComponent
   ],
     imports: [
         BrowserModule,

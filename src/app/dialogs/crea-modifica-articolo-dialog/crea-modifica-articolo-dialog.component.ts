@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {
   FormArray,
   FormControl, FormGroup,
@@ -22,6 +22,7 @@ import {IProvider} from "../../interfaces/IProvider";
 import {IProductType} from "../../interfaces/IProductType";
 import {ProviderService} from "../../services/provider.service";
 import {ISimplePickList} from "../../interfaces/ISimplePickList";
+import {BarcodeDialogComponent} from "../barcode-dialog/barcode-dialog.component";
 
 class ImageSnippet {
   pending = false;
@@ -69,6 +70,7 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
   clothingSizeTypes: ISimplePickList[] = [];
   taglieCtrl = new FormControl();
   filterTaglie: Observable<ISimplePickList[]> | undefined;
+  barcodeValue: string = '';
   @ViewChild('tagliaInput') tagliaInput: ElementRef<HTMLInputElement> = {} as ElementRef;
 
   fornitori: IProvider[] = [];
@@ -116,7 +118,8 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: UntypedFormBuilder, private productService: ProductService,
               private authService: AuthService, private commonService: CommonService, private providerService: ProviderService,
-              public dialogRef: MatDialogRef<CreaModificaArticoloDialogComponent>, private cdkRef: ChangeDetectorRef) {
+              public dialogRef: MatDialogRef<CreaModificaArticoloDialogComponent>, private cdkRef: ChangeDetectorRef,
+              public dialog: MatDialog) {
     this.dialogRef.disableClose = true;
 
     this.commonService.isSmall.subscribe(res => {
@@ -216,6 +219,8 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       colorVariants: this.fb.array([]),
     });
 
+    this.barcodeValue = this.articoloForm.get('barcode')?.value;
+
     if (UTILITY.checkText(this.articolo.id) && this.articolo.colorVariants && this.articolo.colorVariants?.length > 0) {
       switch (this.articolo.idProductType) {
         case this.tipologiaProdotti[0].id:
@@ -269,6 +274,12 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
       startWith(null),
       map((taglia: string | null) => (taglia ? this._filterTaglia(taglia) : this._filterTaglia(null))),
     );
+
+    this.articoloForm.get('barcode')?.valueChanges.subscribe(value => {
+      this.barcodeValue = value;
+      console.log(' Bar code : ', this.barcodeValue)
+      this.cdkRef.detectChanges();
+    });
 
     this.articoloForm.get('tipologiaProdotto')?.valueChanges.subscribe(value => {
       console.log('Value Tipologia Prodotto:', value);
@@ -707,5 +718,24 @@ export class CreaModificaArticoloDialogComponent implements OnInit {
     } catch(err) {
       console.log(err);
     }
+  }
+
+  handleKeyDown(event: KeyboardEvent): void {
+    // Impedisci l'azione predefinita solo se il tasto premuto è INVIO
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+  }
+
+  openBarcodeDialog(): void {
+    const dialogRef = this.dialog.open(BarcodeDialogComponent, {
+      data: {
+        barcodeValue: this.articoloForm.get('barcode')!.value,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // Puoi gestire il risultato se necessario
+    });
   }
 }

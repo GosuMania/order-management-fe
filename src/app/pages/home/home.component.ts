@@ -10,7 +10,6 @@ import {IUser} from "../../interfaces/IUser";
 })
 export class HomeComponent implements OnInit {
   userProfile: IUser | null = null;
-
   constructor(private  authService: AuthService, private commonService: CommonService, private cdkRef: ChangeDetectorRef) {
     this.authService.getUsersList().subscribe(utenti => {
       this.commonService.utenti.next(utenti);
@@ -26,5 +25,4 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }
